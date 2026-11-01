@@ -1,0 +1,34 @@
+# Dependências
+node_modules/
+
+# Build
+dist/
+build/
+*.tsbuildinfo
+
+# Variáveis de ambiente (nunca versionar segredos)
+.env
+.env.*
+!.env.example
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+
+# Testes / cobertura
+coverage/
+.nyc_output/
+
+# Temporários e cache
+tmp/
+temp/
+.cache/
+.eslintcache
+
+# Editor / SO
+.vscode/*
+!.vscode/extensions.json
+.idea/
+.DS_Store
+Thumbs.db
