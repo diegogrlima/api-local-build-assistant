@@ -1,4 +1,5 @@
 import Fastify, { type FastifyInstance } from 'fastify';
+import cors from '@fastify/cors';
 import sensible from '@fastify/sensible';
 import type { Env } from './config/env.js';
 import { registerErrorHandler } from './plugins/error-handler.js';
@@ -53,6 +54,7 @@ export async function buildApp(
           },
   });
 
+  await app.register(cors, { origin: env.CORS_ORIGIN });
   await app.register(sensible);
   registerErrorHandler(app);
 

@@ -102,7 +102,7 @@ O MVP está funcional quando o jogador consegue: informar seu campeão, informar
 | `npm run typecheck`                     | `tsc --noEmit`                         |
 | `npm run lint` / `npm run format:check` | ESLint / Prettier                      |
 
-Copie `.env.example` para `.env` antes de rodar. Variáveis: `NODE_ENV`, `HOST`, `PORT` (padrão 3333), `LOG_LEVEL`, `CATALOG_REFRESH_INTERVAL_MS` (intervalo de atualização dos catálogos do Data Dragon), `GEMINI_API_KEY` (opcional; sem ela a recomendação responde 503) e `GEMINI_MODEL`. Segredos vão só no `.env`, nunca no `.env.example`.
+Copie `.env.example` para `.env` antes de rodar. Variáveis: `NODE_ENV`, `HOST`, `PORT` (padrão 3333), `LOG_LEVEL`, `CORS_ORIGIN` (origens permitidas, separadas por vírgula; padrão `http://localhost:5173,http://127.0.0.1:5173`), `CATALOG_REFRESH_INTERVAL_MS` (intervalo de atualização dos catálogos do Data Dragon), `GEMINI_API_KEY` (opcional; sem ela a recomendação responde 503) e `GEMINI_MODEL`. Segredos vão só no `.env`, nunca no `.env.example`.
 
 Snapshots de fallback dos catálogos: `npm run snapshot:champions`, `npm run snapshot:champion-details` e `npm run snapshot:items` (rodar quando sair um patch novo).
 

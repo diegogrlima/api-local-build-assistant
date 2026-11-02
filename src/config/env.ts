@@ -6,6 +6,16 @@ const envSchema = z.object({
   PORT: z.coerce.number().int().positive().default(3333),
   LOG_LEVEL: z.enum(['fatal', 'error', 'warn', 'info', 'debug', 'trace', 'silent']).default('info'),
   CATALOG_REFRESH_INTERVAL_MS: z.coerce.number().int().positive().default(3_600_000),
+  // Origens permitidas pelo CORS, separadas por vírgula.
+  CORS_ORIGIN: z
+    .string()
+    .default('http://localhost:5173,http://127.0.0.1:5173')
+    .transform((value) =>
+      value
+        .split(',')
+        .map((origin) => origin.trim())
+        .filter(Boolean),
+    ),
   // Sem chave, a API sobe normalmente, mas a recomendação responde 503.
   GEMINI_API_KEY: z
     .string()
