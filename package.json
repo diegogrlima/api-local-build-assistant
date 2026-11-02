@@ -17,7 +17,8 @@
     "snapshot:champions": "tsx scripts/generate-champions-snapshot.ts",
     "prepare": "husky",
     "snapshot:items": "tsx scripts/generate-items-snapshot.ts",
-    "snapshot:champion-details": "tsx scripts/generate-champion-details-snapshot.ts"
+    "snapshot:champion-details": "tsx scripts/generate-champion-details-snapshot.ts",
+    "snapshot:runes": "tsx scripts/generate-runes-snapshot.ts"
   },
   "type": "module",
   "private": true,

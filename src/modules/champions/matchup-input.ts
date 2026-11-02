@@ -2,20 +2,24 @@ import { z } from 'zod';
 import { AppError } from '../../shared/errors/app-error.js';
 import type { ChampionCatalog } from './champion-catalog.js';
 import type { Champion } from './champion.js';
+import { LANES, type Lane } from './lane.js';
 
 export const ENEMY_COUNT = 5;
 
 // Só valida o formato. As regras que dependem do catálogo ficam em validateMatchupInput.
 export const matchupInputSchema = z.object({
   championId: z.string().min(1),
-  enemyChampionIds: z.array(z.string().min(1)),
+  lane: z.enum(LANES),
+  enemies: z.array(z.object({ championId: z.string().min(1), lane: z.enum(LANES) })),
 });
 
 export type MatchupInput = z.infer<typeof matchupInputSchema>;
 
+export type LanedChampion = Champion & { lane: Lane };
+
 export type ValidMatchup = {
-  champion: Champion;
-  enemies: Champion[];
+  champion: LanedChampion;
+  enemies: LanedChampion[];
 };
 
 export async function validateMatchupInput(
@@ -25,13 +29,14 @@ export async function validateMatchupInput(
   const parsed = matchupInputSchema.safeParse(input);
   if (!parsed.success) {
     throw new AppError(
-      'Informe o campeão do jogador (championId) e a lista de adversários (enemyChampionIds).',
+      `Informe o campeão do jogador (championId), a rota dele (lane) e os adversários com as rotas (enemies). Rotas válidas: ${LANES.join(', ')}.`,
       400,
       'INVALID_INPUT',
     );
   }
 
-  const { championId, enemyChampionIds } = parsed.data;
+  const { championId, lane, enemies } = parsed.data;
+  const enemyChampionIds = enemies.map((enemy) => enemy.championId);
 
   if (enemyChampionIds.length !== ENEMY_COUNT) {
     throw new AppError(
@@ -65,6 +70,18 @@ export async function validateMatchupInput(
     );
   }
 
-  const [champion, ...enemies] = found as Champion[];
-  return { champion: champion!, enemies };
+  const enemyLanes = enemies.map((enemy) => enemy.lane);
+  if (new Set(enemyLanes).size !== enemyLanes.length) {
+    throw new AppError(
+      'Cada adversário deve estar em uma rota diferente.',
+      400,
+      'ENEMY_LANES_DUPLICATED',
+    );
+  }
+
+  const [champion, ...enemyChampions] = found as Champion[];
+  return {
+    champion: { ...champion!, lane },
+    enemies: enemyChampions.map((enemy, index) => ({ ...enemy, lane: enemyLanes[index]! })),
+  };
 }

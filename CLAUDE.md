@@ -2,7 +2,7 @@
 
 API backend do **assistente de builds de League of Legends (LoL)**. O objetivo do produto é ajudar o jogador a escolher uma build adequada para a partida atual.
 
-> Estado atual: MVP funcional. `GET /champions` lista os campeões e `POST /builds/recommendations` valida a entrada e gera a build com o Gemini, usando apenas dados do Data Dragon como contexto. Fora do MVP, por ora: estatísticas de alto elo via API da Riot (Match-V5) como contexto extra.
+> Estado atual: MVP funcional. `GET /champions` lista os campeões e `POST /builds/recommendations` valida a entrada (campeões e rotas) e gera a build e a página de runas com o Gemini, usando apenas dados do Data Dragon como contexto. Fora do MVP, por ora: estatísticas de alto elo via API da Riot (Match-V5) como contexto extra.
 
 ## Escopo do MVP (definição funcional do produto)
 
@@ -10,7 +10,7 @@ Este bloco define **o que o produto deve fazer**, não como construir. Antes de 
 
 ### Visão e objetivo
 
-O assistente analisa o campeão do jogador e os **cinco campeões adversários** e recomenda **uma única build**, adaptada às ameaças encontradas naquela partida. Funciona como apoio à decisão: uma recomendação acompanhada de justificativas claras.
+O assistente analisa o campeão do jogador e os **cinco campeões adversários**, com a rota de cada um, e recomenda **uma única build** e **uma única página de runas**, adaptadas às ameaças encontradas naquela partida. Funciona como apoio à decisão: uma recomendação acompanhada de justificativas claras.
 
 A recomendação deve equilibrar:
 
@@ -22,8 +22,10 @@ Não deve ser uma build padrão nem uma lista genérica de itens.
 
 ### Entrada do jogador
 
-- O campeão que está utilizando.
-- Os cinco campeões da equipe adversária.
+- O campeão que está utilizando e a rota dele (topo, selva, meio, atirador ou suporte).
+- Os cinco campeões da equipe adversária, cada um com a sua rota (sem repetir rotas entre eles).
+
+As rotas são obrigatórias. O adversário na mesma rota do jogador é o oponente direto.
 
 **Não solicitar informações sobre os aliados.** A composição aliada não faz parte do MVP.
 
@@ -31,7 +33,7 @@ Não deve ser uma build padrão nem uma lista genérica de itens.
 
 1. Identificar as principais ameaças dos cinco adversários.
 2. Avaliar quais características inimigas mais influenciam a escolha dos itens.
-3. Considerar o campeão do jogador e sua função na partida.
+3. Considerar o campeão do jogador, sua função e sua rota, dando peso ao oponente direto.
 4. Identificar necessidades de dano, resistência e sobrevivência.
 5. Montar uma recomendação coerente com o confronto.
 
@@ -58,6 +60,7 @@ Uma **única build recomendada**, contendo:
 - **Ameaças consideradas:** campeões ou características inimigas que mais influenciaram.
 - **Equilíbrio da escolha:** como a build mantém força e proteção.
 - **Ordem de compra:** sequência sugerida de aquisição.
+- **Runas:** árvore primária (runa principal e uma runa de cada linha) e árvore secundária (2 runas de linhas diferentes), com justificativa. Os fragmentos de atributo ficam de fora, porque o Data Dragon não os publica.
 
 A resposta deve ser clara, prática e fácil de consultar antes da partida.
 
@@ -83,7 +86,7 @@ A recomendação é baseada apenas nas informações fornecidas para aquela aná
 
 ### Critério de conclusão
 
-O MVP está funcional quando o jogador consegue: informar seu campeão, informar os cinco adversários, solicitar a análise, receber uma única build adaptada àquela composição e entender por que os itens foram recomendados.
+O MVP está funcional quando o jogador consegue: informar seu campeão e sua rota, informar os cinco adversários e as rotas deles, solicitar a análise, receber uma única build e uma página de runas adaptadas àquela composição e entender por que foram recomendadas.
 
 ## Stack
 
@@ -104,16 +107,16 @@ O MVP está funcional quando o jogador consegue: informar seu campeão, informar
 
 Copie `.env.example` para `.env` antes de rodar. Variáveis: `NODE_ENV`, `HOST`, `PORT` (padrão 3333), `LOG_LEVEL`, `CORS_ORIGIN` (origens permitidas, separadas por vírgula; padrão `http://localhost:5173,http://127.0.0.1:5173`), `CATALOG_REFRESH_INTERVAL_MS` (intervalo de atualização dos catálogos do Data Dragon), `GEMINI_API_KEY` (opcional; sem ela a recomendação responde 503) e `GEMINI_MODEL`. Segredos vão só no `.env`, nunca no `.env.example`.
 
-Snapshots de fallback dos catálogos: `npm run snapshot:champions`, `npm run snapshot:champion-details` e `npm run snapshot:items` (rodar quando sair um patch novo).
+Snapshots de fallback dos catálogos: `npm run snapshot:champions`, `npm run snapshot:champion-details`, `npm run snapshot:items` e `npm run snapshot:runes` (rodar quando sair um patch novo).
 
 ## Recomendação com IA
 
 A IA só escolhe e explica; ela nunca é fonte de dados. Fluxo em `src/modules/builds/recommendation-service.ts`:
 
 1. `validateMatchupInput` valida a entrada (entrada inválida nunca chega à IA).
-2. Contexto fechado: detalhes dos campeões (`championFull.json`), análise determinística da composição inimiga (`matchup-analysis.ts`) e lista de itens permitidos.
-3. O schema de resposta usa `enum` com os ids de itens permitidos e dos adversários.
-4. `recommendation-validator.ts` confere a resposta (6 itens existentes, sem repetição, no máximo 1 par de botas, ameaças entre os adversários). Uma nova tentativa com o feedback; se falhar de novo, 502. Nada não validado chega ao jogador.
+2. Contexto fechado: detalhes dos campeões (`championFull.json`) com as rotas e o oponente direto, análise determinística da composição inimiga (`matchup-analysis.ts`), lista de itens permitidos e árvores de runas (`runesReforged.json`).
+3. O schema de resposta usa `enum` com os ids de itens permitidos, dos adversários, das árvores e das runas.
+4. `recommendation-validator.ts` confere a resposta (6 itens existentes, sem repetição, no máximo 1 par de botas, ameaças entre os adversários; runa principal da árvore primária, uma runa de cada linha na primária, secundária diferente com 2 runas de linhas diferentes). Uma nova tentativa com o feedback; se falhar de novo, 502. Nada não validado chega ao jogador.
 
 A IA fica atrás da interface `BuildAdvisor`; testes nunca chamam o Gemini (use `buildTestApp` de `src/test/build-test-app.ts`).
 

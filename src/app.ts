@@ -17,6 +17,9 @@ import type { ItemProvider } from './modules/items/item-provider.js';
 import { RiotItemProvider } from './modules/items/riot-item-provider.js';
 import { InMemoryItemCatalog } from './modules/items/in-memory-item-catalog.js';
 import { loadItemsSnapshot } from './modules/items/items-snapshot.js';
+import type { RuneTree } from './modules/runes/rune.js';
+import { RiotRuneProvider } from './modules/runes/riot-rune-provider.js';
+import { loadRunesSnapshot } from './modules/runes/runes-snapshot.js';
 import type { BuildAdvisor } from './modules/builds/build-advisor.js';
 import { GeminiBuildAdvisor } from './modules/builds/gemini-build-advisor.js';
 import { RecommendationService } from './modules/builds/recommendation-service.js';
@@ -26,6 +29,7 @@ export type AppDependencies = {
   championProvider?: ChampionProvider;
   championDetailsProvider?: VersionedSource<ChampionDetails>;
   itemProvider?: ItemProvider;
+  runeProvider?: VersionedSource<RuneTree>;
   // null desliga a IA; sem valor, usa o Gemini quando GEMINI_API_KEY estiver definida.
   buildAdvisor?: BuildAdvisor | null;
 };
@@ -41,6 +45,7 @@ export async function buildApp(
     championProvider = new RiotChampCatalog(),
     championDetailsProvider = new RiotChampionDetailsProvider(),
     itemProvider = new RiotItemProvider(),
+    runeProvider = new RiotRuneProvider(),
     buildAdvisor = createDefaultAdvisor(env),
   }: AppDependencies = {},
 ): Promise<FastifyInstance> {
@@ -74,7 +79,13 @@ export async function buildApp(
     snapshot: loadItemsSnapshot(),
     logger: app.log,
   });
-  const catalogs = [championCatalog, championDetails, itemCatalog];
+  const runeCatalog = new InMemoryCatalog({
+    source: runeProvider,
+    snapshot: loadRunesSnapshot(),
+    logger: app.log,
+    label: 'runas',
+  });
+  const catalogs = [championCatalog, championDetails, itemCatalog, runeCatalog];
   await Promise.all(catalogs.map((catalog) => catalog.init()));
 
   if (env.NODE_ENV !== 'test') {
@@ -91,6 +102,7 @@ export async function buildApp(
     championCatalog,
     championDetails,
     itemCatalog,
+    runeCatalog,
     advisor: buildAdvisor,
   });
 

@@ -1,0 +1,452 @@
+{
+  "version": "16.21.1",
+  "trees": [
+    {
+      "id": "8100",
+      "name": "Dominação",
+      "icon": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/7200_Domination.png",
+      "keystones": [
+        {
+          "id": "8112",
+          "name": "Eletrocutar",
+          "description": "Acertar um Campeão com 3 ataques ou habilidades separadas em 3s causa Dano Adaptativo adicional.",
+          "icon": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/Domination/Electrocute/Electrocute.png"
+        },
+        {
+          "id": "8128",
+          "name": "Colheita Sombria",
+          "description": "Causar dano a um Campeão que está com pouca Vida inflige Dano Adaptativo e colhe a alma de sua vítima.",
+          "icon": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/Domination/DarkHarvest/DarkHarvest.png"
+        },
+        {
+          "id": "9923",
+          "name": "Chuva de Lâminas",
+          "description": "Recebe uma grande quantidade de Velocidade de Ataque e Dano Verdadeiro adicional pelos primeiros 3 ataques contra Campeões inimigos.",
+          "icon": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/Domination/HailOfBlades/HailOfBlades.png"
+        }
+      ],
+      "slots": [
+        [
+          {
+            "id": "8126",
+            "name": "Golpe Desleal",
+            "description": "Causa Dano Verdadeiro adicional a Campeões inimigos com mobilidade ou ações debilitadas.",
+            "icon": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/Domination/CheapShot/CheapShot.png"
+          },
+          {
+            "id": "8139",
+            "name": "Gosto de Sangue",
+            "description": "Cura ao causar dano a um Campeão inimigo.",
+            "icon": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/Domination/TasteOfBlood/GreenTerror_TasteOfBlood.png"
+          },
+          {
+            "id": "8143",
+            "name": "Impacto Repentino",
+            "description": "Depois de usar um avanço, salto, teleporte ou ao sair da furtividade, seus ataques básicos e habilidades de dano causam Dano Verdadeiro adicional a Campeões inimigos.",
+            "icon": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/Domination/SuddenImpact/SuddenImpact.png"
+          }
+        ],
+        [
+          {
+            "id": "8137",
+            "name": "Sexto Sentido",
+            "description": "Com um longo Tempo de Recarga, detecta automaticamente uma sentinela oculta próxima, rastreando-a para a equipe.\nNível 11: também revela a sentinela por 10s.",
+            "icon": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/Domination/SixthSense/SixthSense.png"
+          },
+          {
+            "id": "8140",
+            "name": "Lembranças Aterrorizantes",
+            "description": "Colete 1 Lembranças ao eliminar Campeões, até um máximo de 18.\nRecebe 6 de Aceleração de Amuleto para cada Lembrança coletada.",
+            "icon": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/Domination/GrislyMementos/GrislyMementos.png"
+          },
+          {
+            "id": "8141",
+            "name": "Sentinela Profunda",
+            "description": "Suas sentinelas na selva inimiga são Profundas, recebendo Vida e Duração.\nNível 9: As sentinelas no rio também são Profundas.",
+            "icon": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/Domination/DeepWard/DeepWard.png"
+          }
+        ],
+        [
+          {
+            "id": "8135",
+            "name": "Caçador de Tesouros",
+            "description": "Eliminações únicas concedem ouro adicional na primeira vez que são coletadas.",
+            "icon": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/Domination/TreasureHunter/TreasureHunter.png"
+          },
+          {
+            "id": "8105",
+            "name": "Caça Incansável",
+            "description": "Eliminações únicas concedem VdM permanente fora de combate.",
+            "icon": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/Domination/RelentlessHunter/RelentlessHunter.png"
+          },
+          {
+            "id": "8106",
+            "name": "Caça Suprema",
+            "description": "Eliminações únicas concedem Redução de Tempo de Recarga permanente para a ultimate.",
+            "icon": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/Domination/UltimateHunter/UltimateHunter.png"
+          }
+        ]
+      ]
+    },
+    {
+      "id": "8300",
+      "name": "Inspiração",
+      "icon": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/7203_Whimsy.png",
+      "keystones": [
+        {
+          "id": "8351",
+          "name": "Aprimoramento Glacial",
+          "description": "Imobilizar um Campeão inimigo invocará 3 raios glaciais que causam Lentidão a inimigos próximos e reduzem o dano deles contra seus aliados.",
+          "icon": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/Inspiration/GlacialAugment/GlacialAugment.png"
+        },
+        {
+          "id": "8360",
+          "name": "Livro de Feitiços Deslacrado",
+          "description": "Troque Feitiços de Invocador enquanto estiver fora de combate. Trocar para Feitiços de Invocador únicos aumentará a frequência com que você poderá fazer trocas futuras.",
+          "icon": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/Inspiration/UnsealedSpellbook/UnsealedSpellbook.png"
+        },
+        {
+          "id": "8369",
+          "name": "Primeiro Ataque",
+          "description": "Ao iniciar um combate contra um Campeão, você causa 7% de dano adicional por 3s e recebe ouro com base no dano causado.",
+          "icon": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/Inspiration/FirstStrike/FirstStrike.png"
+        }
+      ],
+      "slots": [
+        [
+          {
+            "id": "8306",
+            "name": "Flashtração Hextec",
+            "description": "Enquanto o Flash estiver em Tempo de Recarga, ele é substituído pelo Flash Hextec.\nFlash Hextec: canalize e depois se teletransporte para um novo local.",
+            "icon": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/Inspiration/HextechFlashtraption/HextechFlashtraption.png"
+          },
+          {
+            "id": "8304",
+            "name": "Calçados Mágicos",
+            "description": "Concede botas gratuitamente aos 12 mins, mas não é possível comprar botas antes disso. Cada eliminação bem-sucedida faz suas botas virem 45s mais cedo.",
+            "icon": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/Inspiration/MagicalFootwear/MagicalFootwear.png"
+          },
+          {
+            "id": "8321",
+            "name": "Reembolso",
+            "description": "Recebe parte do ouro de volta ao comprar itens Lendários.",
+            "icon": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/Inspiration/CashBack/CashBack2.png"
+          }
+        ],
+        [
+          {
+            "id": "8313",
+            "name": "Tônico Triplo",
+            "description": "Ao alcançar o nível 3, recebe um Elixir da Avareza.\nAo alcançar o nível 6, recebe um Elixir da Força.\nAo alcançar o nível 9, recebe um Elixir da Habilidade.",
+            "icon": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/Inspiration/PerfectTiming/AlchemistCabinet.png"
+          },
+          {
+            "id": "8352",
+            "name": "Tônico de Distorção no Tempo",
+            "description": "Poções concedem um pouco de restauração imediatamente.",
+            "icon": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/Inspiration/TimeWarpTonic/TimeWarpTonic.png"
+          },
+          {
+            "id": "8345",
+            "name": "Entrega de Biscoitos",
+            "description": "Ganha um Biscoito grátis a cada 2min, até o minuto 6. Consumir ou vender Biscoitos aumenta permanentemente sua Vida máxima e restaura Vida.",
+            "icon": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/Inspiration/BiscuitDelivery/BiscuitDelivery.png"
+          }
+        ],
+        [
+          {
+            "id": "8347",
+            "name": "Perspicácia Cósmica",
+            "description": "+18 de Aceleração de Feitiço de Invocador\n+10 de Aceleração de Item",
+            "icon": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/Inspiration/CosmicInsight/CosmicInsight.png"
+          },
+          {
+            "id": "8410",
+            "name": "Velocidade de Aproximação",
+            "description": "VdM adicional em direção a Campeões inimigos próximos com movimento debilitado, aumentada em Campeões inimigos cujo movimento você debilitou.",
+            "icon": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/Resolve/ApproachVelocity/ApproachVelocity.png"
+          },
+          {
+            "id": "8316",
+            "name": "Quebra-galho",
+            "description": "A cada atributo diferente recebido de itens, recebe um acúmulo de Quebra-galho. Cada acúmulo concede a você 1 de Aceleração de Habilidade.\nRecebe Força Adaptativa adicional com 5 e 10 acúmulos.",
+            "icon": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/Inspiration/JackOfAllTrades/JackofAllTrades2.png"
+          }
+        ]
+      ]
+    },
+    {
+      "id": "8000",
+      "name": "Precisão",
+      "icon": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/7201_Precision.png",
+      "keystones": [
+        {
+          "id": "8005",
+          "name": "Pressione o Ataque",
+          "description": "Atingir um Campeão inimigo 3 vezes consecutivas causa dano adicional e amplifica seu dano até sair de combate contra Campeões.",
+          "icon": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/Precision/PressTheAttack/PressTheAttack.png"
+        },
+        {
+          "id": "8008",
+          "name": "Ritmo Fatal",
+          "description": "Atacar um Campeão inimigo concede a você Velocidade de Ataque, até 6 acúmulos. Com o máximo de acúmulos, causa Dano Adaptativo adicional ao contato.",
+          "icon": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/Precision/LethalTempo/LethalTempoTemp.png"
+        },
+        {
+          "id": "8021",
+          "name": "Agilidade nos Pés",
+          "description": "Atacar e se movimentar geram acúmulos de Energia. Com 100 acúmulos, seu próximo ataque cura você e concede um aumento de VdM.",
+          "icon": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/Precision/FleetFootwork/FleetFootwork.png"
+        },
+        {
+          "id": "8010",
+          "name": "Conquistador",
+          "description": "Ganha acúmulos de Força Adaptativa ao atacar Campeões inimigos. Após alcançar 12 acúmulos, cura uma parte do dano causado a Campeões.",
+          "icon": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/Precision/Conqueror/Conqueror.png"
+        }
+      ],
+      "slots": [
+        [
+          {
+            "id": "9101",
+            "name": "Absorção Vital",
+            "description": "Abater um alvo cura você.",
+            "icon": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/Precision/AbsorbLife/AbsorbLife.png"
+          },
+          {
+            "id": "9111",
+            "name": "Triunfo",
+            "description": "Eliminações restauram 5% da sua Vida perdida e concedem 20 de ouro adicional.",
+            "icon": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/Precision/Triumph.png"
+          },
+          {
+            "id": "8009",
+            "name": "Presença de Espírito",
+            "description": "Restaura uma pequena quantidade de Mana ou Energia ao causar dano a um Campeão inimigo. Eliminações restauram Mana ou Energia.",
+            "icon": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/Precision/PresenceOfMind/PresenceOfMind.png"
+          }
+        ],
+        [
+          {
+            "id": "9104",
+            "name": "Lenda: Espontaneidade",
+            "description": "Eliminações de inimigos concedem Velocidade de Ataque permanente.",
+            "icon": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/Precision/LegendAlacrity/LegendAlacrity.png"
+          },
+          {
+            "id": "9105",
+            "name": "Lenda: Aceleração",
+            "description": "Eliminar inimigos concede Aceleração permanente de habilidades básicas.",
+            "icon": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/Precision/LegendHaste/LegendHaste.png"
+          },
+          {
+            "id": "9103",
+            "name": "Lenda: Linhagem",
+            "description": "Eliminações de inimigos concedem Roubo de Vida permanente até um limite. Quando o limite é atingido, aumentam sua Vida máxima. Fraco no começo mas fica mais forte do que as outras runas Lenda no fim de jogo.",
+            "icon": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/Precision/LegendBloodline/LegendBloodline.png"
+          }
+        ],
+        [
+          {
+            "id": "8014",
+            "name": "Golpe de Misericórdia",
+            "description": "Causa mais dano a Campeões inimigos com pouca Vida.",
+            "icon": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/Precision/CoupDeGrace/CoupDeGrace.png"
+          },
+          {
+            "id": "8017",
+            "name": "Dilacerar",
+            "description": "Causa mais dano a Campeões inimigos com muita Vida.",
+            "icon": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/Precision/CutDown/CutDown.png"
+          },
+          {
+            "id": "8299",
+            "name": "Até a Morte",
+            "description": "Cause mais dano a Campeões enquanto estiver com pouca Vida.",
+            "icon": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/Sorcery/LastStand/LastStand.png"
+          }
+        ]
+      ]
+    },
+    {
+      "id": "8400",
+      "name": "Determinação",
+      "icon": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/7204_Resolve.png",
+      "keystones": [
+        {
+          "id": "8437",
+          "name": "Aperto dos Mortos-Vivos",
+          "description": "A cada 4s, seu próximo ataque contra um Campeão causa Dano Mágico adicional, cura você e aumenta permanentemente sua Vida.",
+          "icon": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/Resolve/GraspOfTheUndying/GraspOfTheUndying.png"
+        },
+        {
+          "id": "8439",
+          "name": "Pós-choque",
+          "description": "Após imobilizar um Campeão inimigo, ganha defesas e depois causa um ataque de Dano Mágico explosivo ao seu redor.",
+          "icon": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/Resolve/VeteranAftershock/VeteranAftershock.png"
+        },
+        {
+          "id": "8465",
+          "name": "Guardião",
+          "description": "Protege aliados nos quais você conjurou habilidades e aliados muito próximos a você. Se você ou um Campeão aliado protegido sofrer dano com base no nível, ambos recebem um escudo.",
+          "icon": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/Resolve/Guardian/Guardian.png"
+        }
+      ],
+      "slots": [
+        [
+          {
+            "id": "8446",
+            "name": "Demolir",
+            "description": "Seu terceiro ataque contra torres causa dano adicional.",
+            "icon": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/Resolve/Demolish/Demolish.png"
+          },
+          {
+            "id": "8463",
+            "name": "Fonte da Vida",
+            "description": "Debilitar o movimento de um Campeão inimigo cura Campeões aliados próximos.",
+            "icon": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/Resolve/FontOfLife/FontOfLife.png"
+          },
+          {
+            "id": "8401",
+            "name": "Golpe de Escudo",
+            "description": "Sempre que receber um escudo, seu próximo ataque básico contra um Campeão causará Dano Adaptativo adicional.",
+            "icon": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/Resolve/MirrorShell/MirrorShell.png"
+          }
+        ],
+        [
+          {
+            "id": "8429",
+            "name": "Condicionamento",
+            "description": "Depois de 12min, recebe +8 de Armadura, +8 de Resistência Mágica e aumenta sua Armadura e Resistência Mágica em 3%.",
+            "icon": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/Resolve/Conditioning/Conditioning.png"
+          },
+          {
+            "id": "8444",
+            "name": "Ventos Revigorantes",
+            "description": "Após receber dano de um Campeão inimigo, um pouco da Vida perdida é restaurada ao longo do tempo.",
+            "icon": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/Resolve/SecondWind/SecondWind.png"
+          },
+          {
+            "id": "8473",
+            "name": "Osso Revestido",
+            "description": "Após sofrer dano de um Campeão inimigo, os próximos 3 Ataques ou Habilidades que você sofrer desse inimigo causarão 30 - 60 (com base no nível) a menos de dano.\nDuração: 1.5s\nTempo de Recarga: 55s",
+            "icon": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/Resolve/BonePlating/BonePlating.png"
+          }
+        ],
+        [
+          {
+            "id": "8451",
+            "name": "Crescimento Excessivo",
+            "description": "Recebe Vida máxima permanente quando tropas inimigas ou monstros são abatidos perto de você.",
+            "icon": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/Resolve/Overgrowth/Overgrowth.png"
+          },
+          {
+            "id": "8453",
+            "name": "Revitalizar",
+            "description": "Recebe 5% de Cura e Resistência do Escudo.\nCuras e Escudos conjurados ou recebidos são 10% mais fortes em alvos com menos de 40% de Vida.",
+            "icon": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/Resolve/Revitalize/Revitalize.png"
+          },
+          {
+            "id": "8242",
+            "name": "Inabalável",
+            "description": "Recebe Armadura e Resistência Mágica ao sofrer Controle de Grupo.",
+            "icon": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/Sorcery/Unflinching/Unflinching.png"
+          }
+        ]
+      ]
+    },
+    {
+      "id": "8200",
+      "name": "Feitiçaria",
+      "icon": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/7202_Sorcery.png",
+      "keystones": [
+        {
+          "id": "8214",
+          "name": "Invocar Aery",
+          "description": "Seus ataques e habilidades enviam Aery até um alvo, causando dano a inimigos ou protegendo aliados com um escudo.",
+          "icon": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/Sorcery/SummonAery/SummonAery.png"
+        },
+        {
+          "id": "8229",
+          "name": "Cometa Arcano",
+          "description": "Ao causar dano a um Campeão com uma habilidade, um cometa é lançado onde ele estiver.",
+          "icon": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/Sorcery/ArcaneComet/ArcaneComet.png"
+        },
+        {
+          "id": "8230",
+          "name": "Avanço da Tempestade",
+          "description": "Causar dano equivalente a 25% da Vida máxima de um Campeão concede um impulso de VdM e Resistência a Lentidão.",
+          "icon": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/Sorcery/PhaseRush/StormraidersSurgeRuneIcon2.png"
+        },
+        {
+          "id": "8992",
+          "name": "Toque Ígneo",
+          "description": "Causar dano a um Campeão com uma habilidade o queima ao longo do tempo.",
+          "icon": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/Sorcery/DeathfireTouch/DEATHFIRE_TOUCH_KEYSTONE.png"
+        }
+      ],
+      "slots": [
+        [
+          {
+            "id": "8224",
+            "name": "Arcanista do Axioma",
+            "description": "Sua ultimate causa mais dano e recebe mais cura e Escudo. Eliminar um Campeão inimigo reduz o Tempo de Recarga atual da sua ultimate.",
+            "icon": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/Sorcery/NullifyingOrb/Axiom_Arcanist.png"
+          },
+          {
+            "id": "8226",
+            "name": "Faixa de Fluxo de Mana",
+            "description": "Atingir um Campeão inimigo com uma habilidade aumenta permanentemente seu Mana máximo em 25, até o total de 250 de Mana.\nApós atingir 250 de Mana adicional, 1% da seu Mana perdido é restaurado a cada 5s",
+            "icon": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/Sorcery/ManaflowBand/ManaflowBand.png"
+          },
+          {
+            "id": "8275",
+            "name": "Manto de Nimbus",
+            "description": "Após conjurar um Feitiço de Invocador, concede um breve aumento de Velocidade de Movimento que permite atravessar unidades.",
+            "icon": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/Sorcery/NimbusCloak/6361.png"
+          }
+        ],
+        [
+          {
+            "id": "8210",
+            "name": "Transcendência",
+            "description": "Recebe efeitos adicionais ao atingir os seguintes níveis:\nNível 5: +5 de Aceleração de Habilidade\nNível 8: +5 de Aceleração de Habilidade\nNível 11: ao eliminar um Campeão inimigo, reduz o Tempo de Recarga restante das habilidades básicas em 20%.",
+            "icon": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/Sorcery/Transcendence/Transcendence.png"
+          },
+          {
+            "id": "8234",
+            "name": "Celeridade",
+            "description": "Todos os efeitos de Velocidade de Movimento adicional são 7% mais eficazes em você, além de conceder 1% de Velocidade de Movimento.",
+            "icon": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/Sorcery/Celerity/CelerityTemp.png"
+          },
+          {
+            "id": "8233",
+            "name": "Foco Absoluto",
+            "description": "Acima de 70% de Vida, recebe Dano Adaptativo adicional.",
+            "icon": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/Sorcery/AbsoluteFocus/AbsoluteFocus.png"
+          }
+        ],
+        [
+          {
+            "id": "8237",
+            "name": "Chamuscar",
+            "description": "Sua primeira habilidade de dano a atingir o alvo a cada 10s incinerará Campeões.",
+            "icon": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/Sorcery/Scorch/Scorch.png"
+          },
+          {
+            "id": "8232",
+            "name": "Caminhar Sobre as Águas",
+            "description": "Concede VdM e PdH ou DdA Adaptativos no rio.",
+            "icon": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/Sorcery/Waterwalking/Waterwalking.png"
+          },
+          {
+            "id": "8236",
+            "name": "Tempestade Crescente",
+            "description": "Recebe quantidades crescentes de DdA ou PdH Adaptativo ao longo da partida.",
+            "icon": "https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/Sorcery/GatheringStorm/GatheringStorm.png"
+          }
+        ]
+      ]
+    }
+  ]
+}

@@ -4,6 +4,7 @@ import {
   createFakeChampionDetailsProvider,
   createFakeChampionProvider,
   createFakeItemProvider,
+  createFakeRuneProvider,
 } from './fake-providers.js';
 
 // App de teste sem rede: todos os providers são fakes e a IA fica desligada, salvo se injetada.
@@ -12,6 +13,7 @@ export function buildTestApp(dependencies: AppDependencies = {}) {
     championProvider: createFakeChampionProvider(),
     championDetailsProvider: createFakeChampionDetailsProvider(),
     itemProvider: createFakeItemProvider(),
+    runeProvider: createFakeRuneProvider(),
     buildAdvisor: null,
     ...dependencies,
   });

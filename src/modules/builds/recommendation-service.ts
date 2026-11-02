@@ -2,13 +2,18 @@ import { AppError } from '../../shared/errors/app-error.js';
 import type { Champion } from '../champions/champion.js';
 import type { ChampionCatalog } from '../champions/champion-catalog.js';
 import type { ChampionDetails } from '../champions/champion-details.js';
-import { validateMatchupInput } from '../champions/matchup-input.js';
+import { validateMatchupInput, type LanedChampion } from '../champions/matchup-input.js';
 import type { Item } from '../items/item.js';
 import type { ItemCatalog } from '../items/item-catalog.js';
+import type { Rune, RuneTree } from '../runes/rune.js';
 import type { BuildAdvisor } from './build-advisor.js';
 import type { BuildRecommendation } from './build-recommendation.js';
 import { buildPrompt, buildResponseSchema, SYSTEM_INSTRUCTION } from './recommendation-prompt.js';
-import { validateRecommendation, type RawRecommendation } from './recommendation-validator.js';
+import {
+  runeSlotIndex,
+  validateRecommendation,
+  type RawRecommendation,
+} from './recommendation-validator.js';
 
 // Uma tentativa extra quando a IA devolve algo que não passa na validação.
 const MAX_ATTEMPTS = 2;
@@ -17,16 +22,37 @@ export type ChampionDetailsLookup = {
   getById(id: string): ChampionDetails | undefined;
 };
 
+export type RuneTreeSource = {
+  getAll(): RuneTree[];
+};
+
 type Dependencies = {
   championCatalog: ChampionCatalog;
   championDetails: ChampionDetailsLookup;
   itemCatalog: ItemCatalog;
+  runeCatalog: RuneTreeSource;
   // null quando a IA não está configurada (sem GEMINI_API_KEY).
   advisor: BuildAdvisor | null;
 };
 
 function toRef({ id, name, icon }: Champion) {
   return { id, name, icon };
+}
+
+function toLanedRef({ id, name, icon, lane }: LanedChampion) {
+  return { id, name, icon, lane };
+}
+
+function toTreeRef({ id, name, icon }: RuneTree) {
+  return { id, name, icon };
+}
+
+function toRuneRef({ id, name, icon, description }: Rune) {
+  return { id, name, icon, description };
+}
+
+function findRune(runes: Rune[], id: string): Rune {
+  return runes.find((rune) => rune.id === id)!;
 }
 
 export class RecommendationService {
@@ -55,7 +81,9 @@ export class RecommendationService {
         'CHAMPION_DATA_UNAVAILABLE',
       );
     }
-    const [championDetails, ...enemyDetails] = details as ChampionDetails[];
+    const [championDetails, ...enemyDetails] = (details as ChampionDetails[]).map(
+      (detail, index) => ({ ...detail, lane: players[index]!.lane }),
+    );
 
     const items = await this.deps.itemCatalog.getAll();
     if (items.length === 0) {
@@ -65,13 +93,29 @@ export class RecommendationService {
         'ITEM_DATA_UNAVAILABLE',
       );
     }
+    const runeTrees = this.deps.runeCatalog.getAll();
+    if (runeTrees.length === 0) {
+      throw new AppError(
+        'Não há informações sobre runas para recomendar uma página de runas.',
+        503,
+        'RUNE_DATA_UNAVAILABLE',
+      );
+    }
+
     const itemsById = new Map(items.map((item) => [item.id, item]));
+    const treesById = new Map(runeTrees.map((tree) => [tree.id, tree]));
     const enemyIds = enemies.map((enemy) => enemy.id);
 
-    const prompt = buildPrompt({ champion: championDetails!, enemies: enemyDetails, items });
+    const prompt = buildPrompt({
+      champion: championDetails!,
+      enemies: enemyDetails,
+      items,
+      runeTrees,
+    });
     const responseSchema = buildResponseSchema(
       items.map((item) => item.id),
       enemyIds,
+      runeTrees,
     );
 
     let feedback = '';
@@ -85,9 +129,10 @@ export class RecommendationService {
       const result = validateRecommendation(raw, {
         items: itemsById,
         enemyIds: new Set(enemyIds),
+        runeTrees: treesById,
       });
       if (result.ok) {
-        return this.toResponse(result.value, champion, enemies, itemsById);
+        return this.toResponse(result.value, champion, enemies, itemsById, treesById);
       }
 
       feedback = `\n\nSua resposta anterior foi rejeitada pelos motivos abaixo. Corrija e responda novamente.\n- ${result.problems.join('\n- ')}`;
@@ -102,9 +147,10 @@ export class RecommendationService {
 
   private async toResponse(
     recommendation: RawRecommendation,
-    champion: Champion,
-    enemies: Champion[],
+    champion: LanedChampion,
+    enemies: LanedChampion[],
     itemsById: ReadonlyMap<string, Item>,
+    treesById: ReadonlyMap<string, RuneTree>,
   ): Promise<BuildRecommendation> {
     const enemiesById = new Map(enemies.map((enemy) => [enemy.id, enemy]));
 
@@ -120,11 +166,32 @@ export class RecommendationService {
       };
     });
 
+    // O validador já garantiu que árvores e runas existem e respeitam as linhas.
+    const { runes } = recommendation;
+    const primary = treesById.get(runes.primaryTreeId)!;
+    const secondary = treesById.get(runes.secondaryTreeId)!;
+    const byRow = (tree: RuneTree, ids: string[]) =>
+      [...ids]
+        .sort((a, b) => runeSlotIndex(tree, a) - runeSlotIndex(tree, b))
+        .map((id) => toRuneRef(findRune(tree.slots.flat(), id)));
+
     return {
-      champion: toRef(champion),
-      enemies: enemies.map(toRef),
+      champion: toLanedRef(champion),
+      enemies: enemies.map(toLanedRef),
       build,
       purchaseOrder: build.map((item) => item.name),
+      runes: {
+        primary: {
+          tree: toTreeRef(primary),
+          keystone: toRuneRef(findRune(primary.keystones, runes.keystoneId)),
+          runes: byRow(primary, runes.primaryRuneIds),
+        },
+        secondary: {
+          tree: toTreeRef(secondary),
+          runes: byRow(secondary, runes.secondaryRuneIds),
+        },
+        reason: runes.reason,
+      },
       totalGold: build.reduce((total, item) => total + item.gold, 0),
       threats: recommendation.threats.map(({ championId, reason }) => ({
         champion: toRef(enemiesById.get(championId)!),

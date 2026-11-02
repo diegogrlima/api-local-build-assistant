@@ -4,6 +4,7 @@ import type { ChampionDetails } from '../modules/champions/champion-details.js';
 import type { ChampionProvider } from '../modules/champions/champion-provider.js';
 import type { Item } from '../modules/items/item.js';
 import type { ItemProvider } from '../modules/items/item-provider.js';
+import type { Rune, RuneTree } from '../modules/runes/rune.js';
 
 const VERSION = '9.9.9';
 
@@ -61,6 +62,36 @@ export const testItems: Item[] = [
   createItem({ id: '3026', name: 'Anjo Guardião', gold: 3200 }),
 ];
 
+function rune(id: string, name: string): Rune {
+  return { id, name, description: `Efeito de ${name}.`, icon: `${id}.png` };
+}
+
+// Duas árvores com a mesma estrutura do Data Dragon: runas principais e três linhas.
+export const testRuneTrees: RuneTree[] = [
+  {
+    id: '8000',
+    name: 'Precisão',
+    icon: '8000.png',
+    keystones: [rune('8005', 'Pressione o Ataque'), rune('8010', 'Conquistador')],
+    slots: [
+      [rune('9111', 'Triunfo'), rune('8009', 'Presença de Espírito')],
+      [rune('9104', 'Lenda: Espontaneidade'), rune('9105', 'Lenda: Aceleração')],
+      [rune('8014', 'Golpe de Misericórdia'), rune('8299', 'Até a Morte')],
+    ],
+  },
+  {
+    id: '8100',
+    name: 'Dominação',
+    icon: '8100.png',
+    keystones: [rune('8112', 'Eletrocutar')],
+    slots: [
+      [rune('8126', 'Golpe Desleal'), rune('8139', 'Gosto de Sangue')],
+      [rune('8137', 'Sexto Sentido'), rune('8140', 'Lembranças Aterrorizantes')],
+      [rune('8135', 'Caçador de Tesouros'), rune('8106', 'Caça Suprema')],
+    ],
+  },
+];
+
 export function createFakeChampionProvider(
   champions: Champion[] = testChampions,
 ): ChampionProvider {
@@ -88,6 +119,39 @@ export function createFakeItemProvider(items: Item[] = []): ItemProvider {
   };
 }
 
+export function createFakeRuneProvider(
+  trees: RuneTree[] = testRuneTrees,
+): VersionedSource<RuneTree> {
+  return {
+    fetchLatestVersion: async () => VERSION,
+    fetchData: async () => ({ version: VERSION, entries: trees }),
+  };
+}
+
+// Entrada válida: campeão "1" no topo contra "2" a "6", um em cada rota.
+export const validMatchupInput = {
+  championId: '1',
+  lane: 'top',
+  enemies: [
+    { championId: '2', lane: 'top' },
+    { championId: '3', lane: 'jungle' },
+    { championId: '4', lane: 'mid' },
+    { championId: '5', lane: 'bot' },
+    { championId: '6', lane: 'support' },
+  ],
+};
+
+export function createValidRunes() {
+  return {
+    primaryTreeId: '8000',
+    keystoneId: '8010',
+    primaryRuneIds: ['9111', '9104', '8014'],
+    secondaryTreeId: '8100',
+    secondaryRuneIds: ['8139', '8135'],
+    reason: 'Motivo das runas.',
+  };
+}
+
 // Resposta da IA que passa na validação para o confronto "1" contra "2" a "6".
 export function createValidAdvisorResponse() {
   return {
@@ -96,6 +160,7 @@ export function createValidAdvisorResponse() {
       itemId,
       reason: `Motivo do item ${itemId}.`,
     })),
+    runes: createValidRunes(),
     justification: 'Justificativa da build.',
     balance: 'Equilíbrio entre dano e proteção.',
     warnings: [],
