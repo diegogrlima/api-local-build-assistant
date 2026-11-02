@@ -14,6 +14,7 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "test:watch": "vitest",
+    "snapshot:champions": "tsx scripts/generate-champions-snapshot.ts",
     "prepare": "husky"
   },
   "type": "module",
