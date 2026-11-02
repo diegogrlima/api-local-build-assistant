@@ -25,6 +25,8 @@ export const buildRecommendationSchema = z.object({
       icon: z.string(),
       gold: z.number(),
       reason: z.string(),
+      // Entre 0 e 1; null quando não há dados de alto elo.
+      highEloPickRate: z.number().nullable(),
     }),
   ),
   purchaseOrder: z.array(z.string()),
@@ -43,6 +45,15 @@ export const buildRecommendationSchema = z.object({
   justification: z.string(),
   balance: z.string(),
   warnings: z.array(z.string()),
+  // Partidas de Challenger e Grão-Mestre usadas como base; null quando não há dados.
+  highElo: z
+    .object({
+      tiers: z.array(z.string()),
+      patches: z.array(z.string()),
+      matches: z.number().int(),
+      winRate: z.number(),
+    })
+    .nullable(),
   dataVersion: z.string(),
 });
 

@@ -24,6 +24,11 @@ import type { BuildAdvisor } from './modules/builds/build-advisor.js';
 import { GeminiBuildAdvisor } from './modules/builds/gemini-build-advisor.js';
 import { RecommendationService } from './modules/builds/recommendation-service.js';
 import { buildsRoutes } from './modules/builds/builds.routes.js';
+import { RiotApiClient } from './shared/riot-api/riot-api-client.js';
+import { RiotHighEloApi, type HighEloApi } from './modules/high-elo/high-elo-api.js';
+import { MatchStore } from './modules/high-elo/match-store.js';
+import { HighEloCollector } from './modules/high-elo/high-elo-collector.js';
+import { summarizeHighElo } from './modules/high-elo/high-elo-stats.js';
 
 export type AppDependencies = {
   championProvider?: ChampionProvider;
@@ -32,11 +37,18 @@ export type AppDependencies = {
   runeProvider?: VersionedSource<RuneTree>;
   // null desliga a IA; sem valor, usa o Gemini quando GEMINI_API_KEY estiver definida.
   buildAdvisor?: BuildAdvisor | null;
+  // null desliga os dados de alto elo; sem valor, usa a API da Riot quando RIOT_API_KEY estiver definida.
+  highEloApi?: HighEloApi | null;
 };
 
 function createDefaultAdvisor(env: Env): BuildAdvisor | null {
   if (!env.GEMINI_API_KEY) return null;
   return new GeminiBuildAdvisor({ apiKey: env.GEMINI_API_KEY, model: env.GEMINI_MODEL });
+}
+
+function createDefaultHighEloApi(env: Env): HighEloApi | null {
+  if (!env.RIOT_API_KEY) return null;
+  return new RiotHighEloApi(new RiotApiClient({ apiKey: env.RIOT_API_KEY }), env.RIOT_PLATFORM);
 }
 
 export async function buildApp(
@@ -47,6 +59,7 @@ export async function buildApp(
     itemProvider = new RiotItemProvider(),
     runeProvider = new RiotRuneProvider(),
     buildAdvisor = createDefaultAdvisor(env),
+    highEloApi = createDefaultHighEloApi(env),
   }: AppDependencies = {},
 ): Promise<FastifyInstance> {
   const app = Fastify({
@@ -95,6 +108,20 @@ export async function buildApp(
     for (const catalog of catalogs) catalog.stopRefresh();
   });
 
+  // Partidas de alto elo: o arquivo só é usado fora dos testes, e a coleta roda em segundo plano.
+  const matchStore = new MatchStore({
+    filePath: env.NODE_ENV === 'test' ? undefined : env.HIGH_ELO_DATA_FILE,
+    logger: app.log,
+  });
+  if (highEloApi) {
+    await matchStore.load();
+    const collector = new HighEloCollector({ api: highEloApi, store: matchStore, logger: app.log });
+    if (env.NODE_ENV !== 'test') collector.start(env.HIGH_ELO_REFRESH_INTERVAL_MS);
+    app.addHook('onClose', () => collector.stop());
+  } else {
+    app.log.warn('RIOT_API_KEY não definida: a recomendação não usará dados de alto elo.');
+  }
+
   if (!buildAdvisor) {
     app.log.warn('GEMINI_API_KEY não definida: a recomendação de build ficará indisponível.');
   }
@@ -104,6 +131,9 @@ export async function buildApp(
     itemCatalog,
     runeCatalog,
     advisor: buildAdvisor,
+    highElo: highEloApi && {
+      summarize: (query) => summarizeHighElo(matchStore.getAll(), query),
+    },
   });
 
   await app.register(healthRoutes);

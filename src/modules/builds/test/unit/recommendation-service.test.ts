@@ -12,7 +12,8 @@ import {
 import type { ChampionCatalog } from '../../../champions/champion-catalog.js';
 import type { ItemCatalog } from '../../../items/item-catalog.js';
 import type { BuildAdvisor } from '../../build-advisor.js';
-import { RecommendationService } from '../../recommendation-service.js';
+import type { HighEloSummary } from '../../../high-elo/high-elo-stats.js';
+import { RecommendationService, type HighEloSource } from '../../recommendation-service.js';
 
 const championCatalog: ChampionCatalog = {
   getAll: async () => testChampions,
@@ -39,6 +40,7 @@ function createService(
   advisor: BuildAdvisor | null,
   championDetails = allDetails,
   runes = runeCatalog,
+  highElo: HighEloSource | null = null,
 ) {
   return new RecommendationService({
     championCatalog,
@@ -46,6 +48,7 @@ function createService(
     itemCatalog,
     runeCatalog: runes,
     advisor,
+    highElo,
   });
 }
 
@@ -75,6 +78,52 @@ describe('RecommendationService', () => {
     expect(result.champion.lane).toBe('top');
     expect(result.runes.primary.keystone.name).toBe('Conquistador');
     expect(advisor.generate).toHaveBeenCalledOnce();
+  });
+
+  it('consulta os dados de alto elo do campeão na rota e os envia à IA', async () => {
+    const summary: HighEloSummary = {
+      matches: 50,
+      wins: 27,
+      patches: ['16.21'],
+      items: [
+        { itemId: '3031', matches: 40, wins: 22 },
+        { itemId: '3006', matches: 25, wins: 14 },
+      ],
+      keystones: [],
+      runePages: [],
+      versusEnemies: [],
+    };
+    const highElo = { summarize: vi.fn().mockReturnValue(summary) };
+    const advisor = { generate: vi.fn().mockResolvedValue(createValidAdvisorResponse()) };
+
+    const result = await createService(advisor, allDetails, runeCatalog, highElo).recommend(input);
+
+    const query = highElo.summarize.mock.calls[0]![0];
+    expect(query).toMatchObject({ championId: '1', lane: 'top' });
+    expect(query.enemies).toContainEqual({ championId: '2', lane: 'top' });
+    expect([...query.allowedItemIds]).toEqual(testItems.map((item) => item.id));
+    expect(advisor.generate.mock.calls[0]![0].prompt).toContain('"dadosAltoElo":{');
+
+    expect(result.highElo).toEqual({
+      tiers: ['CHALLENGER', 'GRANDMASTER'],
+      patches: ['16.21'],
+      matches: 50,
+      winRate: 0.54,
+    });
+    expect(result.build[0]!.highEloPickRate).toBe(0.5);
+    expect(result.build[1]!.highEloPickRate).toBe(0.8);
+    expect(result.build[2]!.highEloPickRate).toBe(0);
+  });
+
+  it('segue sem dados de alto elo quando o campeão não tem partidas coletadas', async () => {
+    const highElo = { summarize: vi.fn().mockReturnValue(null) };
+    const advisor = { generate: vi.fn().mockResolvedValue(createValidAdvisorResponse()) };
+
+    const result = await createService(advisor, allDetails, runeCatalog, highElo).recommend(input);
+
+    expect(advisor.generate.mock.calls[0]![0].prompt).toContain('"dadosAltoElo":null');
+    expect(result.highElo).toBeNull();
+    expect(result.build[0]!.highEloPickRate).toBeNull();
   });
 
   it('devolve as runas menores na ordem das linhas da árvore', async () => {

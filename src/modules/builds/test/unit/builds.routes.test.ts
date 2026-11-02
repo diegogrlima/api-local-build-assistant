@@ -61,7 +61,9 @@ describe('POST /builds/recommendations', () => {
       icon: '3006.png',
       gold: 1100,
       reason: 'Motivo do item 3006.',
+      highEloPickRate: null,
     });
+    expect(body.highElo).toBeNull();
     expect(body.purchaseOrder[1]).toBe('Gume do Infinito');
     expect(body.totalGold).toBe(1100 + 3500 + 3000 + 3300 + 3400 + 3200);
     expect(body.threats).toEqual([

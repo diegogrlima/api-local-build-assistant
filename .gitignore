@@ -34,3 +34,5 @@ temp/
 Thumbs.db
 
 deploy
+# Partidas de alto elo coletadas da API da Riot
+data/

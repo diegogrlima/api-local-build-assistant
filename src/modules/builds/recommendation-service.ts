@@ -6,6 +6,8 @@ import { validateMatchupInput, type LanedChampion } from '../champions/matchup-i
 import type { Item } from '../items/item.js';
 import type { ItemCatalog } from '../items/item-catalog.js';
 import type { Rune, RuneTree } from '../runes/rune.js';
+import { HIGH_ELO_TIERS } from '../high-elo/high-elo-api.js';
+import type { HighEloQuery, HighEloSummary } from '../high-elo/high-elo-stats.js';
 import type { BuildAdvisor } from './build-advisor.js';
 import type { BuildRecommendation } from './build-recommendation.js';
 import { buildPrompt, buildResponseSchema, SYSTEM_INSTRUCTION } from './recommendation-prompt.js';
@@ -26,6 +28,10 @@ export type RuneTreeSource = {
   getAll(): RuneTree[];
 };
 
+export type HighEloSource = {
+  summarize(query: HighEloQuery): HighEloSummary | null;
+};
+
 type Dependencies = {
   championCatalog: ChampionCatalog;
   championDetails: ChampionDetailsLookup;
@@ -33,6 +39,8 @@ type Dependencies = {
   runeCatalog: RuneTreeSource;
   // null quando a IA não está configurada (sem GEMINI_API_KEY).
   advisor: BuildAdvisor | null;
+  // null quando a API da Riot não está configurada (sem RIOT_API_KEY).
+  highElo?: HighEloSource | null;
 };
 
 function toRef({ id, name, icon }: Champion) {
@@ -106,11 +114,20 @@ export class RecommendationService {
     const treesById = new Map(runeTrees.map((tree) => [tree.id, tree]));
     const enemyIds = enemies.map((enemy) => enemy.id);
 
+    const highElo =
+      this.deps.highElo?.summarize({
+        championId: champion.id,
+        lane: champion.lane,
+        enemies: enemies.map((enemy) => ({ championId: enemy.id, lane: enemy.lane })),
+        allowedItemIds: new Set(itemsById.keys()),
+      }) ?? null;
+
     const prompt = buildPrompt({
       champion: championDetails!,
       enemies: enemyDetails,
       items,
       runeTrees,
+      highElo,
     });
     const responseSchema = buildResponseSchema(
       items.map((item) => item.id),
@@ -132,7 +149,7 @@ export class RecommendationService {
         runeTrees: treesById,
       });
       if (result.ok) {
-        return this.toResponse(result.value, champion, enemies, itemsById, treesById);
+        return this.toResponse(result.value, champion, enemies, itemsById, treesById, highElo);
       }
 
       feedback = `\n\nSua resposta anterior foi rejeitada pelos motivos abaixo. Corrija e responda novamente.\n- ${result.problems.join('\n- ')}`;
@@ -151,8 +168,10 @@ export class RecommendationService {
     enemies: LanedChampion[],
     itemsById: ReadonlyMap<string, Item>,
     treesById: ReadonlyMap<string, RuneTree>,
+    highElo: HighEloSummary | null,
   ): Promise<BuildRecommendation> {
     const enemiesById = new Map(enemies.map((enemy) => [enemy.id, enemy]));
+    const highEloUsage = new Map(highElo?.items.map((usage) => [usage.itemId, usage.matches]));
 
     const build = recommendation.items.map(({ itemId, reason }, index) => {
       const item = itemsById.get(itemId)!;
@@ -163,6 +182,8 @@ export class RecommendationService {
         icon: item.icon,
         gold: item.gold,
         reason,
+        // Fração das partidas de alto elo desse campeão nessa rota que terminaram com o item.
+        highEloPickRate: highElo ? (highEloUsage.get(itemId) ?? 0) / highElo.matches : null,
       };
     });
 
@@ -200,6 +221,12 @@ export class RecommendationService {
       justification: recommendation.justification,
       balance: recommendation.balance,
       warnings: recommendation.warnings,
+      highElo: highElo && {
+        tiers: [...HIGH_ELO_TIERS],
+        patches: highElo.patches,
+        matches: highElo.matches,
+        winRate: highElo.wins / highElo.matches,
+      },
       dataVersion: await this.deps.itemCatalog.getVersion(),
     };
   }
