@@ -6,6 +6,7 @@ import {
   PLAYERS_PER_CYCLE,
 } from '../../high-elo-collector.js';
 import { MatchStore } from '../../match-store.js';
+import { parseMatch } from '../../riot-match-parser.js';
 
 const POSITIONS = ['TOP', 'JUNGLE', 'MIDDLE', 'BOTTOM', 'UTILITY'];
 
@@ -44,11 +45,22 @@ function rawMatch(matchId: string, queueId = 420) {
   };
 }
 
+// Participante 1 compra a Lâmina de Doran no início e o Gume do Infinito aos 15 minutos.
+const rawTimeline = {
+  info: {
+    frames: [
+      { events: [{ type: 'ITEM_PURCHASED', timestamp: 5_000, participantId: 1, itemId: 1055 }] },
+      { events: [{ type: 'ITEM_PURCHASED', timestamp: 900_000, participantId: 1, itemId: 3031 }] },
+    ],
+  },
+};
+
 function createApi(overrides: Partial<HighEloApi> = {}) {
   return {
     fetchHighEloPlayers: vi.fn().mockResolvedValue(['p1', 'p2']),
     fetchRankedMatchIds: vi.fn(async (puuid: string) => [`${puuid}_m1`, 'shared']),
     fetchMatch: vi.fn(async (matchId: string) => rawMatch(matchId)),
+    fetchMatchTimeline: vi.fn(async () => rawTimeline),
     ...overrides,
   };
 }
@@ -135,5 +147,60 @@ describe('HighEloCollector', () => {
       new HighEloCollector({ api, store: new MatchStore({ logger }), logger }).collect(),
     ).resolves.toBeUndefined();
     expect(logger.warn).toHaveBeenCalled();
+  });
+
+  it('guarda os momentos de compra da linha do tempo de cada partida', async () => {
+    const api = createApi();
+    const store = new MatchStore({ logger });
+
+    await new HighEloCollector({ api, store, logger }).collect();
+
+    expect(api.fetchMatchTimeline).toHaveBeenCalledWith('p1_m1', expect.anything());
+    expect(store.getAll()[0]!.participants[0]!.timeline).toEqual({
+      starterItems: ['1055'],
+      itemSeconds: [900],
+      skillOrder: [],
+    });
+  });
+
+  it('guarda a partida sem os tempos quando a linha do tempo falha', async () => {
+    const api = createApi({
+      fetchMatchTimeline: vi.fn().mockRejectedValue(new Error('HTTP error 500')),
+    });
+    const store = new MatchStore({ logger });
+
+    await new HighEloCollector({ api, store, logger }).collect();
+
+    expect(store.size).toBe(3);
+    expect(store.getAll()[0]!.participants[0]!.timeline).toBeUndefined();
+  });
+
+  it('completa com a linha do tempo as partidas guardadas sem ela', async () => {
+    const store = new MatchStore({ logger });
+    const old = parseMatch(rawMatch('antiga'))!;
+    store.add(old);
+    const api = createApi({ fetchRankedMatchIds: vi.fn(async () => []) });
+
+    const collector = new HighEloCollector({ api, store, logger });
+    await collector.collect();
+
+    expect(api.fetchMatchTimeline).toHaveBeenCalledWith('antiga', expect.anything());
+    expect(store.getAll()[0]!.participants[0]!.timeline?.skillOrder).toEqual([]);
+    expect(store.withoutTimeline(10)).toEqual([]);
+  });
+
+  it('não tenta de novo a linha do tempo que falhou', async () => {
+    const store = new MatchStore({ logger });
+    store.add(parseMatch(rawMatch('antiga'))!);
+    const api = createApi({
+      fetchRankedMatchIds: vi.fn(async () => []),
+      fetchMatchTimeline: vi.fn().mockRejectedValue(new Error('HTTP error 404')),
+    });
+    const collector = new HighEloCollector({ api, store, logger });
+
+    await collector.collect();
+    await collector.collect();
+
+    expect(api.fetchMatchTimeline).toHaveBeenCalledTimes(1);
   });
 });

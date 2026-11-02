@@ -14,6 +14,9 @@ export type ChampionSpell = {
   key: 'Q' | 'W' | 'E' | 'R';
   name: string;
   description: string;
+  icon: string;
+  // Pontos máximos da habilidade (normalmente 5 nas básicas e 3 na ultimate).
+  maxRank: number;
 };
 
 export type ChampionDetails = {

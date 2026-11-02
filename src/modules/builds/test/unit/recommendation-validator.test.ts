@@ -5,10 +5,14 @@ import {
   testItems,
   testRuneTrees,
 } from '../../../../test/fake-providers.js';
+import type { Lane } from '../../../champions/lane.js';
 import { validateRecommendation } from '../../recommendation-validator.js';
+import { starterCandidates } from '../../starter-items.js';
 
 const rules = {
-  items: new Map(testItems.map((item) => [item.id, item])),
+  items: new Map(testItems.filter((item) => item.isBuildItem).map((item) => [item.id, item])),
+  starterItems: new Map(starterCandidates(testItems).map((item) => [item.id, item])),
+  lane: 'top' as Lane,
   enemyIds: new Set(['2', '3', '4', '5', '6']),
   runeTrees: new Map(testRuneTrees.map((tree) => [tree.id, tree])),
 };
@@ -139,6 +143,67 @@ describe('validateRecommendation', () => {
       delete raw.runes;
 
       expect(problemsOf(raw)).toEqual(['A resposta não segue o formato JSON esperado.']);
+    });
+  });
+
+  describe('compra inicial', () => {
+    function problemsFor(itemIds: string[], lane: Lane) {
+      const raw = { ...createValidAdvisorResponse(), starter: { itemIds, reason: 'Motivo.' } };
+      const result = validateRecommendation(raw, { ...rules, lane });
+      return result.ok ? [] : result.problems;
+    }
+
+    it('aceita itens repetidos dentro do ouro inicial', () => {
+      expect(problemsFor(['1036', '2003', '2003'], 'top')).toEqual([]);
+    });
+
+    it.each<[string, string[], Lane, string]>([
+      ['acima do ouro inicial', ['1055', '1101'], 'jungle', 'custa 900 de ouro'],
+      ['item fora da lista', ['3031'], 'top', 'fora da lista permitida'],
+      ['selva sem companheiro', ['2003'], 'jungle', 'exatamente 1 companheiro'],
+      [
+        'companheiro fora da selva',
+        ['1101'],
+        'top',
+        'só podem ser comprados por quem joga na selva',
+      ],
+      ['suporte sem item de suporte', ['2003'], 'support', 'exatamente 1 item de suporte'],
+      [
+        'item de suporte fora do suporte',
+        ['3865'],
+        'mid',
+        'só deve ser comprado por quem joga no suporte',
+      ],
+    ])('rejeita %s', (_caso, itemIds, lane, message) => {
+      expect(problemsFor(itemIds, lane).join(' ')).toContain(message);
+    });
+
+    it('aceita o companheiro na selva e o item de suporte no suporte', () => {
+      expect(problemsFor(['1101', '2003'], 'jungle')).toEqual([]);
+      expect(problemsFor(['3865', '2003', '2003'], 'support')).toEqual([]);
+    });
+  });
+
+  describe('prioridade de habilidades', () => {
+    function problemsFor(order: string[] | undefined) {
+      const raw = {
+        ...createValidAdvisorResponse(),
+        skillPriority: order && { order, reason: 'Motivo.' },
+      };
+      const result = validateRecommendation(raw, { ...rules, requireSkillPriority: true });
+      return result.ok ? [] : result.problems;
+    }
+
+    it('aceita Q, W e E em qualquer ordem', () => {
+      expect(problemsFor(['E', 'Q', 'W'])).toEqual([]);
+    });
+
+    it.each([
+      ['ausente', undefined],
+      ['com repetição', ['Q', 'Q', 'E']],
+      ['com a ultimate', ['Q', 'E', 'R']],
+    ])('rejeita prioridade %s', (_caso, order) => {
+      expect(problemsFor(order).join(' ')).toContain('Q, W e E');
     });
   });
 });

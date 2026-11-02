@@ -67,7 +67,23 @@ export function isBuildItem(id: string, item: RawItem, boots: boolean): boolean 
   return boots || isFinal;
 }
 
-export function toItem(id: string, item: RawItem, version: string, boots: boolean): Item {
+// Itens da loja de Summoner's Rift que podem aparecer no caminho da build: compra inicial
+// (Lâmina de Doran, poções) e componentes (Espada Longa, Picareta...).
+export function isShopItem(id: string, item: RawItem): boolean {
+  if (Number(id) > MAX_SUMMONERS_RIFT_ITEM_ID) return false;
+  if (!item.maps[SUMMONERS_RIFT_MAP_ID]) return false;
+  if (!item.gold.purchasable || item.inStore === false || item.hideFromAll) return false;
+  if (item.requiredChampion || item.requiredAlly) return false;
+  return !(item.tags ?? []).includes('Trinket');
+}
+
+export function toItem(
+  id: string,
+  item: RawItem,
+  version: string,
+  boots: boolean,
+  buildItem = true,
+): Item {
   return {
     id,
     name: item.name,
@@ -76,6 +92,8 @@ export function toItem(id: string, item: RawItem, version: string, boots: boolea
     gold: item.gold.total,
     tags: item.tags ?? [],
     isBoots: boots,
+    isBuildItem: buildItem,
+    from: item.from ?? [],
     icon: imageUrl(version, 'item', item.image.full),
   };
 }
@@ -96,6 +114,8 @@ export function parseItems(data: Record<string, unknown>, version: string): Item
     const boots = isBoots(item, bootsIds);
     if (isBuildItem(id, item, boots)) {
       items.push(toItem(id, item, version, boots));
+    } else if (isShopItem(id, item)) {
+      items.push(toItem(id, item, version, boots, false));
     }
   }
 

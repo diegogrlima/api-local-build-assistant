@@ -18,21 +18,29 @@ function rawChampion(overrides: Record<string, unknown> = {}) {
         name: 'Shuriken Navalha',
         description: 'Arremessa shurikens.',
         tooltip: 'Causa <physicalDamage>dano</physicalDamage>.',
+        image: { full: 'ZedQ.png' },
+        maxrank: 5,
       },
       {
         name: 'Sombra Viva',
         description: 'Cria uma sombra.',
         tooltip: 'Sombra.',
+        image: { full: 'ZedW.png' },
+        maxrank: 5,
       },
       {
         name: 'Corte Sombrio',
         description: 'Gira as lâminas.',
         tooltip: 'Causa <physicalDamage>dano</physicalDamage> e <status>Lentidão</status>.',
+        image: { full: 'ZedE.png' },
+        maxrank: 5,
       },
       {
         name: 'Marca da Morte',
         description: 'Marca o alvo.<br><br>Fica <keywordStealth>invisível</keywordStealth>.',
         tooltip: '<physicalDamage>dano</physicalDamage>',
+        image: { full: 'ZedR.png' },
+        maxrank: 3,
       },
     ],
     allytips: ['Dica aliada'],
@@ -47,7 +55,7 @@ afterEach(() => {
 
 describe('parseChampionDetails', () => {
   it('converte o campeão usando a key numérica como id', () => {
-    const [zed] = parseChampionDetails({ Zed: rawChampion() });
+    const [zed] = parseChampionDetails({ Zed: rawChampion() }, '16.21.1');
 
     expect(zed).toMatchObject({
       id: '238',
@@ -59,10 +67,14 @@ describe('parseChampionDetails', () => {
     });
     expect(zed!.spells.map((spell) => spell.key)).toEqual(['Q', 'W', 'E', 'R']);
     expect(zed!.spells[3]!.description).toBe('Marca o alvo.\nFica invisível.');
+    expect(zed!.spells.map((spell) => spell.maxRank)).toEqual([5, 5, 5, 3]);
+    expect(zed!.spells[0]!.icon).toBe(
+      'https://ddragon.leagueoflegends.com/cdn/16.21.1/img/spell/ZedQ.png',
+    );
   });
 
   it('conta os sinais dos tooltips e da passiva', () => {
-    const [zed] = parseChampionDetails({ Zed: rawChampion() });
+    const [zed] = parseChampionDetails({ Zed: rawChampion() }, '16.21.1');
 
     expect(zed!.signals).toEqual({
       physicalDamage: 3,
@@ -76,10 +88,13 @@ describe('parseChampionDetails', () => {
   });
 
   it('descarta campeões malformados', () => {
-    const champions = parseChampionDetails({
-      Zed: rawChampion(),
-      Quebrado: rawChampion({ key: undefined }),
-    });
+    const champions = parseChampionDetails(
+      {
+        Zed: rawChampion(),
+        Quebrado: rawChampion({ key: undefined }),
+      },
+      '16.21.1',
+    );
 
     expect(champions.map((champion) => champion.name)).toEqual(['Zed']);
   });

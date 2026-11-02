@@ -28,7 +28,7 @@ import { RiotApiClient } from './shared/riot-api/riot-api-client.js';
 import { RiotHighEloApi, type HighEloApi } from './modules/high-elo/high-elo-api.js';
 import { MatchStore } from './modules/high-elo/match-store.js';
 import { HighEloCollector } from './modules/high-elo/high-elo-collector.js';
-import { summarizeHighElo } from './modules/high-elo/high-elo-stats.js';
+import { summarizeHighElo, summarizeSkillOrder } from './modules/high-elo/high-elo-stats.js';
 
 export type AppDependencies = {
   championProvider?: ChampionProvider;
@@ -133,6 +133,7 @@ export async function buildApp(
     advisor: buildAdvisor,
     highElo: highEloApi && {
       summarize: (query) => summarizeHighElo(matchStore.getAll(), query),
+      skillOrder: (query) => summarizeSkillOrder(matchStore.getAll(), query),
     },
   });
 

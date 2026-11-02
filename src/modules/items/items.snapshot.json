@@ -2,6 +2,498 @@
   "version": "16.21.1",
   "items": [
     {
+      "id": "1001",
+      "name": "Botas",
+      "plaintext": "Aumenta levemente a Velocidade de Movimento",
+      "description": "25 de Velocidade de Movimento",
+      "gold": 300,
+      "tags": ["Boots"],
+      "isBoots": true,
+      "isBuildItem": false,
+      "from": [],
+      "icon": "https://ddragon.leagueoflegends.com/cdn/16.21.1/img/item/1001.png"
+    },
+    {
+      "id": "1004",
+      "name": "Amuleto da Fada",
+      "plaintext": "Aumenta levemente a Regeneração de Mana",
+      "description": "50% de Regeneração de Mana base",
+      "gold": 200,
+      "tags": ["ManaRegen"],
+      "isBoots": false,
+      "isBuildItem": false,
+      "from": [],
+      "icon": "https://ddragon.leagueoflegends.com/cdn/16.21.1/img/item/1004.png"
+    },
+    {
+      "id": "1006",
+      "name": "Pérola do Rejuvenescimento",
+      "plaintext": "Aumenta levemente a Regeneração de Vida",
+      "description": "100% de Regeneração de Vida base",
+      "gold": 300,
+      "tags": ["HealthRegen"],
+      "isBoots": false,
+      "isBuildItem": false,
+      "from": [],
+      "icon": "https://ddragon.leagueoflegends.com/cdn/16.21.1/img/item/1006.png"
+    },
+    {
+      "id": "1011",
+      "name": "Cinto do Gigante",
+      "plaintext": "Aumenta drasticamente a Vida",
+      "description": "350 de Vida",
+      "gold": 900,
+      "tags": ["Health"],
+      "isBoots": false,
+      "isBuildItem": false,
+      "from": ["1028"],
+      "icon": "https://ddragon.leagueoflegends.com/cdn/16.21.1/img/item/1011.png"
+    },
+    {
+      "id": "1018",
+      "name": "Capa da Agilidade",
+      "plaintext": "Aumenta a Chance de Acerto Crítico",
+      "description": "15% de Chance de Acerto Crítico",
+      "gold": 600,
+      "tags": ["CriticalStrike"],
+      "isBoots": false,
+      "isBuildItem": false,
+      "from": [],
+      "icon": "https://ddragon.leagueoflegends.com/cdn/16.21.1/img/item/1018.png"
+    },
+    {
+      "id": "1026",
+      "name": "Varinha Explosiva",
+      "plaintext": "Aumenta moderadamente o Poder de Habilidade",
+      "description": "45 de Poder de Habilidade",
+      "gold": 850,
+      "tags": ["SpellDamage"],
+      "isBoots": false,
+      "isBuildItem": false,
+      "from": [],
+      "icon": "https://ddragon.leagueoflegends.com/cdn/16.21.1/img/item/1026.png"
+    },
+    {
+      "id": "1027",
+      "name": "Cristal de Safira",
+      "plaintext": "Aumenta a Mana",
+      "description": "300 de Mana",
+      "gold": 300,
+      "tags": ["Mana"],
+      "isBoots": false,
+      "isBuildItem": false,
+      "from": [],
+      "icon": "https://ddragon.leagueoflegends.com/cdn/16.21.1/img/item/1027.png"
+    },
+    {
+      "id": "1028",
+      "name": "Cristal de Rubi",
+      "plaintext": "Aumenta a Vida",
+      "description": "150 de Vida",
+      "gold": 400,
+      "tags": ["Health"],
+      "isBoots": false,
+      "isBuildItem": false,
+      "from": [],
+      "icon": "https://ddragon.leagueoflegends.com/cdn/16.21.1/img/item/1028.png"
+    },
+    {
+      "id": "1029",
+      "name": "Couraça de Pano",
+      "plaintext": "Aumenta levemente a Armadura",
+      "description": "15 de Armadura",
+      "gold": 300,
+      "tags": ["Armor"],
+      "isBoots": false,
+      "isBuildItem": false,
+      "from": [],
+      "icon": "https://ddragon.leagueoflegends.com/cdn/16.21.1/img/item/1029.png"
+    },
+    {
+      "id": "1031",
+      "name": "Cota de Malha",
+      "plaintext": "Aumenta drasticamente a Armadura",
+      "description": "40 de Armadura",
+      "gold": 800,
+      "tags": ["Armor"],
+      "isBoots": false,
+      "isBuildItem": false,
+      "from": ["1029"],
+      "icon": "https://ddragon.leagueoflegends.com/cdn/16.21.1/img/item/1031.png"
+    },
+    {
+      "id": "1033",
+      "name": "Manto Anula-Magia",
+      "plaintext": "Aumenta levemente a Resistência Mágica",
+      "description": "20 de Resistência Mágica",
+      "gold": 400,
+      "tags": ["SpellBlock"],
+      "isBoots": false,
+      "isBuildItem": false,
+      "from": [],
+      "icon": "https://ddragon.leagueoflegends.com/cdn/16.21.1/img/item/1033.png"
+    },
+    {
+      "id": "1036",
+      "name": "Espada Longa",
+      "plaintext": "Aumenta levemente o Dano de Ataque",
+      "description": "10 de Dano de Ataque",
+      "gold": 350,
+      "tags": ["Damage", "Lane"],
+      "isBoots": false,
+      "isBuildItem": false,
+      "from": [],
+      "icon": "https://ddragon.leagueoflegends.com/cdn/16.21.1/img/item/1036.png"
+    },
+    {
+      "id": "1037",
+      "name": "Picareta",
+      "plaintext": "Aumenta moderadamente o Dano de Ataque",
+      "description": "25 de Dano de Ataque",
+      "gold": 875,
+      "tags": ["Damage"],
+      "isBoots": false,
+      "isBuildItem": false,
+      "from": [],
+      "icon": "https://ddragon.leagueoflegends.com/cdn/16.21.1/img/item/1037.png"
+    },
+    {
+      "id": "1038",
+      "name": "Espada G. p. C.",
+      "plaintext": "Aumenta drasticamente o Dano de Ataque",
+      "description": "40 de Dano de Ataque",
+      "gold": 1300,
+      "tags": ["Damage"],
+      "isBoots": false,
+      "isBuildItem": false,
+      "from": [],
+      "icon": "https://ddragon.leagueoflegends.com/cdn/16.21.1/img/item/1038.png"
+    },
+    {
+      "id": "1042",
+      "name": "Adaga",
+      "plaintext": "Aumenta levemente a Velocidade de Ataque",
+      "description": "10% de Velocidade de Ataque",
+      "gold": 250,
+      "tags": ["AttackSpeed"],
+      "isBoots": false,
+      "isBuildItem": false,
+      "from": [],
+      "icon": "https://ddragon.leagueoflegends.com/cdn/16.21.1/img/item/1042.png"
+    },
+    {
+      "id": "1043",
+      "name": "Arco Recurvo",
+      "plaintext": "Aumenta drasticamente a Velocidade de Ataque",
+      "description": "15% de Velocidade de Ataque\nFerroada\nOs ataques causam 15 de Dano Físico adicional ao contato.",
+      "gold": 700,
+      "tags": ["AttackSpeed", "OnHit"],
+      "isBoots": false,
+      "isBuildItem": false,
+      "from": ["1042"],
+      "icon": "https://ddragon.leagueoflegends.com/cdn/16.21.1/img/item/1043.png"
+    },
+    {
+      "id": "1052",
+      "name": "Tomo Amplificador",
+      "plaintext": "Aumenta levemente o Poder de Habilidade",
+      "description": "20 de Poder de Habilidade",
+      "gold": 400,
+      "tags": ["SpellDamage"],
+      "isBoots": false,
+      "isBuildItem": false,
+      "from": [],
+      "icon": "https://ddragon.leagueoflegends.com/cdn/16.21.1/img/item/1052.png"
+    },
+    {
+      "id": "1053",
+      "name": "Cetro Vampírico",
+      "plaintext": "Ataques básicos restauram Vida",
+      "description": "15 de Dano de Ataque\n7% de Roubo de Vida",
+      "gold": 900,
+      "tags": ["Damage", "LifeSteal"],
+      "isBoots": false,
+      "isBuildItem": false,
+      "from": ["1036"],
+      "icon": "https://ddragon.leagueoflegends.com/cdn/16.21.1/img/item/1053.png"
+    },
+    {
+      "id": "1054",
+      "name": "Escudo de Doran",
+      "plaintext": "Bom item iniciante defensivo",
+      "description": "110 de Vida\nFoco Definitivo\nRestaura 4 de Vida a cada 5s.\nApós sofrer dano de um Campeão, restaura Vida ao longo de 8s.\nAjudinha\nAtaques causam 5 de Dano Físico adicional a tropas.",
+      "gold": 450,
+      "tags": ["Health", "HealthRegen", "Lane"],
+      "isBoots": false,
+      "isBuildItem": false,
+      "from": [],
+      "icon": "https://ddragon.leagueoflegends.com/cdn/16.21.1/img/item/1054.png"
+    },
+    {
+      "id": "1055",
+      "name": "Lâmina de Doran",
+      "plaintext": "Bom item iniciante para atacantes",
+      "description": "10 de Dano de Ataque\n80 de Vida\n2.5% de Vampirismo Universal",
+      "gold": 450,
+      "tags": ["Health", "Damage", "LifeSteal", "SpellVamp", "Lane"],
+      "isBoots": false,
+      "isBuildItem": false,
+      "from": [],
+      "icon": "https://ddragon.leagueoflegends.com/cdn/16.21.1/img/item/1055.png"
+    },
+    {
+      "id": "1056",
+      "name": "Anel de Doran",
+      "plaintext": "Bom item iniciante para conjuradores",
+      "description": "18 de Poder de Habilidade\n90 de Vida\nDrenar\nRestaura 1 de Mana por segundo, aumentado para 2 de Mana por segundo por 5s após causar dano a um Campeão inimigo. Caso você não possa receber Mana, cura em 45% do mesmo valor.\nAjudinha\nOs ataques causam 5 de Dano Físico adicional a tropas.",
+      "gold": 400,
+      "tags": ["Health", "Lane", "ManaRegen", "SpellDamage"],
+      "isBoots": false,
+      "isBuildItem": false,
+      "from": [],
+      "icon": "https://ddragon.leagueoflegends.com/cdn/16.21.1/img/item/1056.png"
+    },
+    {
+      "id": "1057",
+      "name": "Capa Negatron",
+      "plaintext": "Aumenta moderadamente a Resistência Mágica",
+      "description": "45 de Resistência Mágica",
+      "gold": 850,
+      "tags": ["SpellBlock"],
+      "isBoots": false,
+      "isBuildItem": false,
+      "from": ["1033"],
+      "icon": "https://ddragon.leagueoflegends.com/cdn/16.21.1/img/item/1057.png"
+    },
+    {
+      "id": "1058",
+      "name": "Bastão Desnecessariamente Grande",
+      "plaintext": "Aumenta drasticamente o Poder de Habilidade",
+      "description": "65 de Poder de Habilidade",
+      "gold": 1200,
+      "tags": ["SpellDamage"],
+      "isBoots": false,
+      "isBuildItem": false,
+      "from": [],
+      "icon": "https://ddragon.leagueoflegends.com/cdn/16.21.1/img/item/1058.png"
+    },
+    {
+      "id": "1082",
+      "name": "Lacre Sombrio",
+      "plaintext": "Proporciona Poder de Habilidade e Mana. Seu poder aumenta conforme abate inimigos.",
+      "description": "15 de Poder de Habilidade\n50 de Vida\nGlória\nEliminações concedem Glória, até um máximo de 10. Perde 5 de Glória ao morrer.\nRecebe 4 de Poder de Habilidade por acúmulo de Glória.",
+      "gold": 350,
+      "tags": ["Health", "SpellDamage", "Lane"],
+      "isBoots": false,
+      "isBuildItem": false,
+      "from": [],
+      "icon": "https://ddragon.leagueoflegends.com/cdn/16.21.1/img/item/1082.png"
+    },
+    {
+      "id": "1083",
+      "name": "Abatedora",
+      "plaintext": "Proporciona dano e Roubo de Vida ao contato. Abater tropas concede ouro adicional",
+      "description": "7 de Dano de Ataque\nCeifar\nRestaura 3 de Vidaao contato.\nAbater uma tropa concede 1 de ouro, até um máximo de 100. Atingir o limite concede mais 350 de ouro.",
+      "gold": 450,
+      "tags": ["Damage", "OnHit", "Lane"],
+      "isBoots": false,
+      "isBuildItem": false,
+      "from": [],
+      "icon": "https://ddragon.leagueoflegends.com/cdn/16.21.1/img/item/1083.png"
+    },
+    {
+      "id": "1086",
+      "name": "Arco de Doran",
+      "plaintext": "",
+      "description": "8 de Dano de Ataque\n15% de Velocidade de Ataque\n1.5% de Vampirismo Universal",
+      "gold": 400,
+      "tags": ["Damage", "AttackSpeed", "SpellVamp", "Lane"],
+      "isBoots": false,
+      "isBuildItem": false,
+      "from": [],
+      "icon": "https://ddragon.leagueoflegends.com/cdn/16.21.1/img/item/1086.png"
+    },
+    {
+      "id": "1101",
+      "name": "Filhote de Garrabrasa",
+      "plaintext": "",
+      "description": "Companheiros da Selva\nInvoca um Garrabrasa para ajudar você contra monstros.\nO companheiro cresce conforme você caça mais monstros, fortalecendo seu Golpear. Ao crescer completamente, ele cumpre a missão da selva e imbui esporadicamente seu próximo Ataque ou Habilidade para queimar inimigos e causar Lentidão a eles. Abater monstros grandes ativa esse efeito imediatamente.",
+      "gold": 450,
+      "tags": ["Jungle"],
+      "isBoots": false,
+      "isBuildItem": false,
+      "from": [],
+      "icon": "https://ddragon.leagueoflegends.com/cdn/16.21.1/img/item/1101.png"
+    },
+    {
+      "id": "1102",
+      "name": "Cria de Andabrisas",
+      "plaintext": "",
+      "description": "Companheiros da Selva\nInvoca um Andabrisas para ajudar você contra monstros.\nO companheiro cresce conforme você caça mais monstros, fortalecendo seu Golpear. Ao crescer completamente, ele cumpre a missão da selva e concede Velocidade de Movimento ao entrar em um arbusto, que aumenta ao abater monstros grandes.",
+      "gold": 450,
+      "tags": ["Jungle"],
+      "isBoots": false,
+      "isBuildItem": false,
+      "from": [],
+      "icon": "https://ddragon.leagueoflegends.com/cdn/16.21.1/img/item/1102.png"
+    },
+    {
+      "id": "1103",
+      "name": "Broto de Esmagamusgo",
+      "plaintext": "",
+      "description": "Companheiros da Selva\nInvoca um Esmagamusgo para ajudar você contra monstros.\nO companheiro cresce conforme você caça mais monstros, fortalecendo seu Golpear. Ao crescer completamente, ele cumpre a missão da selva e concede um Escudo quando fora de combate e ao abater monstros grandes.",
+      "gold": 450,
+      "tags": ["Jungle"],
+      "isBoots": false,
+      "isBuildItem": false,
+      "from": [],
+      "icon": "https://ddragon.leagueoflegends.com/cdn/16.21.1/img/item/1103.png"
+    },
+    {
+      "id": "1105",
+      "name": "Broto de Esmagamusgo",
+      "plaintext": "",
+      "description": "Companheiros da Selva\nInvoca um Esmagamusgo para ajudar você contra monstros.\nO companheiro cresce conforme você caça mais monstros, fortalecendo seu Golpear. Ao crescer completamente, ele cumpre a missão da selva e concede um Escudo quando fora de combate e ao abater monstros grandes.",
+      "gold": 450,
+      "tags": ["Jungle"],
+      "isBoots": false,
+      "isBuildItem": false,
+      "from": [],
+      "icon": "https://ddragon.leagueoflegends.com/cdn/16.21.1/img/item/1105.png"
+    },
+    {
+      "id": "1106",
+      "name": "Cria de Andabrisas",
+      "plaintext": "",
+      "description": "Companheiros da Selva\nInvoca um Andabrisas para ajudar você contra monstros.\nO companheiro cresce conforme você caça mais monstros, fortalecendo seu Golpear. Ao crescer completamente, ele cumpre a missão da selva e concede Velocidade de Movimento ao entrar em um arbusto, que aumenta ao abater monstros grandes.",
+      "gold": 450,
+      "tags": ["Jungle"],
+      "isBoots": false,
+      "isBuildItem": false,
+      "from": [],
+      "icon": "https://ddragon.leagueoflegends.com/cdn/16.21.1/img/item/1106.png"
+    },
+    {
+      "id": "1107",
+      "name": "Filhote de Garrabrasa",
+      "plaintext": "",
+      "description": "Companheiros da Selva\nInvoca um Garrabrasa para ajudar você contra monstros.\nO companheiro cresce conforme você caça mais monstros, fortalecendo seu Golpear. Ao crescer completamente, ele cumpre a missão da selva e imbui esporadicamente seu próximo Ataque ou Habilidade para queimar inimigos e causar Lentidão a eles. Abater monstros grandes ativa esse efeito imediatamente.",
+      "gold": 450,
+      "tags": ["Jungle"],
+      "isBoots": false,
+      "isBuildItem": false,
+      "from": [],
+      "icon": "https://ddragon.leagueoflegends.com/cdn/16.21.1/img/item/1107.png"
+    },
+    {
+      "id": "1120",
+      "name": "Elmo de Doran",
+      "plaintext": "",
+      "description": "150 de Vida\n8 de Armadura\n8 de Resistência Mágica\nAjudinha\nOs ataques causam 5 de Dano Físico adicional a tropas.",
+      "gold": 450,
+      "tags": ["Health", "SpellBlock", "Armor", "Lane"],
+      "isBoots": false,
+      "isBuildItem": false,
+      "from": [],
+      "icon": "https://ddragon.leagueoflegends.com/cdn/16.21.1/img/item/1120.png"
+    },
+    {
+      "id": "2003",
+      "name": "Poção de Vida",
+      "plaintext": "Consuma para restaurar Vida ao longo do tempo",
+      "description": "Consumir\nRestaura 120 de Vida ao longo de 15s.",
+      "gold": 50,
+      "tags": ["HealthRegen", "Consumable", "Lane", "Jungle"],
+      "isBoots": false,
+      "isBuildItem": false,
+      "from": [],
+      "icon": "https://ddragon.leagueoflegends.com/cdn/16.21.1/img/item/2003.png"
+    },
+    {
+      "id": "2019",
+      "name": "Sigilo de Aço",
+      "plaintext": "",
+      "description": "15 de Dano de Ataque\n30 de Armadura",
+      "gold": 1100,
+      "tags": ["Armor", "Damage"],
+      "isBoots": false,
+      "isBuildItem": false,
+      "from": ["1029", "1036", "1029"],
+      "icon": "https://ddragon.leagueoflegends.com/cdn/16.21.1/img/item/2019.png"
+    },
+    {
+      "id": "2020",
+      "name": "Brutalizador",
+      "plaintext": "",
+      "description": "25 de Dano de Ataque\n10 de Aceleração de Habilidade\n5 de Letalidade",
+      "gold": 1337,
+      "tags": ["Damage", "CooldownReduction", "ArmorPenetration"],
+      "isBoots": false,
+      "isBuildItem": false,
+      "from": ["2022", "1037"],
+      "icon": "https://ddragon.leagueoflegends.com/cdn/16.21.1/img/item/2020.png"
+    },
+    {
+      "id": "2021",
+      "name": "Tunelizador",
+      "plaintext": "",
+      "description": "15 de Dano de Ataque\n250 de Vida",
+      "gold": 1150,
+      "tags": ["Health", "Damage"],
+      "isBoots": false,
+      "isBuildItem": false,
+      "from": ["1036", "1028"],
+      "icon": "https://ddragon.leagueoflegends.com/cdn/16.21.1/img/item/2021.png"
+    },
+    {
+      "id": "2022",
+      "name": "Partícula Brilhante",
+      "plaintext": "",
+      "description": "5 de Aceleração de Habilidade",
+      "gold": 250,
+      "tags": ["CooldownReduction"],
+      "isBoots": false,
+      "isBuildItem": false,
+      "from": [],
+      "icon": "https://ddragon.leagueoflegends.com/cdn/16.21.1/img/item/2022.png"
+    },
+    {
+      "id": "2031",
+      "name": "Poção com Refil",
+      "plaintext": "Restaura Vida ao longo do tempo. Recarrega na loja",
+      "description": "Ativo (2 cargas)\nRestaura 100 de Vida ao longo de 12s.\nRecarrega ao visitar a loja.",
+      "gold": 150,
+      "tags": ["HealthRegen", "Consumable", "Active", "Lane", "Jungle"],
+      "isBoots": false,
+      "isBuildItem": false,
+      "from": [],
+      "icon": "https://ddragon.leagueoflegends.com/cdn/16.21.1/img/item/2031.png"
+    },
+    {
+      "id": "2051",
+      "name": "Berrante do Guardião",
+      "plaintext": "Bom item iniciante para tanques",
+      "description": "150 de Vida\nRecuperação: restaura 20 de Vida a cada 5s.Impassível: bloqueia 15 de dano sofrido de Ataques e Habilidades de Campeões (25% de eficácia contra Habilidades de dano ao longo do tempo).",
+      "gold": 950,
+      "tags": ["Health", "HealthRegen", "Lane"],
+      "isBoots": false,
+      "isBuildItem": false,
+      "from": [],
+      "icon": "https://ddragon.leagueoflegends.com/cdn/16.21.1/img/item/2051.png"
+    },
+    {
+      "id": "2055",
+      "name": "Sentinela de Controle",
+      "plaintext": "Usada para desativar sentinelas e armadilhas invisíveis em uma área",
+      "description": "Consumir\nPosiciona uma Sentinela de Controle que concede visão e revela Sentinelas Invisíveis inimigas, armadilhas e inimigos Camuflados.",
+      "gold": 75,
+      "tags": ["Consumable", "Lane", "Stealth", "Vision"],
+      "isBoots": false,
+      "isBuildItem": false,
+      "from": [],
+      "icon": "https://ddragon.leagueoflegends.com/cdn/16.21.1/img/item/2055.png"
+    },
+    {
       "id": "2065",
       "name": "Hino Bélico de Shurelya",
       "plaintext": "Ative para acelerar aliados próximos",
@@ -16,7 +508,69 @@
         "AbilityHaste"
       ],
       "isBoots": false,
+      "isBuildItem": true,
+      "from": ["3113", "4642"],
       "icon": "https://ddragon.leagueoflegends.com/cdn/16.21.1/img/item/2065.png"
+    },
+    {
+      "id": "2138",
+      "name": "Elixir de Ferro",
+      "plaintext": "Temporariamente aumenta as defesas. Deixa um rastro para que seus aliados sigam",
+      "description": "Consumir\nConcede 300 de Vida, 25% de Tenacidade e aumenta o tamanho por 3min. Enquanto ativo, você deixa um rastro atrás de você que aumenta em 15% a Velocidade de Movimento dos Campeões aliados.",
+      "gold": 500,
+      "tags": ["Health", "Consumable", "NonbootsMovement", "Tenacity"],
+      "isBoots": false,
+      "isBuildItem": false,
+      "from": [],
+      "icon": "https://ddragon.leagueoflegends.com/cdn/16.21.1/img/item/2138.png"
+    },
+    {
+      "id": "2139",
+      "name": "Elixir da Feitiçaria",
+      "plaintext": "Temporariamente concede Poder de Habilidade e dano adicional a Campeões e torres",
+      "description": "Consumir\nConcede 50 de Poder de Habilidade e 15% de Regeneração de Mana por 3min. Enquanto ativo, causar dano a um Campeão ou torre causa 25 de Dano Verdadeiro adicional (5s contra Campeões).",
+      "gold": 500,
+      "tags": ["Consumable", "ManaRegen", "SpellDamage"],
+      "isBoots": false,
+      "isBuildItem": false,
+      "from": [],
+      "icon": "https://ddragon.leagueoflegends.com/cdn/16.21.1/img/item/2139.png"
+    },
+    {
+      "id": "2140",
+      "name": "Elixir da Ira",
+      "plaintext": "Temporariamente concede Dano de Ataque e cura ao causar Dano Físico a Campeões",
+      "description": "Consumir\nConcede 30 de Dano de Ataque e 12% de Vampirismo Físico contra Campeões por 3min.",
+      "gold": 500,
+      "tags": ["Consumable", "Damage", "LifeSteal", "SpellVamp"],
+      "isBoots": false,
+      "isBuildItem": false,
+      "from": [],
+      "icon": "https://ddragon.leagueoflegends.com/cdn/16.21.1/img/item/2140.png"
+    },
+    {
+      "id": "2141",
+      "name": "Suco de Chapéu",
+      "plaintext": "",
+      "description": "Faz bem pra cabeça.Ativo – Consumir: Este suco não faz nada.",
+      "gold": 300,
+      "tags": ["Damage", "Consumable"],
+      "isBoots": false,
+      "isBuildItem": false,
+      "from": [],
+      "icon": "https://ddragon.leagueoflegends.com/cdn/16.21.1/img/item/2141.png"
+    },
+    {
+      "id": "2420",
+      "name": "Armaguarda da Caçadora",
+      "plaintext": "Ative para ficar invencível, mas incapaz de realizar qualquer ação",
+      "description": "40 de Poder de Habilidade\n25 de Armadura\nTempo Paralisado (uso único)\nEntra em Estase por 2.5s.",
+      "gold": 1600,
+      "tags": ["Armor", "SpellDamage", "Active"],
+      "isBoots": false,
+      "isBuildItem": false,
+      "from": ["1052", "1029", "1052"],
+      "icon": "https://ddragon.leagueoflegends.com/cdn/16.21.1/img/item/2420.png"
     },
     {
       "id": "2501",
@@ -26,6 +580,8 @@
       "gold": 3300,
       "tags": ["Health", "Damage"],
       "isBoots": false,
+      "isBuildItem": true,
+      "from": ["2021", "2021"],
       "icon": "https://ddragon.leagueoflegends.com/cdn/16.21.1/img/item/2501.png"
     },
     {
@@ -36,6 +592,8 @@
       "gold": 2800,
       "tags": ["Health", "Armor", "CooldownReduction", "AbilityHaste"],
       "isBoots": false,
+      "isBuildItem": true,
+      "from": ["1031", "3067", "1028"],
       "icon": "https://ddragon.leagueoflegends.com/cdn/16.21.1/img/item/2502.png"
     },
     {
@@ -46,6 +604,8 @@
       "gold": 2800,
       "tags": ["SpellDamage", "Mana", "CooldownReduction", "AbilityHaste"],
       "isBoots": false,
+      "isBuildItem": true,
+      "from": ["3802", "2508"],
       "icon": "https://ddragon.leagueoflegends.com/cdn/16.21.1/img/item/2503.png"
     },
     {
@@ -56,7 +616,21 @@
       "gold": 2900,
       "tags": ["Health", "SpellBlock", "HealthRegen"],
       "isBoots": false,
+      "isBuildItem": true,
+      "from": ["3211", "1057"],
       "icon": "https://ddragon.leagueoflegends.com/cdn/16.21.1/img/item/2504.png"
+    },
+    {
+      "id": "2508",
+      "name": "Cinzas do Destino",
+      "plaintext": "",
+      "description": "30 de Poder de Habilidade\nInflamar\nHabilidades de dano causam 15 de Dano Mágico adicional ao longo de 3s.\nCausa 45 de Dano Mágico adicional contra monstros.",
+      "gold": 900,
+      "tags": ["SpellDamage"],
+      "isBoots": false,
+      "isBuildItem": false,
+      "from": ["1052"],
+      "icon": "https://ddragon.leagueoflegends.com/cdn/16.21.1/img/item/2508.png"
     },
     {
       "id": "2510",
@@ -66,6 +640,8 @@
       "gold": 3100,
       "tags": ["Health", "AttackSpeed", "SpellDamage", "OnHit", "AbilityHaste"],
       "isBoots": false,
+      "isBuildItem": true,
+      "from": ["3057", "1026", "3067", "1042"],
       "icon": "https://ddragon.leagueoflegends.com/cdn/16.21.1/img/item/2510.png"
     },
     {
@@ -76,6 +652,8 @@
       "gold": 2650,
       "tags": ["CriticalStrike", "AttackSpeed", "NonbootsMovement", "AbilityHaste"],
       "isBoots": false,
+      "isBuildItem": true,
+      "from": ["3086", "3144"],
       "icon": "https://ddragon.leagueoflegends.com/cdn/16.21.1/img/item/2512.png"
     },
     {
@@ -86,6 +664,8 @@
       "gold": 3100,
       "tags": ["Damage", "LifeSteal", "SpellVamp", "Tenacity", "AbilityHaste"],
       "isBoots": false,
+      "isBuildItem": true,
+      "from": ["3133", "1037", "1036"],
       "icon": "https://ddragon.leagueoflegends.com/cdn/16.21.1/img/item/2517.png"
     },
     {
@@ -96,6 +676,8 @@
       "gold": 3000,
       "tags": ["Damage", "ArmorPenetration", "AbilityHaste"],
       "isBoots": false,
+      "isBuildItem": true,
+      "from": ["2020", "3134"],
       "icon": "https://ddragon.leagueoflegends.com/cdn/16.21.1/img/item/2520.png"
     },
     {
@@ -106,6 +688,8 @@
       "gold": 2800,
       "tags": ["SpellDamage", "Mana", "AbilityHaste"],
       "isBoots": false,
+      "isBuildItem": true,
+      "from": ["3802", "1026"],
       "icon": "https://ddragon.leagueoflegends.com/cdn/16.21.1/img/item/2522.png"
     },
     {
@@ -116,6 +700,8 @@
       "gold": 2800,
       "tags": ["Damage", "CriticalStrike"],
       "isBoots": false,
+      "isBuildItem": true,
+      "from": ["1037", "6670", "1036"],
       "icon": "https://ddragon.leagueoflegends.com/cdn/16.21.1/img/item/2523.png"
     },
     {
@@ -126,6 +712,8 @@
       "gold": 2300,
       "tags": ["Health", "SpellBlock", "Armor", "AttackSpeed", "NonbootsMovement", "AbilityHaste"],
       "isBoots": false,
+      "isBuildItem": true,
+      "from": ["3067", "1029", "1033"],
       "icon": "https://ddragon.leagueoflegends.com/cdn/16.21.1/img/item/2524.png"
     },
     {
@@ -136,7 +724,21 @@
       "gold": 2600,
       "tags": ["Health", "NonbootsMovement", "Tenacity", "AbilityHaste"],
       "isBoots": false,
+      "isBuildItem": true,
+      "from": ["3067", "1011"],
       "icon": "https://ddragon.leagueoflegends.com/cdn/16.21.1/img/item/2525.png"
+    },
+    {
+      "id": "2526",
+      "name": "Tiara Sussurrante",
+      "plaintext": "",
+      "description": "200 de Vida\n8% de Cura e Resistência do Escudo\n75% de Regeneração de Mana base\n300 de Mana\nHarmonia\nRecebe 0% de Potência de Escudo e Cura.\nFluxo de Mana (8s, máx. de 5 cargas)\nAcertar Habilidades concede 4 de Mana máximo (dobrado contra Campeões).\nTransforma-se em Diadema de Canções com 360 de Mana máximo.",
+      "gold": 2250,
+      "tags": ["Health", "Mana", "ManaRegen"],
+      "isBoots": false,
+      "isBuildItem": false,
+      "from": ["3114", "1028", "3070"],
+      "icon": "https://ddragon.leagueoflegends.com/cdn/16.21.1/img/item/2526.png"
     },
     {
       "id": "3003",
@@ -146,6 +748,8 @@
       "gold": 2900,
       "tags": ["SpellDamage", "Mana", "AbilityHaste"],
       "isBoots": false,
+      "isBuildItem": true,
+      "from": ["3070", "3802", "3108"],
       "icon": "https://ddragon.leagueoflegends.com/cdn/16.21.1/img/item/3003.png"
     },
     {
@@ -156,6 +760,8 @@
       "gold": 2900,
       "tags": ["Damage", "Mana", "CooldownReduction", "OnHit", "AbilityHaste"],
       "isBoots": false,
+      "isBuildItem": true,
+      "from": ["3070", "3133", "1036"],
       "icon": "https://ddragon.leagueoflegends.com/cdn/16.21.1/img/item/3004.png"
     },
     {
@@ -166,6 +772,8 @@
       "gold": 1100,
       "tags": ["AttackSpeed", "Boots"],
       "isBoots": true,
+      "isBuildItem": true,
+      "from": ["1001", "1042", "1042"],
       "icon": "https://ddragon.leagueoflegends.com/cdn/16.21.1/img/item/3006.png"
     },
     {
@@ -176,6 +784,8 @@
       "gold": 1100,
       "tags": ["LifeSteal", "SpellVamp", "Boots"],
       "isBoots": true,
+      "isBuildItem": true,
+      "from": ["1001"],
       "icon": "https://ddragon.leagueoflegends.com/cdn/16.21.1/img/item/3008.png"
     },
     {
@@ -186,6 +796,8 @@
       "gold": 1000,
       "tags": ["Boots"],
       "isBoots": true,
+      "isBuildItem": true,
+      "from": ["1001"],
       "icon": "https://ddragon.leagueoflegends.com/cdn/16.21.1/img/item/3009.png"
     },
     {
@@ -196,7 +808,21 @@
       "gold": 1100,
       "tags": ["Boots", "MagicPenetration"],
       "isBoots": true,
+      "isBuildItem": true,
+      "from": ["1001"],
       "icon": "https://ddragon.leagueoflegends.com/cdn/16.21.1/img/item/3020.png"
+    },
+    {
+      "id": "3024",
+      "name": "Broquel Glacial",
+      "plaintext": "Aumenta a Armadura e Redução do Tempo de Recarga",
+      "description": "25 de Armadura\n300 de Mana\n10 de Aceleração de Habilidade",
+      "gold": 900,
+      "tags": ["Armor", "Mana", "CooldownReduction", "AbilityHaste"],
+      "isBoots": false,
+      "isBuildItem": false,
+      "from": ["1029", "1027", "2022"],
+      "icon": "https://ddragon.leagueoflegends.com/cdn/16.21.1/img/item/3024.png"
     },
     {
       "id": "3026",
@@ -206,6 +832,8 @@
       "gold": 3200,
       "tags": ["Armor", "Damage"],
       "isBoots": false,
+      "isBuildItem": true,
+      "from": ["2019", "1038"],
       "icon": "https://ddragon.leagueoflegends.com/cdn/16.21.1/img/item/3026.png"
     },
     {
@@ -216,6 +844,8 @@
       "gold": 3500,
       "tags": ["CriticalStrike", "Damage"],
       "isBoots": false,
+      "isBuildItem": true,
+      "from": ["1038", "1037", "1018"],
       "icon": "https://ddragon.leagueoflegends.com/cdn/16.21.1/img/item/3031.png"
     },
     {
@@ -226,6 +856,8 @@
       "gold": 3000,
       "tags": ["Damage", "CriticalStrike", "AttackSpeed"],
       "isBoots": false,
+      "isBuildItem": true,
+      "from": ["1038", "3144", "1036"],
       "icon": "https://ddragon.leagueoflegends.com/cdn/16.21.1/img/item/3032.png"
     },
     {
@@ -236,7 +868,21 @@
       "gold": 3000,
       "tags": ["Damage", "CriticalStrike", "ArmorPenetration"],
       "isBoots": false,
+      "isBuildItem": true,
+      "from": ["3123", "3035", "1018"],
       "icon": "https://ddragon.leagueoflegends.com/cdn/16.21.1/img/item/3033.png"
+    },
+    {
+      "id": "3035",
+      "name": "Último Sussurro",
+      "plaintext": "Supera inimigos que têm muita Armadura",
+      "description": "20 de Dano de Ataque\n18% de Penetração de Armadura",
+      "gold": 1450,
+      "tags": ["ArmorPenetration", "Damage"],
+      "isBoots": false,
+      "isBuildItem": false,
+      "from": ["1036", "1036"],
+      "icon": "https://ddragon.leagueoflegends.com/cdn/16.21.1/img/item/3035.png"
     },
     {
       "id": "3036",
@@ -246,6 +892,8 @@
       "gold": 3300,
       "tags": ["Damage", "CriticalStrike", "ArmorPenetration"],
       "isBoots": false,
+      "isBuildItem": true,
+      "from": ["3035", "6670"],
       "icon": "https://ddragon.leagueoflegends.com/cdn/16.21.1/img/item/3036.png"
     },
     {
@@ -256,7 +904,21 @@
       "gold": 1500,
       "tags": ["Health", "SpellDamage", "NonbootsMovement"],
       "isBoots": false,
+      "isBuildItem": true,
+      "from": ["1082"],
       "icon": "https://ddragon.leagueoflegends.com/cdn/16.21.1/img/item/3041.png"
+    },
+    {
+      "id": "3044",
+      "name": "Fago",
+      "plaintext": "Ataques e abates dão um efeito curto de velocidade",
+      "description": "15 de Dano de Ataque\n200 de Vida\nFúria\nAtaques concedem Velocidade de Movimento por 2s.",
+      "gold": 1100,
+      "tags": ["Health", "Damage", "NonbootsMovement"],
+      "isBoots": false,
+      "isBuildItem": false,
+      "from": ["1028", "1036"],
+      "icon": "https://ddragon.leagueoflegends.com/cdn/16.21.1/img/item/3044.png"
     },
     {
       "id": "3046",
@@ -266,6 +928,8 @@
       "gold": 2650,
       "tags": ["CriticalStrike", "AttackSpeed", "NonbootsMovement"],
       "isBoots": false,
+      "isBuildItem": true,
+      "from": ["1042", "3086", "1042"],
       "icon": "https://ddragon.leagueoflegends.com/cdn/16.21.1/img/item/3046.png"
     },
     {
@@ -276,6 +940,8 @@
       "gold": 1200,
       "tags": ["Armor", "Boots"],
       "isBoots": true,
+      "isBuildItem": true,
+      "from": ["1001", "1029"],
       "icon": "https://ddragon.leagueoflegends.com/cdn/16.21.1/img/item/3047.png"
     },
     {
@@ -286,7 +952,21 @@
       "gold": 2200,
       "tags": ["Health", "SpellBlock", "Armor", "AbilityHaste"],
       "isBoots": false,
+      "isBuildItem": true,
+      "from": ["3067", "1029", "1033"],
       "icon": "https://ddragon.leagueoflegends.com/cdn/16.21.1/img/item/3050.png"
+    },
+    {
+      "id": "3051",
+      "name": "Machado Termestre",
+      "plaintext": "",
+      "description": "20 de Dano de Ataque\n20% de Velocidade de Ataque",
+      "gold": 1200,
+      "tags": ["Damage", "AttackSpeed"],
+      "isBoots": false,
+      "isBuildItem": false,
+      "from": ["1036", "1042", "1036"],
+      "icon": "https://ddragon.leagueoflegends.com/cdn/16.21.1/img/item/3051.png"
     },
     {
       "id": "3053",
@@ -296,7 +976,21 @@
       "gold": 3200,
       "tags": ["Health", "Damage", "Tenacity"],
       "isBoots": false,
+      "isBuildItem": true,
+      "from": ["1037", "2021", "1028"],
       "icon": "https://ddragon.leagueoflegends.com/cdn/16.21.1/img/item/3053.png"
+    },
+    {
+      "id": "3057",
+      "name": "Fulgor",
+      "plaintext": "Concede um efeito ao ataque básico feito após uma conjuração",
+      "description": "10 de Aceleração de Habilidade\nLâmina Arcana\nApós usar uma Habilidade, seu próximo Ataque causa Dano Físico adicional ao contato.",
+      "gold": 900,
+      "tags": ["OnHit", "AbilityHaste"],
+      "isBoots": false,
+      "isBuildItem": false,
+      "from": ["2022"],
+      "icon": "https://ddragon.leagueoflegends.com/cdn/16.21.1/img/item/3057.png"
     },
     {
       "id": "3065",
@@ -306,7 +1000,33 @@
       "gold": 2700,
       "tags": ["Health", "SpellBlock", "HealthRegen", "CooldownReduction", "AbilityHaste"],
       "isBoots": false,
+      "isBuildItem": true,
+      "from": ["3211", "3067"],
       "icon": "https://ddragon.leagueoflegends.com/cdn/16.21.1/img/item/3065.png"
+    },
+    {
+      "id": "3066",
+      "name": "Couraça Lunar Alada",
+      "plaintext": "",
+      "description": "200 de Vida\n4% de Velocidade de Movimento",
+      "gold": 800,
+      "tags": ["Health", "NonbootsMovement"],
+      "isBoots": false,
+      "isBuildItem": false,
+      "from": ["1028"],
+      "icon": "https://ddragon.leagueoflegends.com/cdn/16.21.1/img/item/3066.png"
+    },
+    {
+      "id": "3067",
+      "name": "Gema Ardente",
+      "plaintext": "Aumenta a Vida e a Redução do Tempo de Recarga",
+      "description": "200 de Vida\n10 de Aceleração de Habilidade",
+      "gold": 800,
+      "tags": ["Health", "CooldownReduction", "AbilityHaste"],
+      "isBoots": false,
+      "isBuildItem": false,
+      "from": ["1028", "2022"],
+      "icon": "https://ddragon.leagueoflegends.com/cdn/16.21.1/img/item/3067.png"
     },
     {
       "id": "3068",
@@ -316,7 +1036,21 @@
       "gold": 2800,
       "tags": ["Health", "Armor", "Aura", "AbilityHaste"],
       "isBoots": false,
+      "isBuildItem": true,
+      "from": ["6660", "1031", "1028"],
       "icon": "https://ddragon.leagueoflegends.com/cdn/16.21.1/img/item/3068.png"
+    },
+    {
+      "id": "3070",
+      "name": "Lágrima da Deusa",
+      "plaintext": "Aumenta a Mana máxima conforme ela é gasta",
+      "description": "240 de Mana\nFluxo de Mana (8s, máximo de 4 cargas)\nAcertar Habilidades concede 3 de Mana máximo (dobrado contra Campeões), até 360.\nAjudinha\nAtaques causam 5 de Dano Físico adicional a tropas.",
+      "gold": 400,
+      "tags": ["Mana", "ManaRegen"],
+      "isBoots": false,
+      "isBuildItem": false,
+      "from": [],
+      "icon": "https://ddragon.leagueoflegends.com/cdn/16.21.1/img/item/3070.png"
     },
     {
       "id": "3071",
@@ -334,6 +1068,8 @@
         "AbilityHaste"
       ],
       "isBoots": false,
+      "isBuildItem": true,
+      "from": ["3044", "3067", "1037"],
       "icon": "https://ddragon.leagueoflegends.com/cdn/16.21.1/img/item/3071.png"
     },
     {
@@ -344,6 +1080,8 @@
       "gold": 3400,
       "tags": ["Damage", "LifeSteal"],
       "isBoots": false,
+      "isBuildItem": true,
+      "from": ["1038", "1037", "1053"],
       "icon": "https://ddragon.leagueoflegends.com/cdn/16.21.1/img/item/3072.png"
     },
     {
@@ -361,6 +1099,8 @@
         "AbilityHaste"
       ],
       "isBoots": false,
+      "isBuildItem": true,
+      "from": ["2021", "1042", "3044"],
       "icon": "https://ddragon.leagueoflegends.com/cdn/16.21.1/img/item/3073.png"
     },
     {
@@ -371,6 +1111,8 @@
       "gold": 3300,
       "tags": ["Damage", "LifeSteal", "CooldownReduction", "OnHit", "AbilityHaste"],
       "isBoots": false,
+      "isBuildItem": true,
+      "from": ["3077", "1053", "3133"],
       "icon": "https://ddragon.leagueoflegends.com/cdn/16.21.1/img/item/3074.png"
     },
     {
@@ -381,7 +1123,33 @@
       "gold": 2450,
       "tags": ["Health", "Armor"],
       "isBoots": false,
+      "isBuildItem": true,
+      "from": ["3076", "1031", "1028"],
       "icon": "https://ddragon.leagueoflegends.com/cdn/16.21.1/img/item/3075.png"
+    },
+    {
+      "id": "3076",
+      "name": "Colete Espinhoso",
+      "plaintext": "",
+      "description": "30 de Armadura\nEspinhos\nAo ser atingido por um Ataque, causa 0 de Dano Mágico ao atacante e aplica 40% de Ferimentos por 3s se ele for um Campeão.",
+      "gold": 800,
+      "tags": ["Armor"],
+      "isBoots": false,
+      "isBuildItem": false,
+      "from": ["1029", "1029"],
+      "icon": "https://ddragon.leagueoflegends.com/cdn/16.21.1/img/item/3076.png"
+    },
+    {
+      "id": "3077",
+      "name": "Tiamat",
+      "plaintext": "Ataques corpo a corpo atingem inimigos próximos",
+      "description": "25 de Dano de Ataque\nFenda\nAtaques causam Dano Físico a inimigos próximos.\nCrescente\nCausa Dano Físico a inimigos ao seu redor.",
+      "gold": 1200,
+      "tags": ["Damage", "OnHit"],
+      "isBoots": false,
+      "isBuildItem": false,
+      "from": ["1036", "1036"],
+      "icon": "https://ddragon.leagueoflegends.com/cdn/16.21.1/img/item/3077.png"
     },
     {
       "id": "3078",
@@ -399,7 +1167,21 @@
         "AbilityHaste"
       ],
       "isBoots": false,
+      "isBuildItem": true,
+      "from": ["3057", "3044", "3051"],
       "icon": "https://ddragon.leagueoflegends.com/cdn/16.21.1/img/item/3078.png"
+    },
+    {
+      "id": "3082",
+      "name": "Carapaça do Vigia",
+      "plaintext": "",
+      "description": "40 de Armadura\nDuro como Pedra\nReduz o dano sofrido de Ataques.",
+      "gold": 1000,
+      "tags": ["Armor"],
+      "isBoots": false,
+      "isBuildItem": false,
+      "from": ["1029", "1029"],
+      "icon": "https://ddragon.leagueoflegends.com/cdn/16.21.1/img/item/3082.png"
     },
     {
       "id": "3083",
@@ -409,6 +1191,8 @@
       "gold": 3100,
       "tags": ["Health", "HealthRegen"],
       "isBoots": false,
+      "isBuildItem": true,
+      "from": ["1011", "1011", "3801"],
       "icon": "https://ddragon.leagueoflegends.com/cdn/16.21.1/img/item/3083.png"
     },
     {
@@ -419,6 +1203,8 @@
       "gold": 3000,
       "tags": ["Health", "HealthRegen"],
       "isBoots": false,
+      "isBuildItem": true,
+      "from": ["1011", "3801", "1011"],
       "icon": "https://ddragon.leagueoflegends.com/cdn/16.21.1/img/item/3084.png"
     },
     {
@@ -429,7 +1215,21 @@
       "gold": 2650,
       "tags": ["CriticalStrike", "AttackSpeed", "OnHit", "NonbootsMovement"],
       "isBoots": false,
+      "isBuildItem": true,
+      "from": ["3086", "3144"],
       "icon": "https://ddragon.leagueoflegends.com/cdn/16.21.1/img/item/3085.png"
+    },
+    {
+      "id": "3086",
+      "name": "Zelo",
+      "plaintext": "Leve aprimoramento na Chance de Acerto Crítico, Velocidade de Movimento e de Ataque",
+      "description": "15% de Velocidade de Ataque\n15% de Chance de Acerto Crítico\n4% de Velocidade de Movimento",
+      "gold": 1200,
+      "tags": ["CriticalStrike", "AttackSpeed", "NonbootsMovement"],
+      "isBoots": false,
+      "isBuildItem": false,
+      "from": ["1018", "1042"],
+      "icon": "https://ddragon.leagueoflegends.com/cdn/16.21.1/img/item/3086.png"
     },
     {
       "id": "3087",
@@ -439,6 +1239,8 @@
       "gold": 3000,
       "tags": ["Damage", "AttackSpeed", "SpellDamage", "OnHit", "NonbootsMovement"],
       "isBoots": false,
+      "isBuildItem": true,
+      "from": ["3144", "3113", "1037"],
       "icon": "https://ddragon.leagueoflegends.com/cdn/16.21.1/img/item/3087.png"
     },
     {
@@ -449,6 +1251,8 @@
       "gold": 3500,
       "tags": ["SpellDamage"],
       "isBoots": false,
+      "isBuildItem": true,
+      "from": ["1058", "1058"],
       "icon": "https://ddragon.leagueoflegends.com/cdn/16.21.1/img/item/3089.png"
     },
     {
@@ -459,6 +1263,8 @@
       "gold": 2800,
       "tags": ["SpellBlock", "AttackSpeed", "OnHit", "Tenacity"],
       "isBoots": false,
+      "isBuildItem": true,
+      "from": ["1043", "1057", "1043"],
       "icon": "https://ddragon.leagueoflegends.com/cdn/16.21.1/img/item/3091.png"
     },
     {
@@ -469,6 +1275,8 @@
       "gold": 2650,
       "tags": ["CriticalStrike", "AttackSpeed", "NonbootsMovement"],
       "isBoots": false,
+      "isBuildItem": true,
+      "from": ["3086", "3144"],
       "icon": "https://ddragon.leagueoflegends.com/cdn/16.21.1/img/item/3094.png"
     },
     {
@@ -479,6 +1287,8 @@
       "gold": 3200,
       "tags": ["Damage", "CriticalStrike", "AttackSpeed", "NonbootsMovement"],
       "isBoots": false,
+      "isBuildItem": true,
+      "from": ["1038", "1018", "3144"],
       "icon": "https://ddragon.leagueoflegends.com/cdn/16.21.1/img/item/3095.png"
     },
     {
@@ -489,6 +1299,8 @@
       "gold": 2900,
       "tags": ["SpellDamage", "OnHit", "NonbootsMovement", "AbilityHaste"],
       "isBoots": false,
+      "isBuildItem": true,
+      "from": ["3057", "3113", "1026"],
       "icon": "https://ddragon.leagueoflegends.com/cdn/16.21.1/img/item/3100.png"
     },
     {
@@ -499,6 +1311,8 @@
       "gold": 3000,
       "tags": ["SpellBlock", "SpellDamage"],
       "isBoots": false,
+      "isBuildItem": true,
+      "from": ["1058", "4632"],
       "icon": "https://ddragon.leagueoflegends.com/cdn/16.21.1/img/item/3102.png"
     },
     {
@@ -509,7 +1323,21 @@
       "gold": 2300,
       "tags": ["SpellDamage", "ManaRegen", "CooldownReduction", "AbilityHaste"],
       "isBoots": false,
+      "isBuildItem": true,
+      "from": ["3108", "3114"],
       "icon": "https://ddragon.leagueoflegends.com/cdn/16.21.1/img/item/3107.png"
+    },
+    {
+      "id": "3108",
+      "name": "Códex Demoníaco",
+      "plaintext": "Aumenta o Poder de Habilidade e a Redução do Tempo de Recarga",
+      "description": "25 de Poder de Habilidade\n10 de Aceleração de Habilidade",
+      "gold": 850,
+      "tags": ["SpellDamage", "CooldownReduction", "AbilityHaste"],
+      "isBoots": false,
+      "isBuildItem": false,
+      "from": ["1052", "2022"],
+      "icon": "https://ddragon.leagueoflegends.com/cdn/16.21.1/img/item/3108.png"
     },
     {
       "id": "3109",
@@ -527,6 +1355,8 @@
         "AbilityHaste"
       ],
       "isBoots": false,
+      "isBuildItem": true,
+      "from": ["3067", "1031", "1006"],
       "icon": "https://ddragon.leagueoflegends.com/cdn/16.21.1/img/item/3109.png"
     },
     {
@@ -537,6 +1367,8 @@
       "gold": 2500,
       "tags": ["Armor", "Mana", "Aura", "CooldownReduction", "AbilityHaste"],
       "isBoots": false,
+      "isBuildItem": true,
+      "from": ["3082", "3024"],
       "icon": "https://ddragon.leagueoflegends.com/cdn/16.21.1/img/item/3110.png"
     },
     {
@@ -547,7 +1379,45 @@
       "gold": 1250,
       "tags": ["Boots", "SpellBlock", "Tenacity"],
       "isBoots": true,
+      "isBuildItem": true,
+      "from": ["1001", "1033"],
       "icon": "https://ddragon.leagueoflegends.com/cdn/16.21.1/img/item/3111.png"
+    },
+    {
+      "id": "3112",
+      "name": "Orbe do Guardião",
+      "plaintext": "Bom item iniciante para magos",
+      "description": "50 de Poder de Habilidade\n150 de Vida\nRecuperação: restaura 10 de Mana a cada 5s. Caso você não possa receber Mana, restaura 15 de Vida.",
+      "gold": 950,
+      "tags": ["Health", "SpellDamage", "ManaRegen", "Lane"],
+      "isBoots": false,
+      "isBuildItem": false,
+      "from": [],
+      "icon": "https://ddragon.leagueoflegends.com/cdn/16.21.1/img/item/3112.png"
+    },
+    {
+      "id": "3113",
+      "name": "Cintilação Etérea",
+      "plaintext": "Aumenta o Poder de Habilidade e a Velocidade de Movimento",
+      "description": "30 de Poder de Habilidade\n4% de Velocidade de Movimento",
+      "gold": 900,
+      "tags": ["NonbootsMovement", "SpellDamage"],
+      "isBoots": false,
+      "isBuildItem": false,
+      "from": ["1052"],
+      "icon": "https://ddragon.leagueoflegends.com/cdn/16.21.1/img/item/3113.png"
+    },
+    {
+      "id": "3114",
+      "name": "Ídolo Proibido",
+      "plaintext": "Aumenta o poder de curas e escudos, Regeneração de Mana e Redução do Tempo de Recarga",
+      "description": "50% de Regeneração de Mana base\n8% de Cura e Resistência do Escudo",
+      "gold": 600,
+      "tags": ["ManaRegen"],
+      "isBoots": false,
+      "isBuildItem": false,
+      "from": ["1004"],
+      "icon": "https://ddragon.leagueoflegends.com/cdn/16.21.1/img/item/3114.png"
     },
     {
       "id": "3115",
@@ -557,6 +1427,8 @@
       "gold": 2900,
       "tags": ["AttackSpeed", "SpellDamage", "OnHit", "AbilityHaste"],
       "isBoots": false,
+      "isBuildItem": true,
+      "from": ["1043", "1026", "3108"],
       "icon": "https://ddragon.leagueoflegends.com/cdn/16.21.1/img/item/3115.png"
     },
     {
@@ -567,6 +1439,8 @@
       "gold": 2600,
       "tags": ["Health", "SpellDamage", "Slow"],
       "isBoots": false,
+      "isBuildItem": true,
+      "from": ["1026", "1011", "1052"],
       "icon": "https://ddragon.leagueoflegends.com/cdn/16.21.1/img/item/3116.png"
     },
     {
@@ -577,6 +1451,8 @@
       "gold": 2700,
       "tags": ["SpellDamage", "Mana", "AbilityHaste"],
       "isBoots": false,
+      "isBuildItem": true,
+      "from": ["3802", "1026"],
       "icon": "https://ddragon.leagueoflegends.com/cdn/16.21.1/img/item/3118.png"
     },
     {
@@ -587,7 +1463,21 @@
       "gold": 2400,
       "tags": ["Health", "Mana", "AbilityHaste"],
       "isBoots": false,
+      "isBuildItem": true,
+      "from": ["3070", "1011", "3067"],
       "icon": "https://ddragon.leagueoflegends.com/cdn/16.21.1/img/item/3119.png"
+    },
+    {
+      "id": "3123",
+      "name": "Chamado do Carrasco",
+      "plaintext": "Supera inimigos com alto recebimento de vida",
+      "description": "15 de Dano de Ataque\nFeridas Dolorosas\nCausar Dano Físico a Campeões aplica 40% de Ferimentos por 3s.",
+      "gold": 800,
+      "tags": ["Damage"],
+      "isBoots": false,
+      "isBuildItem": false,
+      "from": ["1036"],
+      "icon": "https://ddragon.leagueoflegends.com/cdn/16.21.1/img/item/3123.png"
     },
     {
       "id": "3124",
@@ -597,7 +1487,33 @@
       "gold": 3000,
       "tags": ["Damage", "AttackSpeed", "SpellDamage", "OnHit"],
       "isBoots": false,
+      "isBuildItem": true,
+      "from": ["1052", "1043", "1037"],
       "icon": "https://ddragon.leagueoflegends.com/cdn/16.21.1/img/item/3124.png"
+    },
+    {
+      "id": "3133",
+      "name": "Martelo de Guerra de Caulfield",
+      "plaintext": "Dano de Ataque e Redução do Tempo de Recarga",
+      "description": "20 de Dano de Ataque\n10 de Aceleração de Habilidade",
+      "gold": 1050,
+      "tags": ["Damage", "CooldownReduction", "AbilityHaste"],
+      "isBoots": false,
+      "isBuildItem": false,
+      "from": ["1036", "2022", "1036"],
+      "icon": "https://ddragon.leagueoflegends.com/cdn/16.21.1/img/item/3133.png"
+    },
+    {
+      "id": "3134",
+      "name": "Punhal Serrilhado",
+      "plaintext": "Aumenta o Dano de Ataque e a Letalidade",
+      "description": "20 de Dano de Ataque\n10 de Letalidade",
+      "gold": 1000,
+      "tags": ["Damage", "ArmorPenetration"],
+      "isBoots": false,
+      "isBuildItem": false,
+      "from": ["1036", "1036"],
+      "icon": "https://ddragon.leagueoflegends.com/cdn/16.21.1/img/item/3134.png"
     },
     {
       "id": "3135",
@@ -607,6 +1523,8 @@
       "gold": 3000,
       "tags": ["MagicPenetration", "SpellDamage"],
       "isBoots": false,
+      "isBuildItem": true,
+      "from": ["4630", "1026"],
       "icon": "https://ddragon.leagueoflegends.com/cdn/16.21.1/img/item/3135.png"
     },
     {
@@ -617,6 +1535,8 @@
       "gold": 3000,
       "tags": ["SpellDamage", "MagicPenetration", "AbilityHaste"],
       "isBoots": false,
+      "isBuildItem": true,
+      "from": ["4630", "3108", "3108"],
       "icon": "https://ddragon.leagueoflegends.com/cdn/16.21.1/img/item/3137.png"
     },
     {
@@ -627,7 +1547,21 @@
       "gold": 3200,
       "tags": ["SpellBlock", "Damage", "LifeSteal", "Active", "NonbootsMovement", "Tenacity"],
       "isBoots": false,
+      "isBuildItem": true,
+      "from": ["3140", "1037", "1053"],
       "icon": "https://ddragon.leagueoflegends.com/cdn/16.21.1/img/item/3139.png"
+    },
+    {
+      "id": "3140",
+      "name": "Bandana de Mercúrio",
+      "plaintext": "Ative para remover todos os efeitos negativos de controle de grupo",
+      "description": "30 de Resistência Mágica\nMercúrio\nRemove todos os efeitos de Controle de Grupo (exceto Arremesso ao ar).",
+      "gold": 1300,
+      "tags": ["Active", "SpellBlock"],
+      "isBoots": false,
+      "isBuildItem": false,
+      "from": ["1033"],
+      "icon": "https://ddragon.leagueoflegends.com/cdn/16.21.1/img/item/3140.png"
     },
     {
       "id": "3142",
@@ -637,6 +1571,8 @@
       "gold": 2800,
       "tags": ["Damage", "Active", "NonbootsMovement", "ArmorPenetration"],
       "isBoots": false,
+      "isBuildItem": true,
+      "from": ["3134", "6690", "1036"],
       "icon": "https://ddragon.leagueoflegends.com/cdn/16.21.1/img/item/3142.png"
     },
     {
@@ -647,7 +1583,33 @@
       "gold": 2700,
       "tags": ["Health", "Armor", "Active", "Slow"],
       "isBoots": false,
+      "isBuildItem": true,
+      "from": ["3082", "1011"],
       "icon": "https://ddragon.leagueoflegends.com/cdn/16.21.1/img/item/3143.png"
+    },
+    {
+      "id": "3144",
+      "name": "Estilingue do Patrulheiro",
+      "plaintext": "Ative para causar Dano Mágico e reduzir a velocidade do Campeão-alvo inimigo ",
+      "description": "20% de Velocidade de Ataque\nTiro Certeiro\nCausar dano a um Campeão causa Dano Mágico adicional.\nAtaques reduzem o Tempo de Recarga em 1s.",
+      "gold": 600,
+      "tags": ["AttackSpeed"],
+      "isBoots": false,
+      "isBuildItem": false,
+      "from": ["1042", "1042"],
+      "icon": "https://ddragon.leagueoflegends.com/cdn/16.21.1/img/item/3144.png"
+    },
+    {
+      "id": "3145",
+      "name": "Alternador Hextec",
+      "plaintext": "Aumenta o Poder de Habilidade. Causa Dano Mágico adicional periodicamente ao atacar",
+      "description": "45 de Poder de Habilidade\nEntusiasmo\nCausar dano a um Campeão causa Dano Mágico adicional.",
+      "gold": 1100,
+      "tags": ["SpellDamage"],
+      "isBoots": false,
+      "isBuildItem": false,
+      "from": ["1052", "1052"],
+      "icon": "https://ddragon.leagueoflegends.com/cdn/16.21.1/img/item/3145.png"
     },
     {
       "id": "3146",
@@ -657,7 +1619,21 @@
       "gold": 3000,
       "tags": ["Damage", "LifeSteal", "SpellDamage", "Active", "SpellVamp"],
       "isBoots": false,
+      "isBuildItem": true,
+      "from": ["1053", "3145", "1052"],
       "icon": "https://ddragon.leagueoflegends.com/cdn/16.21.1/img/item/3146.png"
+    },
+    {
+      "id": "3147",
+      "name": "Máscara Assustadora",
+      "plaintext": "Causa Dano Físico adicional ao emboscar inimigos",
+      "description": "30 de Poder de Habilidade\n200 de Vida\nLoucura\nPara cada segundo em combate contra Campeões inimigos, causa 2% de dano adicional, com limite de 6%.",
+      "gold": 1300,
+      "tags": ["Health", "SpellDamage"],
+      "isBoots": false,
+      "isBuildItem": false,
+      "from": ["1052", "1028"],
+      "icon": "https://ddragon.leagueoflegends.com/cdn/16.21.1/img/item/3147.png"
     },
     {
       "id": "3152",
@@ -674,6 +1650,8 @@
         "AbilityHaste"
       ],
       "isBoots": false,
+      "isBuildItem": true,
+      "from": ["3145", "3067", "1028"],
       "icon": "https://ddragon.leagueoflegends.com/cdn/16.21.1/img/item/3152.png"
     },
     {
@@ -684,7 +1662,21 @@
       "gold": 3200,
       "tags": ["Damage", "AttackSpeed", "LifeSteal", "Slow", "OnHit"],
       "isBoots": false,
+      "isBuildItem": true,
+      "from": ["1053", "1043", "1037"],
       "icon": "https://ddragon.leagueoflegends.com/cdn/16.21.1/img/item/3153.png"
+    },
+    {
+      "id": "3155",
+      "name": "Hexdrinker",
+      "plaintext": "Aumenta o Dano de Ataque e a Resistência Mágica",
+      "description": "25 de Dano de Ataque\n25 de Resistência Mágica\nSalva-Vidas\nAo sofrer Dano Mágico suficiente para reduzir sua Vida a menos de 30%, recebe um Escudo contra Dano Mágico por 2.5s.",
+      "gold": 1300,
+      "tags": ["Damage", "SpellBlock"],
+      "isBoots": false,
+      "isBuildItem": false,
+      "from": ["1036", "1033", "1036"],
+      "icon": "https://ddragon.leagueoflegends.com/cdn/16.21.1/img/item/3155.png"
     },
     {
       "id": "3156",
@@ -694,6 +1686,8 @@
       "gold": 3100,
       "tags": ["SpellBlock", "Damage", "LifeSteal", "SpellVamp", "AbilityHaste"],
       "isBoots": false,
+      "isBuildItem": true,
+      "from": ["3155", "3133"],
       "icon": "https://ddragon.leagueoflegends.com/cdn/16.21.1/img/item/3156.png"
     },
     {
@@ -704,6 +1698,8 @@
       "gold": 3250,
       "tags": ["Armor", "SpellDamage", "Active"],
       "isBoots": false,
+      "isBuildItem": true,
+      "from": ["1058", "2420"],
       "icon": "https://ddragon.leagueoflegends.com/cdn/16.21.1/img/item/3157.png"
     },
     {
@@ -714,6 +1710,8 @@
       "gold": 900,
       "tags": ["Boots", "CooldownReduction"],
       "isBoots": true,
+      "isBuildItem": true,
+      "from": ["1001", "2022"],
       "icon": "https://ddragon.leagueoflegends.com/cdn/16.21.1/img/item/3158.png"
     },
     {
@@ -724,6 +1722,8 @@
       "gold": 3100,
       "tags": ["Health", "Damage", "AbilityHaste"],
       "isBoots": false,
+      "isBuildItem": true,
+      "from": ["1037", "2021", "1028"],
       "icon": "https://ddragon.leagueoflegends.com/cdn/16.21.1/img/item/3161.png"
     },
     {
@@ -734,6 +1734,8 @@
       "gold": 2850,
       "tags": ["Health", "SpellDamage", "CooldownReduction", "AbilityHaste"],
       "isBoots": false,
+      "isBuildItem": true,
+      "from": ["3916", "1026", "3067"],
       "icon": "https://ddragon.leagueoflegends.com/cdn/16.21.1/img/item/3165.png"
     },
     {
@@ -744,6 +1746,8 @@
       "gold": 1100,
       "tags": ["LifeSteal", "SpellVamp", "Boots"],
       "isBoots": true,
+      "isBuildItem": true,
+      "from": ["3008"],
       "icon": "https://ddragon.leagueoflegends.com/cdn/16.21.1/img/item/3168.png"
     },
     {
@@ -754,6 +1758,8 @@
       "gold": 1000,
       "tags": ["Boots"],
       "isBoots": true,
+      "isBuildItem": true,
+      "from": ["3009"],
       "icon": "https://ddragon.leagueoflegends.com/cdn/16.21.1/img/item/3170.png"
     },
     {
@@ -764,6 +1770,8 @@
       "gold": 900,
       "tags": ["CooldownReduction", "Boots"],
       "isBoots": true,
+      "isBuildItem": true,
+      "from": ["3158"],
       "icon": "https://ddragon.leagueoflegends.com/cdn/16.21.1/img/item/3171.png"
     },
     {
@@ -774,6 +1782,8 @@
       "gold": 1100,
       "tags": ["AttackSpeed", "LifeSteal", "NonbootsMovement"],
       "isBoots": true,
+      "isBuildItem": true,
+      "from": ["3006"],
       "icon": "https://ddragon.leagueoflegends.com/cdn/16.21.1/img/item/3172.png"
     },
     {
@@ -784,6 +1794,8 @@
       "gold": 1250,
       "tags": ["SpellBlock", "Boots", "Tenacity", "MagicResist"],
       "isBoots": true,
+      "isBuildItem": true,
+      "from": ["3111"],
       "icon": "https://ddragon.leagueoflegends.com/cdn/16.21.1/img/item/3173.png"
     },
     {
@@ -794,6 +1806,8 @@
       "gold": 1200,
       "tags": ["Armor", "Boots"],
       "isBoots": true,
+      "isBuildItem": true,
+      "from": ["3047"],
       "icon": "https://ddragon.leagueoflegends.com/cdn/16.21.1/img/item/3174.png"
     },
     {
@@ -804,7 +1818,21 @@
       "gold": 1100,
       "tags": ["Boots", "MagicPenetration"],
       "isBoots": true,
+      "isBuildItem": true,
+      "from": ["3020"],
       "icon": "https://ddragon.leagueoflegends.com/cdn/16.21.1/img/item/3175.png"
+    },
+    {
+      "id": "3177",
+      "name": "Lâmina do Guardião",
+      "plaintext": "Bom item inicial para atacantes.",
+      "description": "30 de Dano de Ataque\n150 de Vida\n15 de Aceleração de Habilidade",
+      "gold": 950,
+      "tags": ["Health", "Damage", "Lane", "AbilityHaste"],
+      "isBoots": false,
+      "isBuildItem": false,
+      "from": [],
+      "icon": "https://ddragon.leagueoflegends.com/cdn/16.21.1/img/item/3177.png"
     },
     {
       "id": "3179",
@@ -814,6 +1842,8 @@
       "gold": 2800,
       "tags": ["Damage", "Vision", "CooldownReduction", "ArmorPenetration", "AbilityHaste"],
       "isBoots": false,
+      "isBuildItem": true,
+      "from": ["3134", "3133"],
       "icon": "https://ddragon.leagueoflegends.com/cdn/16.21.1/img/item/3179.png"
     },
     {
@@ -824,7 +1854,21 @@
       "gold": 3000,
       "tags": ["Health", "Damage", "NonbootsMovement"],
       "isBoots": false,
+      "isBuildItem": true,
+      "from": ["2021", "3066", "1037"],
       "icon": "https://ddragon.leagueoflegends.com/cdn/16.21.1/img/item/3181.png"
+    },
+    {
+      "id": "3184",
+      "name": "Martelo do Guardião",
+      "plaintext": "Bom item iniciante para atacantes",
+      "description": "25 de Dano de Ataque\n150 de Vida\n5% de Roubo de Vida",
+      "gold": 950,
+      "tags": ["Health", "Damage", "LifeSteal", "Lane"],
+      "isBoots": false,
+      "isBuildItem": false,
+      "from": [],
+      "icon": "https://ddragon.leagueoflegends.com/cdn/16.21.1/img/item/3184.png"
     },
     {
       "id": "3190",
@@ -834,7 +1878,21 @@
       "gold": 2200,
       "tags": ["Health", "SpellBlock", "Armor", "Aura", "Active", "MagicResist", "AbilityHaste"],
       "isBoots": false,
+      "isBuildItem": true,
+      "from": ["3067", "1029", "1033"],
       "icon": "https://ddragon.leagueoflegends.com/cdn/16.21.1/img/item/3190.png"
+    },
+    {
+      "id": "3211",
+      "name": "Capuz do Espectro",
+      "plaintext": "Aprimora a defesa e concede regeneração ao receber dano",
+      "description": "200 de Vida\n35 de Resistência Mágica\n100% de Regeneração de Vida base",
+      "gold": 1250,
+      "tags": ["Health", "HealthRegen", "SpellBlock"],
+      "isBoots": false,
+      "isBuildItem": false,
+      "from": ["1028", "1033", "1006"],
+      "icon": "https://ddragon.leagueoflegends.com/cdn/16.21.1/img/item/3211.png"
     },
     {
       "id": "3222",
@@ -844,6 +1902,8 @@
       "gold": 2300,
       "tags": ["Health", "ManaRegen", "Active", "CooldownReduction", "Tenacity", "AbilityHaste"],
       "isBoots": false,
+      "isBuildItem": true,
+      "from": ["3067", "3114"],
       "icon": "https://ddragon.leagueoflegends.com/cdn/16.21.1/img/item/3222.png"
     },
     {
@@ -854,6 +1914,8 @@
       "gold": 3000,
       "tags": ["Damage", "AttackSpeed", "OnHit", "MagicPenetration", "ArmorPenetration"],
       "isBoots": false,
+      "isBuildItem": true,
+      "from": ["3051", "1043"],
       "icon": "https://ddragon.leagueoflegends.com/cdn/16.21.1/img/item/3302.png"
     },
     {
@@ -864,6 +1926,8 @@
       "gold": 2200,
       "tags": ["AttackSpeed", "SpellDamage", "ManaRegen", "NonbootsMovement"],
       "isBoots": false,
+      "isBuildItem": true,
+      "from": ["3113", "3114"],
       "icon": "https://ddragon.leagueoflegends.com/cdn/16.21.1/img/item/3504.png"
     },
     {
@@ -881,6 +1945,8 @@
         "AbilityHaste"
       ],
       "isBoots": false,
+      "isBuildItem": true,
+      "from": ["3057", "3133", "1018"],
       "icon": "https://ddragon.leagueoflegends.com/cdn/16.21.1/img/item/3508.png"
     },
     {
@@ -891,6 +1957,8 @@
       "gold": 2900,
       "tags": ["Health", "Armor", "Slow", "NonbootsMovement"],
       "isBoots": false,
+      "isBuildItem": true,
+      "from": ["3066", "1028", "1031"],
       "icon": "https://ddragon.leagueoflegends.com/cdn/16.21.1/img/item/3742.png"
     },
     {
@@ -901,7 +1969,45 @@
       "gold": 3300,
       "tags": ["Health", "HealthRegen", "Damage", "OnHit"],
       "isBoots": false,
+      "isBuildItem": true,
+      "from": ["3077", "2021", "1011"],
       "icon": "https://ddragon.leagueoflegends.com/cdn/16.21.1/img/item/3748.png"
+    },
+    {
+      "id": "3801",
+      "name": "Braçadeira Cristalina",
+      "plaintext": "Concede Vida e Regeneração de Vida",
+      "description": "200 de Vida\n100% de Regeneração de Vida base",
+      "gold": 800,
+      "tags": ["Health", "HealthRegen"],
+      "isBoots": false,
+      "isBuildItem": false,
+      "from": ["1028", "1006"],
+      "icon": "https://ddragon.leagueoflegends.com/cdn/16.21.1/img/item/3801.png"
+    },
+    {
+      "id": "3802",
+      "name": "Capítulo Perdido",
+      "plaintext": "Restaura Mana ao subir de nível",
+      "description": "40 de Poder de Habilidade\n300 de Mana\n10 de Aceleração de Habilidade\nIluminar\nSubir de nível restaura 20% do Mana máximo ao longo de 3s.",
+      "gold": 1200,
+      "tags": ["SpellDamage", "Mana", "ManaRegen", "CooldownReduction", "AbilityHaste"],
+      "isBoots": false,
+      "isBuildItem": false,
+      "from": ["1052", "1027", "2022"],
+      "icon": "https://ddragon.leagueoflegends.com/cdn/16.21.1/img/item/3802.png"
+    },
+    {
+      "id": "3803",
+      "name": "Catalisador das Eras",
+      "plaintext": "",
+      "description": "300 de Vida\n375 de Mana\nEternidade\nRestaura 10% do dano sofrido de Campeões em forma de Mana.\nConjurar uma Habilidade cura 25% do Mana gasto.",
+      "gold": 1300,
+      "tags": ["Health", "HealthRegen", "Mana", "ManaRegen"],
+      "isBoots": false,
+      "isBuildItem": false,
+      "from": ["1028", "1028", "1027"],
+      "icon": "https://ddragon.leagueoflegends.com/cdn/16.21.1/img/item/3803.png"
     },
     {
       "id": "3814",
@@ -911,7 +2017,93 @@
       "gold": 3000,
       "tags": ["Health", "Damage", "ArmorPenetration"],
       "isBoots": false,
+      "isBuildItem": true,
+      "from": ["3134", "2021"],
       "icon": "https://ddragon.leagueoflegends.com/cdn/16.21.1/img/item/3814.png"
+    },
+    {
+      "id": "3865",
+      "name": "Atlas Mundial",
+      "plaintext": "",
+      "description": "",
+      "gold": 400,
+      "tags": ["Health", "ManaRegen", "Vision", "GoldPer", "Lane"],
+      "isBoots": false,
+      "isBuildItem": false,
+      "from": [],
+      "icon": "https://ddragon.leagueoflegends.com/cdn/16.21.1/img/item/3865.png"
+    },
+    {
+      "id": "3869",
+      "name": "Oposição Celestial",
+      "plaintext": "",
+      "description": "200 de Vida\n75% de Regeneração de Vida base\n75% de Regeneração de Mana base\n9 de ouro a cada 10s\nBênção da Montanha\nReduz o dano sofrido por Campeões por 2s após sofrer dano de um Campeão. Quando o efeito termina, causa 50% de Lentidão a inimigos próximos por 1.5s.\nAtivo (4 cargas)\nPosiciona uma Sentinela Invisível que concede visão.",
+      "gold": 400,
+      "tags": ["Health", "HealthRegen", "ManaRegen", "Vision", "GoldPer", "Lane"],
+      "isBoots": false,
+      "isBuildItem": false,
+      "from": ["3867"],
+      "icon": "https://ddragon.leagueoflegends.com/cdn/16.21.1/img/item/3869.png"
+    },
+    {
+      "id": "3870",
+      "name": "Criassonhos",
+      "plaintext": "",
+      "description": "200 de Vida\n75% de Regeneração de Vida base\n75% de Regeneração de Mana base\n9 de ouro a cada 10s\nCriassonhos\nConceder cura ou Escudo a um aliado sopra Bolhas do Sonho em direção a ele por 3s. O próximo Ataque dele causará Dano Mágico adicional ao contato e o próximo dano sofrido por ele será reduzido.\nAtivo (4 cargas)\nPosiciona uma Sentinela Invisível que concede visão.",
+      "gold": 400,
+      "tags": ["Health", "HealthRegen", "ManaRegen", "Vision", "GoldPer", "Lane"],
+      "isBoots": false,
+      "isBuildItem": false,
+      "from": ["3867"],
+      "icon": "https://ddragon.leagueoflegends.com/cdn/16.21.1/img/item/3870.png"
+    },
+    {
+      "id": "3871",
+      "name": "Invadomínio de Zaz'Zak",
+      "plaintext": "",
+      "description": "200 de Vida\n75% de Regeneração de Vida base\n75% de Regeneração de Mana base\n9 de ouro a cada 10s\nExplosão do Vazio\nCausar dano de Habilidade a um Campeão provoca uma explosão que causa Dano Mágico.\nAtivo (4 cargas)\nPosiciona uma Sentinela Invisível que concede visão.",
+      "gold": 400,
+      "tags": ["Health", "HealthRegen", "ManaRegen", "Vision", "GoldPer", "Lane"],
+      "isBoots": false,
+      "isBuildItem": false,
+      "from": ["3867"],
+      "icon": "https://ddragon.leagueoflegends.com/cdn/16.21.1/img/item/3871.png"
+    },
+    {
+      "id": "3876",
+      "name": "Trenó do Solstício",
+      "plaintext": "",
+      "description": "200 de Vida\n75% de Regeneração de Vida base\n75% de Regeneração de Mana base\n9 de ouro a cada 10s\nPasseio de Trenó\nCausar Lentidão a um Campeão inimigo ou Imobilizá-lo próximo a aliados restaura Vida e concede 20% de Velocidade de Movimento que decai ao longo de 2.5s para você e para um aliado próximo.\nAtivo (4 cargas)\nPosiciona uma Sentinela Invisível que concede visão.",
+      "gold": 400,
+      "tags": ["Health", "HealthRegen", "ManaRegen", "Vision", "GoldPer", "Lane"],
+      "isBoots": false,
+      "isBuildItem": false,
+      "from": ["3867"],
+      "icon": "https://ddragon.leagueoflegends.com/cdn/16.21.1/img/item/3876.png"
+    },
+    {
+      "id": "3877",
+      "name": "Canção de Sangue",
+      "plaintext": "",
+      "description": "200 de Vida\n75% de Regeneração de Vida base\n75% de Regeneração de Mana base\n9 de ouro a cada 10s\nLâmina Arcana\nApós usar uma Habilidade, seu próximo Ataque causa Dano Físico adicional ao contato. Se o alvo for um Campeão, ele sofrerá dano aumentado por 4s.\nAtivo (4 cargas)\nPosiciona uma Sentinela Invisível que concede visão.",
+      "gold": 400,
+      "tags": ["Health", "HealthRegen", "ManaRegen", "Vision", "GoldPer", "Lane"],
+      "isBoots": false,
+      "isBuildItem": false,
+      "from": ["3867"],
+      "icon": "https://ddragon.leagueoflegends.com/cdn/16.21.1/img/item/3877.png"
+    },
+    {
+      "id": "3916",
+      "name": "Orbe do Oblívio",
+      "plaintext": "Aumenta o Dano Mágico",
+      "description": "25 de Poder de Habilidade\nFeridas Dolorosas\nCausar Dano Mágico a Campeões aplica 40% de Ferimento por 3s.",
+      "gold": 800,
+      "tags": ["SpellDamage"],
+      "isBoots": false,
+      "isBuildItem": false,
+      "from": ["1052"],
+      "icon": "https://ddragon.leagueoflegends.com/cdn/16.21.1/img/item/3916.png"
     },
     {
       "id": "4005",
@@ -921,6 +2113,8 @@
       "gold": 2400,
       "tags": ["SpellDamage", "ManaRegen", "CooldownReduction", "AbilityHaste"],
       "isBoots": false,
+      "isBuildItem": true,
+      "from": ["1052", "4642", "1052"],
       "icon": "https://ddragon.leagueoflegends.com/cdn/16.21.1/img/item/4005.png"
     },
     {
@@ -931,6 +2125,8 @@
       "gold": 2800,
       "tags": ["Health", "SpellBlock", "NonbootsMovement"],
       "isBoots": false,
+      "isBuildItem": true,
+      "from": ["1057", "1028", "3066"],
       "icon": "https://ddragon.leagueoflegends.com/cdn/16.21.1/img/item/4401.png"
     },
     {
@@ -941,6 +2137,8 @@
       "gold": 2700,
       "tags": ["SpellDamage", "AbilityHaste"],
       "isBoots": false,
+      "isBuildItem": true,
+      "from": ["3108", "3108", "1052"],
       "icon": "https://ddragon.leagueoflegends.com/cdn/16.21.1/img/item/4628.png"
     },
     {
@@ -951,7 +2149,33 @@
       "gold": 3000,
       "tags": ["Health", "SpellDamage", "NonbootsMovement", "AbilityHaste"],
       "isBoots": false,
+      "isBuildItem": true,
+      "from": ["3067", "3113", "3108"],
       "icon": "https://ddragon.leagueoflegends.com/cdn/16.21.1/img/item/4629.png"
+    },
+    {
+      "id": "4630",
+      "name": "Joia da Ruína",
+      "plaintext": "",
+      "description": "25 de Poder de Habilidade\n13% de Penetração Mágica",
+      "gold": 1100,
+      "tags": ["MagicPenetration", "SpellDamage"],
+      "isBoots": false,
+      "isBuildItem": false,
+      "from": ["1052"],
+      "icon": "https://ddragon.leagueoflegends.com/cdn/16.21.1/img/item/4630.png"
+    },
+    {
+      "id": "4632",
+      "name": "Barreira Verdejante",
+      "plaintext": "",
+      "description": "40 de Poder de Habilidade\n25 de Resistência Mágica\nAnular\nConcede um Escudo de Feitiço que bloqueia a próxima Habilidade inimiga.",
+      "gold": 1600,
+      "tags": ["SpellBlock", "SpellDamage"],
+      "isBoots": false,
+      "isBuildItem": false,
+      "from": ["1052", "1033", "1052"],
+      "icon": "https://ddragon.leagueoflegends.com/cdn/16.21.1/img/item/4632.png"
     },
     {
       "id": "4633",
@@ -961,7 +2185,21 @@
       "gold": 3100,
       "tags": ["Health", "SpellDamage", "CooldownReduction", "SpellVamp"],
       "isBoots": false,
+      "isBuildItem": true,
+      "from": ["3147", "3108"],
       "icon": "https://ddragon.leagueoflegends.com/cdn/16.21.1/img/item/4633.png"
+    },
+    {
+      "id": "4642",
+      "name": "Espelho de Bandópolis",
+      "plaintext": "",
+      "description": "20 de Poder de Habilidade\n100% de Regeneração de Mana base\n10 de Aceleração de Habilidade",
+      "gold": 900,
+      "tags": ["SpellDamage", "ManaRegen", "CooldownReduction", "AbilityHaste"],
+      "isBoots": false,
+      "isBuildItem": false,
+      "from": ["1004", "1052", "2022"],
+      "icon": "https://ddragon.leagueoflegends.com/cdn/16.21.1/img/item/4642.png"
     },
     {
       "id": "4645",
@@ -971,7 +2209,21 @@
       "gold": 3200,
       "tags": ["SpellDamage", "MagicPenetration"],
       "isBoots": false,
+      "isBuildItem": true,
+      "from": ["3145", "1058"],
       "icon": "https://ddragon.leagueoflegends.com/cdn/16.21.1/img/item/4645.png"
+    },
+    {
+      "id": "4646",
+      "name": "Ápice da Tempestade",
+      "plaintext": "",
+      "description": "90 de Poder de Habilidade\n15 de Penetração Mágica\n6% de Velocidade de Movimento\nInvasor da Tempestade\nCausar dano equivalente a 25% da Vida máxima de um Campeão dentro de 2.5s aplica Dilúvio a ele.\nDilúvio\nDepois de 2s, causa Dano Mágico. Se o alvo morrer antes que Dilúvio seja acionado, causa dano a inimigos próximos.",
+      "gold": 2800,
+      "tags": ["SpellDamage", "GoldPer", "NonbootsMovement", "MagicPenetration"],
+      "isBoots": false,
+      "isBuildItem": false,
+      "from": ["3145", "3113"],
+      "icon": "https://ddragon.leagueoflegends.com/cdn/16.21.1/img/item/4646.png"
     },
     {
       "id": "6333",
@@ -981,6 +2233,8 @@
       "gold": 3300,
       "tags": ["Armor", "Damage", "AbilityHaste"],
       "isBoots": false,
+      "isBuildItem": true,
+      "from": ["2019", "1037", "3133"],
       "icon": "https://ddragon.leagueoflegends.com/cdn/16.21.1/img/item/6333.png"
     },
     {
@@ -991,6 +2245,8 @@
       "gold": 3000,
       "tags": ["Health", "Damage", "CooldownReduction", "AbilityHaste"],
       "isBoots": false,
+      "isBuildItem": true,
+      "from": ["3123", "1011", "3133"],
       "icon": "https://ddragon.leagueoflegends.com/cdn/16.21.1/img/item/6609.png"
     },
     {
@@ -1001,6 +2257,8 @@
       "gold": 3100,
       "tags": ["Health", "Damage", "CooldownReduction", "AbilityHaste"],
       "isBoots": false,
+      "isBuildItem": true,
+      "from": ["2021", "3133"],
       "icon": "https://ddragon.leagueoflegends.com/cdn/16.21.1/img/item/6610.png"
     },
     {
@@ -1011,6 +2269,8 @@
       "gold": 2250,
       "tags": ["SpellDamage", "ManaRegen", "CooldownReduction", "AbilityHaste"],
       "isBoots": false,
+      "isBuildItem": true,
+      "from": ["3108", "3114"],
       "icon": "https://ddragon.leagueoflegends.com/cdn/16.21.1/img/item/6616.png"
     },
     {
@@ -1021,6 +2281,8 @@
       "gold": 2200,
       "tags": ["Health", "SpellDamage", "ManaRegen", "CooldownReduction", "AbilityHaste"],
       "isBoots": false,
+      "isBuildItem": true,
+      "from": ["3067", "4642"],
       "icon": "https://ddragon.leagueoflegends.com/cdn/16.21.1/img/item/6617.png"
     },
     {
@@ -1031,6 +2293,8 @@
       "gold": 2200,
       "tags": ["Health", "SpellDamage", "ManaRegen", "CooldownReduction", "AbilityHaste"],
       "isBoots": false,
+      "isBuildItem": true,
+      "from": ["3067", "4642"],
       "icon": "https://ddragon.leagueoflegends.com/cdn/16.21.1/img/item/6620.png"
     },
     {
@@ -1041,6 +2305,8 @@
       "gold": 2500,
       "tags": ["SpellDamage", "ManaRegen"],
       "isBoots": false,
+      "isBuildItem": true,
+      "from": ["1026", "3114", "3114"],
       "icon": "https://ddragon.leagueoflegends.com/cdn/16.21.1/img/item/6621.png"
     },
     {
@@ -1051,6 +2317,8 @@
       "gold": 3300,
       "tags": ["Health", "Damage", "AttackSpeed", "Slow"],
       "isBoots": false,
+      "isBuildItem": true,
+      "from": ["3077", "3044", "1042"],
       "icon": "https://ddragon.leagueoflegends.com/cdn/16.21.1/img/item/6631.png"
     },
     {
@@ -1061,6 +2329,8 @@
       "gold": 3000,
       "tags": ["Health", "SpellDamage"],
       "isBoots": false,
+      "isBuildItem": true,
+      "from": ["3147", "2508"],
       "icon": "https://ddragon.leagueoflegends.com/cdn/16.21.1/img/item/6653.png"
     },
     {
@@ -1071,6 +2341,8 @@
       "gold": 2750,
       "tags": ["SpellDamage", "Mana", "CooldownReduction", "AbilityHaste"],
       "isBoots": false,
+      "isBuildItem": true,
+      "from": ["3802", "3145"],
       "icon": "https://ddragon.leagueoflegends.com/cdn/16.21.1/img/item/6655.png"
     },
     {
@@ -1081,7 +2353,21 @@
       "gold": 2600,
       "tags": ["Health", "HealthRegen", "SpellDamage", "Mana", "ManaRegen"],
       "isBoots": false,
+      "isBuildItem": true,
+      "from": ["1026", "3803"],
       "icon": "https://ddragon.leagueoflegends.com/cdn/16.21.1/img/item/6657.png"
+    },
+    {
+      "id": "6660",
+      "name": "Brasa de Bami",
+      "plaintext": "",
+      "description": "150 de Vida\n5 de Aceleração de Habilidade\nImolar\nDepois de causar ou sofrer qualquer dano, você causa Dano Mágico a inimigos próximos por 3s.",
+      "gold": 900,
+      "tags": ["Health", "AbilityHaste"],
+      "isBoots": false,
+      "isBuildItem": false,
+      "from": ["1028", "2022"],
+      "icon": "https://ddragon.leagueoflegends.com/cdn/16.21.1/img/item/6660.png"
     },
     {
       "id": "6662",
@@ -1091,6 +2377,8 @@
       "gold": 2900,
       "tags": ["Health", "Armor", "CooldownReduction", "Slow", "OnHit", "AbilityHaste"],
       "isBoots": false,
+      "isBuildItem": true,
+      "from": ["3057", "1028", "1031"],
       "icon": "https://ddragon.leagueoflegends.com/cdn/16.21.1/img/item/6662.png"
     },
     {
@@ -1101,6 +2389,8 @@
       "gold": 2800,
       "tags": ["Health", "SpellBlock", "HealthRegen", "Aura", "MagicResist", "AbilityHaste"],
       "isBoots": false,
+      "isBuildItem": true,
+      "from": ["6660", "3211"],
       "icon": "https://ddragon.leagueoflegends.com/cdn/16.21.1/img/item/6664.png"
     },
     {
@@ -1111,7 +2401,21 @@
       "gold": 3200,
       "tags": ["Health", "SpellBlock", "Armor", "MagicResist"],
       "isBoots": false,
+      "isBuildItem": true,
+      "from": ["1011", "1031", "1057"],
       "icon": "https://ddragon.leagueoflegends.com/cdn/16.21.1/img/item/6665.png"
+    },
+    {
+      "id": "6670",
+      "name": "Aljava Vespertina",
+      "plaintext": "",
+      "description": "15 de Dano de Ataque\n20% de Chance de Acerto Crítico",
+      "gold": 1300,
+      "tags": ["Damage", "CriticalStrike"],
+      "isBoots": false,
+      "isBuildItem": false,
+      "from": ["1036", "1018"],
+      "icon": "https://ddragon.leagueoflegends.com/cdn/16.21.1/img/item/6670.png"
     },
     {
       "id": "6672",
@@ -1121,6 +2425,8 @@
       "gold": 3000,
       "tags": ["Damage", "AttackSpeed", "OnHit", "NonbootsMovement"],
       "isBoots": false,
+      "isBuildItem": true,
+      "from": ["6690", "3051", "1043"],
       "icon": "https://ddragon.leagueoflegends.com/cdn/16.21.1/img/item/6672.png"
     },
     {
@@ -1131,6 +2437,8 @@
       "gold": 3000,
       "tags": ["Damage", "CriticalStrike"],
       "isBoots": false,
+      "isBuildItem": true,
+      "from": ["1037", "6670"],
       "icon": "https://ddragon.leagueoflegends.com/cdn/16.21.1/img/item/6673.png"
     },
     {
@@ -1141,6 +2449,8 @@
       "gold": 2650,
       "tags": ["CriticalStrike", "AttackSpeed", "NonbootsMovement"],
       "isBoots": false,
+      "isBuildItem": true,
+      "from": ["1042", "3086", "1042"],
       "icon": "https://ddragon.leagueoflegends.com/cdn/16.21.1/img/item/6675.png"
     },
     {
@@ -1151,7 +2461,21 @@
       "gold": 3000,
       "tags": ["Damage", "CriticalStrike", "ArmorPenetration"],
       "isBoots": false,
+      "isBuildItem": true,
+      "from": ["1037", "3134", "1018"],
       "icon": "https://ddragon.leagueoflegends.com/cdn/16.21.1/img/item/6676.png"
+    },
+    {
+      "id": "6690",
+      "name": "Retriz",
+      "plaintext": "",
+      "description": "15 de Dano de Ataque\n4% de Velocidade de Movimento",
+      "gold": 775,
+      "tags": ["Damage", "NonbootsMovement"],
+      "isBoots": false,
+      "isBuildItem": false,
+      "from": ["1036"],
+      "icon": "https://ddragon.leagueoflegends.com/cdn/16.21.1/img/item/6690.png"
     },
     {
       "id": "6692",
@@ -1161,6 +2485,8 @@
       "gold": 2900,
       "tags": ["Damage", "CooldownReduction", "AbilityHaste"],
       "isBoots": false,
+      "isBuildItem": true,
+      "from": ["3133", "1037", "1036"],
       "icon": "https://ddragon.leagueoflegends.com/cdn/16.21.1/img/item/6692.png"
     },
     {
@@ -1171,6 +2497,8 @@
       "gold": 3000,
       "tags": ["Damage", "CooldownReduction", "ArmorPenetration", "AbilityHaste"],
       "isBoots": false,
+      "isBuildItem": true,
+      "from": ["3133", "3035"],
       "icon": "https://ddragon.leagueoflegends.com/cdn/16.21.1/img/item/6694.png"
     },
     {
@@ -1181,6 +2509,8 @@
       "gold": 2500,
       "tags": ["Damage", "ArmorPenetration"],
       "isBoots": false,
+      "isBuildItem": true,
+      "from": ["3134", "1037"],
       "icon": "https://ddragon.leagueoflegends.com/cdn/16.21.1/img/item/6695.png"
     },
     {
@@ -1191,6 +2521,8 @@
       "gold": 2750,
       "tags": ["Damage", "ArmorPenetration", "AbilityHaste"],
       "isBoots": false,
+      "isBuildItem": true,
+      "from": ["2020", "3133"],
       "icon": "https://ddragon.leagueoflegends.com/cdn/16.21.1/img/item/6696.png"
     },
     {
@@ -1201,6 +2533,8 @@
       "gold": 2800,
       "tags": ["Damage", "Active", "CooldownReduction", "ArmorPenetration", "AbilityHaste"],
       "isBoots": false,
+      "isBuildItem": true,
+      "from": ["3134", "3133"],
       "icon": "https://ddragon.leagueoflegends.com/cdn/16.21.1/img/item/6697.png"
     },
     {
@@ -1211,6 +2545,8 @@
       "gold": 2850,
       "tags": ["Damage", "Active", "CooldownReduction", "ArmorPenetration", "AbilityHaste"],
       "isBoots": false,
+      "isBuildItem": true,
+      "from": ["3077", "2020"],
       "icon": "https://ddragon.leagueoflegends.com/cdn/16.21.1/img/item/6698.png"
     },
     {
@@ -1221,6 +2557,8 @@
       "gold": 3000,
       "tags": ["Damage", "Active", "CooldownReduction", "ArmorPenetration", "AbilityHaste"],
       "isBoots": false,
+      "isBuildItem": true,
+      "from": ["2020", "1036", "1036"],
       "icon": "https://ddragon.leagueoflegends.com/cdn/16.21.1/img/item/6699.png"
     },
     {
@@ -1231,6 +2569,8 @@
       "gold": 2900,
       "tags": ["Health", "SpellDamage", "CooldownReduction", "MagicPenetration"],
       "isBoots": false,
+      "isBuildItem": true,
+      "from": ["3147", "3108"],
       "icon": "https://ddragon.leagueoflegends.com/cdn/16.21.1/img/item/8010.png"
     },
     {
@@ -1241,6 +2581,8 @@
       "gold": 2650,
       "tags": ["Health", "SpellBlock", "CooldownReduction", "MagicResist", "AbilityHaste"],
       "isBoots": false,
+      "isBuildItem": true,
+      "from": ["3067", "1057"],
       "icon": "https://ddragon.leagueoflegends.com/cdn/16.21.1/img/item/8020.png"
     }
   ]

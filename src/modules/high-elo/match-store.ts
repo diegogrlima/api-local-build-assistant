@@ -68,6 +68,16 @@ export class MatchStore {
     this.prune();
   }
 
+  // Partidas mais recentes ainda sem a linha do tempo completa (coletadas antes dela ou da ordem
+  // das habilidades), para a coleta completar aos poucos.
+  withoutTimeline(limit: number, skip: ReadonlySet<string> = new Set()): MatchSample[] {
+    return [...this.matches.values()]
+      .filter((match) => !skip.has(match.matchId))
+      .filter((match) => match.participants.some((p) => p.timeline?.skillOrder === undefined))
+      .sort((a, b) => b.playedAt - a.playedAt)
+      .slice(0, limit);
+  }
+
   getAll(): MatchSample[] {
     return [...this.matches.values()];
   }

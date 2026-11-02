@@ -8,5 +8,10 @@ export type Item = {
   gold: number;
   tags: string[];
   isBoots: boolean;
+  // Item completo ou botas que a IA pode recomendar. Os demais (iniciais, componentes,
+  // consumíveis) só aparecem no caminho da build.
+  isBuildItem: boolean;
+  // Componentes diretos da receita (com repetição, ex.: duas Espadas Longas).
+  from: string[];
   icon: string;
 };

@@ -5,6 +5,7 @@ import type { RuneTree } from '../runes/rune.js';
 import type { HighEloSummary, Usage } from '../high-elo/high-elo-stats.js';
 import type { RunePage } from '../high-elo/match-sample.js';
 import { analyzeEnemyTeam, primaryDamage } from './matchup-analysis.js';
+import { isJungleCompanion, isSupportItem, STARTING_GOLD } from './starter-items.js';
 
 export const BUILD_SIZE = 6;
 export const MAX_BOOTS = 1;
@@ -23,9 +24,13 @@ export type RecommendationContext = {
   champion: LanedDetails;
   enemies: LanedDetails[];
   items: Item[];
+  // Itens permitidos na compra inicial (Doran, poções, companheiro da selva...).
+  starterItems: Item[];
   runeTrees: RuneTree[];
   // null quando não há partidas de alto elo desse campeão nessa rota.
   highElo: HighEloSummary | null;
+  // true quando as partidas de alto elo não trazem a ordem de habilidades do campeão.
+  skillOrderFromAi?: boolean;
 };
 
 export const SYSTEM_INSTRUCTION = `Você é um analista de builds de League of Legends.
@@ -64,7 +69,17 @@ Regras obrigatórias:
     - Taxa de uso pesa mais que taxa de vitória; com poucas partidas, a taxa de vitória varia muito.
     - Quando "amostraConfiavel" for false, use os dados só como indício e avise em "warnings".
     - Se "dadosAltoElo" for null, avise em "warnings" que a recomendação não se baseia em partidas de alto elo.
-    Cite os dados de alto elo na justificativa quando eles sustentarem a escolha.`;
+    Cite os dados de alto elo na justificativa quando eles sustentarem a escolha.
+13. Compra inicial ("starter"): escolha os itens comprados no início da partida usando só
+    "itensIniciaisPermitidos" (pode repetir, ex.: 2 poções), com custo total de até ${STARTING_GOLD} de ouro.
+    - Na selva, inclua exatamente 1 companheiro da selva ("companheiroDaSelva": true); fora dela, nenhum.
+    - No suporte, inclua exatamente 1 item de suporte ("itemDeSuporte": true); fora dele, nenhum.
+    - Nas demais rotas, escolha o item inicial adequado ao campeão e ao oponente direto
+      (ex.: Anel de Doran para conjuradores, Lâmina de Doran para atacantes, Escudo de Doran contra pressão).
+    - Parta de "compraInicialMaisUsada" de "dadosAltoElo" quando existir e explique os desvios.
+14. Quando "ordemDeHabilidadesPelaIa" for true, preencha "skillPriority": a ordem para maximizar
+    Q, W e E (cada uma uma vez), com base nas "habilidades" do campeão do jogador e no oponente direto.
+    Explique em linguagem simples e avise em "warnings" que a ordem não vem de partidas de alto elo.`;
 
 function describeChampion(champion: ChampionDetails) {
   return {
@@ -91,9 +106,9 @@ function percent(part: number, total: number): number {
 
 function describeHighElo(
   summary: HighEloSummary,
-  { enemies, items, runeTrees }: Omit<RecommendationContext, 'champion' | 'highElo'>,
+  { enemies, items, starterItems, runeTrees }: Omit<RecommendationContext, 'champion' | 'highElo'>,
 ) {
-  const itemNames = new Map(items.map((item) => [item.id, item.name]));
+  const itemNames = new Map([...items, ...starterItems].map((item) => [item.id, item.name]));
   const treeNames = new Map(runeTrees.map((tree) => [tree.id, tree.name]));
   const runeNames = new Map(
     runeTrees
@@ -128,6 +143,15 @@ function describeHighElo(
     taxaDeVitoriaPct: percent(summary.wins, summary.matches),
     amostraConfiavel: summary.matches >= MIN_RELIABLE_MATCHES,
     itensMaisUsados: describeItems(summary.items, summary.matches),
+    // Só existe quando há partidas com a linha do tempo de compras.
+    compraInicialMaisUsada:
+      summary.buildPath && summary.buildPath.starterItems.length > 0
+        ? {
+            itens: summary.buildPath.starterItems.map((id) => ({ id, nome: itemNames.get(id) })),
+            partidas: summary.buildPath.starterMatches,
+            taxaDeUsoPct: percent(summary.buildPath.starterMatches, summary.buildPath.matches),
+          }
+        : null,
     runasPrincipaisMaisUsadas: summary.keystones.map((usage) => ({
       id: usage.keystoneId,
       nome: runeNames.get(usage.keystoneId),
@@ -153,8 +177,10 @@ export function buildPrompt({
   champion,
   enemies,
   items,
+  starterItems,
   runeTrees,
   highElo,
+  skillOrderFromAi = false,
 }: RecommendationContext): string {
   const laneOpponent = enemies.find((enemy) => enemy.lane === champion.lane);
   const context = {
@@ -179,13 +205,23 @@ export function buildPrompt({
       resumo: item.plaintext,
       descricao: item.description,
     })),
+    itensIniciaisPermitidos: starterItems.map((item) => ({
+      id: item.id,
+      nome: item.name,
+      ouro: item.gold,
+      categorias: item.tags,
+      companheiroDaSelva: isJungleCompanion(item),
+      itemDeSuporte: isSupportItem(item),
+      descricao: item.description,
+    })),
     arvoresDeRunas: runeTrees.map((tree) => ({
       id: tree.id,
       nome: tree.name,
       runasPrincipais: tree.keystones.map(describeRune),
       linhas: tree.slots.map((slot) => slot.map(describeRune)),
     })),
-    dadosAltoElo: highElo && describeHighElo(highElo, { enemies, items, runeTrees }),
+    ordemDeHabilidadesPelaIa: skillOrderFromAi,
+    dadosAltoElo: highElo && describeHighElo(highElo, { enemies, items, starterItems, runeTrees }),
   };
 
   return [
@@ -198,7 +234,13 @@ export function buildPrompt({
 }
 
 // Os enums restringem a resposta da IA aos itens, runas e adversários informados.
-export function buildResponseSchema(itemIds: string[], enemyIds: string[], runeTrees: RuneTree[]) {
+export function buildResponseSchema(
+  itemIds: string[],
+  enemyIds: string[],
+  runeTrees: RuneTree[],
+  starterItemIds: string[],
+  { skillPriority = false }: { skillPriority?: boolean } = {},
+) {
   const treeIds = runeTrees.map((tree) => tree.id);
   const keystoneIds = runeTrees.flatMap((tree) => tree.keystones.map((rune) => rune.id));
   const runeIds = runeTrees.flatMap((tree) => tree.slots.flat().map((rune) => rune.id));
@@ -219,6 +261,24 @@ export function buildResponseSchema(itemIds: string[], enemyIds: string[], runeT
           },
           required: ['championId', 'reason'],
         },
+      },
+      starter: {
+        type: 'object',
+        properties: {
+          itemIds: {
+            type: 'array',
+            description: `Compra inicial, até ${STARTING_GOLD} de ouro; itens podem se repetir.`,
+            minItems: 1,
+            maxItems: 6,
+            items: { type: 'string', enum: starterItemIds },
+          },
+          reason: {
+            type: 'string',
+            description:
+              'Por que esta compra inicial, citando o campeão, a rota e o oponente direto.',
+          },
+        },
+        required: ['itemIds', 'reason'],
       },
       items: {
         type: 'array',
@@ -271,6 +331,22 @@ export function buildResponseSchema(itemIds: string[], enemyIds: string[], runeT
           'reason',
         ],
       },
+      ...(skillPriority && {
+        skillPriority: {
+          type: 'object',
+          properties: {
+            order: {
+              type: 'array',
+              description: 'Ordem para maximizar as habilidades básicas, ex.: ["Q", "E", "W"].',
+              minItems: 3,
+              maxItems: 3,
+              items: { type: 'string', enum: ['Q', 'W', 'E'] },
+            },
+            reason: { type: 'string', description: 'Por que esta ordem de habilidades.' },
+          },
+          required: ['order', 'reason'],
+        },
+      }),
       justification: {
         type: 'string',
         description: 'Por que a build é adequada contra os adversários informados.',
@@ -285,8 +361,26 @@ export function buildResponseSchema(itemIds: string[], enemyIds: string[], runeT
         items: { type: 'string' },
       },
     },
-    required: ['threats', 'items', 'runes', 'justification', 'balance', 'warnings'],
+    required: [
+      'threats',
+      'starter',
+      'items',
+      'runes',
+      ...(skillPriority ? ['skillPriority'] : []),
+      'justification',
+      'balance',
+      'warnings',
+    ],
     // Pede a análise das ameaças antes da escolha dos itens e das runas.
-    propertyOrdering: ['threats', 'items', 'runes', 'justification', 'balance', 'warnings'],
+    propertyOrdering: [
+      'threats',
+      'starter',
+      'items',
+      'runes',
+      ...(skillPriority ? ['skillPriority'] : []),
+      'justification',
+      'balance',
+      'warnings',
+    ],
   };
 }

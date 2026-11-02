@@ -62,8 +62,13 @@ describe('POST /builds/recommendations', () => {
       gold: 1100,
       reason: 'Motivo do item 3006.',
       highEloPickRate: null,
+      highEloSecond: null,
+      components: [],
     });
     expect(body.highElo).toBeNull();
+    expect(body.starterItems.map((item: { id: string }) => item.id)).toEqual(['1055', '2003']);
+    expect(body.starterReason).not.toBe('');
+    expect(body.skillOrder).toMatchObject({ source: 'ai', priority: ['Q', 'E', 'W'] });
     expect(body.purchaseOrder[1]).toBe('Gume do Infinito');
     expect(body.totalGold).toBe(1100 + 3500 + 3000 + 3300 + 3400 + 3200);
     expect(body.threats).toEqual([

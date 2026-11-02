@@ -15,6 +15,8 @@ export function createItem(overrides: Partial<Item> & Pick<Item, 'id' | 'name'>)
     gold: 3000,
     tags: [],
     isBoots: false,
+    isBuildItem: true,
+    from: [],
     icon: `${overrides.id}.png`,
     ...overrides,
   };
@@ -55,11 +57,42 @@ export const testChampions: Champion[] = ['1', '2', '3', '4', '5', '6', '7'].map
 export const testItems: Item[] = [
   createItem({ id: '3006', name: 'Grevas do Berserker', isBoots: true, gold: 1100 }),
   createItem({ id: '3111', name: 'Passos de Mercúrio', isBoots: true, gold: 1250 }),
-  createItem({ id: '3031', name: 'Gume do Infinito', gold: 3500 }),
+  createItem({ id: '3031', name: 'Gume do Infinito', gold: 3500, from: ['1038', '1036', '1036'] }),
   createItem({ id: '3033', name: 'Lembrete Mortal', gold: 3000 }),
   createItem({ id: '3036', name: 'Lembranças do Lorde Dominik', gold: 3300 }),
   createItem({ id: '3072', name: 'Sedenta por Sangue', gold: 3400 }),
   createItem({ id: '3026', name: 'Anjo Guardião', gold: 3200 }),
+  // Itens iniciais e componentes: só aparecem no caminho da build.
+  createItem({
+    id: '1055',
+    name: 'Lâmina de Doran',
+    gold: 450,
+    tags: ['Lane'],
+    isBuildItem: false,
+  }),
+  createItem({
+    id: '2003',
+    name: 'Poção de Vida',
+    gold: 50,
+    tags: ['Consumable', 'Lane', 'Jungle'],
+    isBuildItem: false,
+  }),
+  createItem({
+    id: '1101',
+    name: 'Filhote de Garrabrasa',
+    gold: 450,
+    tags: ['Jungle'],
+    isBuildItem: false,
+  }),
+  createItem({
+    id: '3865',
+    name: 'Atlas Mundial',
+    gold: 400,
+    tags: ['GoldPer', 'Lane'],
+    isBuildItem: false,
+  }),
+  createItem({ id: '1038', name: 'Espada G. p. C.', gold: 1300, isBuildItem: false }),
+  createItem({ id: '1036', name: 'Espada Longa', gold: 350, isBuildItem: false }),
 ];
 
 function rune(id: string, name: string): Rune {
@@ -156,6 +189,8 @@ export function createValidRunes() {
 export function createValidAdvisorResponse() {
   return {
     threats: [{ championId: '2', reason: 'Muito dano físico explosivo.' }],
+    starter: { itemIds: ['1055', '2003'], reason: 'Sustentação na rota contra o oponente direto.' },
+    skillPriority: { order: ['Q', 'E', 'W'], reason: 'Q é a principal fonte de dano.' },
     items: ['3006', '3031', '3033', '3036', '3072', '3026'].map((itemId) => ({
       itemId,
       reason: `Motivo do item ${itemId}.`,

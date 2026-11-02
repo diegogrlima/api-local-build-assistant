@@ -16,6 +16,8 @@ export interface HighEloApi {
   fetchRankedMatchIds(puuid: string, count: number, signal?: AbortSignal): Promise<string[]>;
   // Resposta crua da Match-V5; quem chama converte com parseMatch.
   fetchMatch(matchId: string, signal?: AbortSignal): Promise<unknown>;
+  // Resposta crua da timeline da Match-V5; quem chama converte com addPurchaseTimeline.
+  fetchMatchTimeline(matchId: string, signal?: AbortSignal): Promise<unknown>;
 }
 
 const leagueSchema = z.object({
@@ -59,6 +61,14 @@ export class RiotHighEloApi implements HighEloApi {
     return this.client.get(
       regionHost(this.platform),
       `/lol/match/v5/matches/${encodeURIComponent(matchId)}`,
+      signal,
+    );
+  }
+
+  fetchMatchTimeline(matchId: string, signal?: AbortSignal): Promise<unknown> {
+    return this.client.get(
+      regionHost(this.platform),
+      `/lol/match/v5/matches/${encodeURIComponent(matchId)}/timeline`,
       signal,
     );
   }

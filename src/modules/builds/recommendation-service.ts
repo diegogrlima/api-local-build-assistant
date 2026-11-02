@@ -1,14 +1,21 @@
 import { AppError } from '../../shared/errors/app-error.js';
 import type { Champion } from '../champions/champion.js';
 import type { ChampionCatalog } from '../champions/champion-catalog.js';
-import type { ChampionDetails } from '../champions/champion-details.js';
+import type { ChampionDetails, ChampionSpell } from '../champions/champion-details.js';
 import { validateMatchupInput, type LanedChampion } from '../champions/matchup-input.js';
 import type { Item } from '../items/item.js';
 import type { ItemCatalog } from '../items/item-catalog.js';
 import type { Rune, RuneTree } from '../runes/rune.js';
 import { HIGH_ELO_TIERS } from '../high-elo/high-elo-api.js';
-import type { HighEloQuery, HighEloSummary } from '../high-elo/high-elo-stats.js';
+import type {
+  HighEloQuery,
+  HighEloSummary,
+  SkillOrderSummary,
+} from '../high-elo/high-elo-stats.js';
+import type { Lane } from '../champions/lane.js';
 import type { BuildAdvisor } from './build-advisor.js';
+import { completeSkillOrder, hasStandardSkillRanks } from './skill-order.js';
+import { starterCandidates } from './starter-items.js';
 import type { BuildRecommendation } from './build-recommendation.js';
 import { buildPrompt, buildResponseSchema, SYSTEM_INSTRUCTION } from './recommendation-prompt.js';
 import {
@@ -30,6 +37,7 @@ export type RuneTreeSource = {
 
 export type HighEloSource = {
   summarize(query: HighEloQuery): HighEloSummary | null;
+  skillOrder?(query: { championId: string; lane: Lane }): SkillOrderSummary | null;
 };
 
 type Dependencies = {
@@ -63,6 +71,29 @@ function findRune(runes: Rune[], id: string): Rune {
   return runes.find((rune) => rune.id === id)!;
 }
 
+// Agrupa os itens repetidos (ex.: duas poções, duas Espadas Longas) mantendo a ordem.
+function groupItems(ids: string[], itemsById: ReadonlyMap<string, Item>) {
+  const grouped = new Map<string, { id: string; name: string; icon: string; count: number }>();
+  for (const id of ids) {
+    const item = itemsById.get(id);
+    if (!item) continue;
+    const entry = grouped.get(id) ?? { id, name: item.name, icon: item.icon, count: 0 };
+    entry.count++;
+    grouped.set(id, entry);
+  }
+  return [...grouped.values()];
+}
+
+type ResponseContext = {
+  champion: LanedChampion;
+  spells: ChampionSpell[];
+  enemies: LanedChampion[];
+  catalog: Item[];
+  treesById: ReadonlyMap<string, RuneTree>;
+  highElo: HighEloSummary | null;
+  skillOrder: SkillOrderSummary | null;
+};
+
 export class RecommendationService {
   constructor(private readonly deps: Dependencies) {}
 
@@ -93,7 +124,11 @@ export class RecommendationService {
       (detail, index) => ({ ...detail, lane: players[index]!.lane }),
     );
 
-    const items = await this.deps.itemCatalog.getAll();
+    const catalog = await this.deps.itemCatalog.getAll();
+    // Itens iniciais e componentes só entram no caminho da build; a IA escolhe entre os itens de build.
+    const items = catalog.filter((item) => item.isBuildItem);
+    const shopItems = catalog.filter((item) => !item.isBuildItem);
+    const starterItems = starterCandidates(catalog);
     if (items.length === 0) {
       throw new AppError(
         'Não há informações sobre itens para recomendar uma build.',
@@ -120,19 +155,27 @@ export class RecommendationService {
         lane: champion.lane,
         enemies: enemies.map((enemy) => ({ championId: enemy.id, lane: enemy.lane })),
         allowedItemIds: new Set(itemsById.keys()),
+        starterItemIds: new Set(shopItems.map((item) => item.id)),
       }) ?? null;
+    // Sem partidas de alto elo com a ordem de habilidades do campeão, a IA escolhe a prioridade.
+    const skillOrder =
+      this.deps.highElo?.skillOrder?.({ championId: champion.id, lane: champion.lane }) ?? null;
 
     const prompt = buildPrompt({
       champion: championDetails!,
       enemies: enemyDetails,
       items,
+      starterItems,
       runeTrees,
       highElo,
+      skillOrderFromAi: !skillOrder,
     });
     const responseSchema = buildResponseSchema(
       items.map((item) => item.id),
       enemyIds,
       runeTrees,
+      starterItems.map((item) => item.id),
+      { skillPriority: !skillOrder },
     );
 
     let feedback = '';
@@ -145,11 +188,22 @@ export class RecommendationService {
 
       const result = validateRecommendation(raw, {
         items: itemsById,
+        starterItems: new Map(starterItems.map((item) => [item.id, item])),
+        lane: champion.lane,
         enemyIds: new Set(enemyIds),
         runeTrees: treesById,
+        requireSkillPriority: !skillOrder,
       });
       if (result.ok) {
-        return this.toResponse(result.value, champion, enemies, itemsById, treesById, highElo);
+        return this.toResponse(result.value, {
+          champion,
+          spells: championDetails!.spells,
+          enemies,
+          catalog,
+          treesById,
+          highElo,
+          skillOrder,
+        });
       }
 
       feedback = `\n\nSua resposta anterior foi rejeitada pelos motivos abaixo. Corrija e responda novamente.\n- ${result.problems.join('\n- ')}`;
@@ -162,15 +216,34 @@ export class RecommendationService {
     );
   }
 
+  // Os níveis das partidas vêm primeiro; os demais são completados pela prioridade (das
+  // partidas ou, sem elas, da IA, já validada), exceto para campeões com regras próprias.
+  private skillOrderResponse(
+    skillOrder: SkillOrderSummary | null,
+    recommendation: RawRecommendation,
+    spells: ChampionSpell[],
+  ): BuildRecommendation['skillOrder'] {
+    const observed = skillOrder?.levels ?? [];
+    const priority = skillOrder?.priority ?? recommendation.skillPriority!.order;
+
+    return {
+      source: skillOrder?.scope ?? 'ai',
+      levels: hasStandardSkillRanks(spells) ? completeSkillOrder(observed, priority) : observed,
+      observedLevels: observed.length,
+      priority,
+      spells: spells.map(({ key, name, icon }) => ({ key, name, icon })),
+      matches: skillOrder?.matches ?? 0,
+      reason: skillOrder ? null : recommendation.skillPriority!.reason,
+    };
+  }
+
   private async toResponse(
     recommendation: RawRecommendation,
-    champion: LanedChampion,
-    enemies: LanedChampion[],
-    itemsById: ReadonlyMap<string, Item>,
-    treesById: ReadonlyMap<string, RuneTree>,
-    highElo: HighEloSummary | null,
+    { champion, spells, enemies, catalog, treesById, highElo, skillOrder }: ResponseContext,
   ): Promise<BuildRecommendation> {
+    const itemsById = new Map(catalog.map((item) => [item.id, item]));
     const enemiesById = new Map(enemies.map((enemy) => [enemy.id, enemy]));
+    const buildPath = highElo?.buildPath ?? null;
     const highEloUsage = new Map(highElo?.items.map((usage) => [usage.itemId, usage.matches]));
 
     const build = recommendation.items.map(({ itemId, reason }, index) => {
@@ -184,6 +257,10 @@ export class RecommendationService {
         reason,
         // Fração das partidas de alto elo desse campeão nessa rota que terminaram com o item.
         highEloPickRate: highElo ? (highEloUsage.get(itemId) ?? 0) / highElo.matches : null,
+        highEloSecond: buildPath?.itemSeconds[index] ?? null,
+        components: groupItems(item.from, itemsById)
+          .map((component) => ({ ...component, gold: itemsById.get(component.id)!.gold }))
+          .sort((a, b) => a.gold - b.gold),
       };
     });
 
@@ -200,7 +277,10 @@ export class RecommendationService {
       champion: toLanedRef(champion),
       enemies: enemies.map(toLanedRef),
       build,
+      starterItems: groupItems(recommendation.starter.itemIds, itemsById),
+      starterReason: recommendation.starter.reason,
       purchaseOrder: build.map((item) => item.name),
+      skillOrder: this.skillOrderResponse(skillOrder, recommendation, spells),
       runes: {
         primary: {
           tree: toTreeRef(primary),
@@ -226,6 +306,7 @@ export class RecommendationService {
         patches: highElo.patches,
         matches: highElo.matches,
         winRate: highElo.wins / highElo.matches,
+        timelineMatches: buildPath?.matches ?? 0,
       },
       dataVersion: await this.deps.itemCatalog.getVersion(),
     };

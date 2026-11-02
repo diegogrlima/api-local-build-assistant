@@ -9,10 +9,24 @@ describe('loadItemsSnapshot', () => {
     expect(snapshot.items.length).toBeGreaterThan(0);
   });
 
-  it('contém apenas itens de build, sem consumíveis', () => {
+  it('separa os itens de build, sem consumíveis, dos itens iniciais e componentes', () => {
     const { items } = loadItemsSnapshot();
+    const buildItems = items.filter((item) => item.isBuildItem);
 
-    expect(items.some((item) => item.tags.includes('Consumable'))).toBe(false);
-    expect(items.some((item) => item.isBoots)).toBe(true);
+    expect(buildItems.some((item) => item.tags.includes('Consumable'))).toBe(false);
+    expect(buildItems.some((item) => item.isBoots)).toBe(true);
+    expect(items.some((item) => !item.isBuildItem)).toBe(true);
+  });
+
+  it('tem no catálogo os componentes das receitas dos itens de build', () => {
+    const { items } = loadItemsSnapshot();
+    const ids = new Set(items.map((item) => item.id));
+
+    expect(
+      items
+        .filter((item) => item.isBuildItem)
+        .flatMap((item) => item.from)
+        .filter((id) => !ids.has(id)),
+    ).toEqual([]);
   });
 });

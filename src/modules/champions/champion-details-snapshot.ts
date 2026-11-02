@@ -26,6 +26,8 @@ const snapshotSchema = z.object({
           key: z.enum(['Q', 'W', 'E', 'R']),
           name: z.string(),
           description: z.string(),
+          icon: z.string().min(1),
+          maxRank: z.number().int().positive(),
         }),
       ),
       allyTips: textList,

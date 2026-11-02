@@ -1,12 +1,17 @@
 import type { Logger } from '../../shared/catalog/in-memory-catalog.js';
 import type { HighEloApi } from './high-elo-api.js';
+import type { MatchSample } from './match-sample.js';
 import type { MatchStore } from './match-store.js';
 import { parseMatch } from './riot-match-parser.js';
+import { addPurchaseTimeline } from './riot-timeline-parser.js';
 
-// Com a chave pessoal (100 chamadas a cada 2 minutos), um ciclo leva alguns minutos.
+// Com a chave pessoal (100 chamadas a cada 2 minutos), um ciclo leva alguns minutos
+// (duas chamadas por partida nova: a partida e a linha do tempo dela).
 // A cada ciclo, a coleta avança para os próximos jogadores da lista.
 export const PLAYERS_PER_CYCLE = 40;
 export const MATCHES_PER_PLAYER = 10;
+// Partidas já guardadas que ganham a linha do tempo a cada ciclo.
+export const BACKFILL_PER_CYCLE = 40;
 const SAVE_EVERY = 25;
 
 type Dependencies = {
@@ -20,6 +25,8 @@ export class HighEloCollector {
   private cursor = 0;
   // Partidas descartadas pelo parser (outra fila, remake...), para não buscá-las de novo.
   private readonly skipped = new Set<string>();
+  // Partidas guardadas cuja linha do tempo não pôde ser obtida, para não tentar a cada ciclo.
+  private readonly withoutTimeline = new Set<string>();
   private running: Promise<void> | null = null;
   private controller = new AbortController();
   private timer: NodeJS.Timeout | null = null;
@@ -47,6 +54,23 @@ export class HighEloCollector {
     this.controller.abort();
     await this.running;
     this.controller = new AbortController();
+  }
+
+  // Sem a linha do tempo, a partida ainda vale para itens e runas; só fica sem os tempos de compra.
+  private async withTimeline(sample: MatchSample, signal: AbortSignal): Promise<MatchSample> {
+    try {
+      return addPurchaseTimeline(
+        sample,
+        await this.deps.api.fetchMatchTimeline(sample.matchId, signal),
+      );
+    } catch (error) {
+      if (signal.aborted) throw error;
+      this.deps.logger.warn(
+        { err: error },
+        `Falha ao buscar a linha do tempo da partida ${sample.matchId}.`,
+      );
+      return sample;
+    }
   }
 
   private async runCycle(signal: AbortSignal): Promise<void> {
@@ -82,7 +106,7 @@ export class HighEloCollector {
               this.skipped.add(matchId);
               continue;
             }
-            store.add(sample);
+            store.add(await this.withTimeline(sample, signal));
             if (++added % SAVE_EVERY === 0) await store.save();
           } catch (error) {
             if (signal.aborted) throw error;
@@ -91,7 +115,22 @@ export class HighEloCollector {
         }
       }
 
-      logger.info(`Coleta de alto elo: ${added} partidas novas, ${store.size} no total.`);
+      // Completa as partidas guardadas antes da linha do tempo; só conta as que a obtiveram.
+      let completed = 0;
+      for (const sample of store.withoutTimeline(BACKFILL_PER_CYCLE, this.withoutTimeline)) {
+        const updated = await this.withTimeline(sample, signal);
+        if (updated === sample) {
+          this.withoutTimeline.add(sample.matchId);
+          continue;
+        }
+        store.add(updated);
+        completed++;
+        if (++added % SAVE_EVERY === 0) await store.save();
+      }
+
+      logger.info(
+        `Coleta de alto elo: ${added - completed} partidas novas, ${completed} completadas com a linha do tempo, ${store.size} no total.`,
+      );
     } catch (error) {
       if (!signal.aborted) {
         logger.warn({ err: error }, 'Falha na coleta de partidas de alto elo.');

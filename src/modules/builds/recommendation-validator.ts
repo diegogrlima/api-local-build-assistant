@@ -1,10 +1,16 @@
 import { z } from 'zod';
+import type { Lane } from '../champions/lane.js';
 import type { Item } from '../items/item.js';
 import type { RuneTree } from '../runes/rune.js';
 import { BUILD_SIZE, MAX_BOOTS, PRIMARY_RUNES, SECONDARY_RUNES } from './recommendation-prompt.js';
+import { validateStarterItems } from './starter-items.js';
 
 const rawRecommendationSchema = z.object({
   threats: z.array(z.object({ championId: z.string(), reason: z.string().trim().min(1) })),
+  starter: z.object({ itemIds: z.array(z.string()), reason: z.string().trim().min(1) }),
+  skillPriority: z
+    .object({ order: z.array(z.enum(['Q', 'W', 'E', 'R'])), reason: z.string().trim().min(1) })
+    .optional(),
   items: z.array(z.object({ itemId: z.string(), reason: z.string().trim().min(1) })),
   runes: z.object({
     primaryTreeId: z.string(),
@@ -26,6 +32,10 @@ export type ValidationResult =
 
 type Rules = {
   items: ReadonlyMap<string, Item>;
+  starterItems: ReadonlyMap<string, Item>;
+  lane: Lane;
+  // Pedida só quando não há ordem de habilidades nas partidas de alto elo.
+  requireSkillPriority?: boolean;
   enemyIds: ReadonlySet<string>;
   runeTrees: ReadonlyMap<string, RuneTree>;
 };
@@ -85,7 +95,7 @@ function validateSlots(tree: RuneTree, runeIds: string[], expected: number, labe
 // Mesmo com o schema enviado à IA, a resposta é conferida aqui: nada não validado chega ao jogador.
 export function validateRecommendation(
   raw: unknown,
-  { items, enemyIds, runeTrees }: Rules,
+  { items, starterItems, lane, enemyIds, runeTrees, requireSkillPriority = false }: Rules,
 ): ValidationResult {
   const parsed = rawRecommendationSchema.safeParse(raw);
   if (!parsed.success) {
@@ -132,7 +142,15 @@ export function validateRecommendation(
     problems.push(`Ameaças repetidas: ${repeatedThreats.join(', ')}.`);
   }
 
+  problems.push(...validateStarterItems(recommendation.starter.itemIds, lane, starterItems));
   problems.push(...validateRunes(recommendation.runes, runeTrees));
+
+  if (requireSkillPriority) {
+    const order = recommendation.skillPriority?.order ?? [];
+    if (order.length !== 3 || new Set(order).size !== 3 || order.includes('R')) {
+      problems.push('A prioridade de habilidades deve ter Q, W e E, cada uma uma vez.');
+    }
+  }
 
   return problems.length > 0 ? { ok: false, problems } : { ok: true, value: recommendation };
 }

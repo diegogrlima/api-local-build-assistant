@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import type { Lane } from '../../../champions/lane.js';
-import type { MatchSample, ParticipantSample, RunePage } from '../../match-sample.js';
-import { summarizeHighElo, type HighEloQuery } from '../../high-elo-stats.js';
+import type { MatchSample, ParticipantSample, RunePage, SkillKey } from '../../match-sample.js';
+import { summarizeHighElo, summarizeSkillOrder, type HighEloQuery } from '../../high-elo-stats.js';
 
 const LANES: Lane[] = ['top', 'jungle', 'mid', 'bot', 'support'];
 
@@ -53,6 +53,7 @@ const query: HighEloQuery = {
     { championId: '3', lane: 'jungle' },
   ],
   allowedItemIds: new Set(['3031', '3006', '3026']),
+  starterItemIds: new Set(['1055', '2003']),
 };
 
 describe('summarizeHighElo', () => {
@@ -117,5 +118,106 @@ describe('summarizeHighElo', () => {
       items: [{ itemId: '3026', matches: 1, wins: 1 }],
     });
     expect(versusJungle).toMatchObject({ championId: '3', laneOpponent: false, matches: 2 });
+  });
+
+  it('monta o caminho da build só com as partidas que têm a linha do tempo', () => {
+    const matches = [
+      match(
+        'm1',
+        {
+          items: ['3031', '1055', '3006'],
+          timeline: { starterItems: ['1055', '2003', '3340'], itemSeconds: [900, 60, 500] },
+        },
+        ['2', '3', '4', '5', '6'],
+      ),
+      match(
+        'm2',
+        {
+          items: ['3006', '3031', '3026'],
+          timeline: { starterItems: ['2003', '1055'], itemSeconds: [600, 1100, null] },
+        },
+        ['2', '3', '4', '5', '6'],
+      ),
+      match('m3', { items: ['3006'] }, ['2', '3', '4', '5', '6']),
+    ];
+
+    const { buildPath } = summarizeHighElo(matches, query)!;
+
+    // Fora do caminho: o trinket (3340), o componente (1055) no inventário e o item sem tempo.
+    expect(buildPath).toEqual({
+      matches: 2,
+      starterItems: ['1055', '2003'],
+      starterMatches: 2,
+      itemSeconds: [550, 1000, null, null, null, null],
+    });
+  });
+
+  it('não monta o caminho da build sem linha do tempo', () => {
+    const matches = [match('m1', { items: ['3006'] }, ['2', '3', '4', '5', '6'])];
+
+    expect(summarizeHighElo(matches, query)!.buildPath).toBeNull();
+  });
+
+  it('monta a ordem de habilidades mais comum nível a nível e a prioridade', () => {
+    const timeline = (skillOrder: SkillKey[]) => ({
+      starterItems: [],
+      itemSeconds: [],
+      skillOrder,
+    });
+    const qew: SkillKey[] = ['Q', 'E', 'W', 'Q', 'Q', 'R', 'Q', 'E', 'Q'];
+    const matches = [
+      ...['m1', 'm2', 'm3'].map((id) =>
+        match(id, { timeline: timeline(qew) }, ['2', '3', '4', '5', '6']),
+      ),
+      // Começa diferente: não muda a sequência e não conta nos níveis seguintes.
+      match('m4', { timeline: timeline(['E', 'Q', 'W', 'E']) }, ['2', '3', '4', '5', '6']),
+      match('m5', { timeline: timeline(['E', 'Q', 'W', 'E']) }, ['2', '3', '4', '5', '6']),
+      match('m6', {}, ['2', '3', '4', '5', '6']),
+    ];
+
+    expect(summarizeSkillOrder(matches, query)).toEqual({
+      scope: 'lane',
+      matches: 5,
+      levels: qew,
+      priority: ['Q', 'E', 'W'],
+    });
+  });
+
+  it('para a sequência quando poucas partidas seguiram o mesmo caminho', () => {
+    const timeline = (skillOrder: SkillKey[]) => ({
+      starterItems: [],
+      itemSeconds: [],
+      skillOrder,
+    });
+    const matches = [
+      match('m1', { timeline: timeline(['Q', 'W', 'E', 'Q']) }, ['2', '3', '4', '5', '6']),
+      match('m2', { timeline: timeline(['Q', 'W', 'E', 'E']) }, ['2', '3', '4', '5', '6']),
+      match('m3', { timeline: timeline(['Q', 'W', 'E', 'W']) }, ['2', '3', '4', '5', '6']),
+    ];
+
+    expect(summarizeSkillOrder(matches, query)!.levels).toEqual(['Q', 'W', 'E']);
+  });
+
+  it('não monta a ordem de habilidades sem linha do tempo', () => {
+    const matches = [match('m1', {}, ['2', '3', '4', '5', '6'])];
+
+    expect(summarizeSkillOrder(matches, query)).toBeNull();
+  });
+
+  it('usa as partidas do campeão em outras rotas quando a rota não tem a ordem', () => {
+    const timeline = {
+      starterItems: [],
+      itemSeconds: [],
+      skillOrder: ['Q', 'E', 'W'] as SkillKey[],
+    };
+    const matches = ['m1', 'm2', 'm3'].map((id) =>
+      match(id, { lane: 'mid', timeline }, ['2', '3', '4', '5', '6']),
+    );
+
+    expect(summarizeSkillOrder(matches, query)).toMatchObject({
+      scope: 'champion',
+      matches: 3,
+      levels: ['Q', 'E', 'W'],
+    });
   });
 });

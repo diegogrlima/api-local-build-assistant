@@ -10,6 +10,7 @@ import {
   buildResponseSchema,
   type RecommendationContext,
 } from '../../recommendation-prompt.js';
+import { starterCandidates } from '../../starter-items.js';
 
 function createContext(highElo: HighEloSummary | null = null): RecommendationContext {
   return {
@@ -24,7 +25,8 @@ function createContext(highElo: HighEloSummary | null = null): RecommendationCon
       },
       { ...createChampionDetails({ id: '64', name: 'Lee Sin' }), lane: 'jungle' },
     ],
-    items: testItems,
+    items: testItems.filter((item) => item.isBuildItem),
+    starterItems: starterCandidates(testItems),
     runeTrees: testRuneTrees,
     highElo,
   };
@@ -54,7 +56,10 @@ describe('buildPrompt', () => {
     expect(context.adversarios[1].rota).toBe('Selva');
     expect(context.analiseDaComposicaoInimiga.damage).toBeDefined();
     expect(context.itensPermitidos.map((item: { id: string }) => item.id)).toEqual(
-      testItems.map((item) => item.id),
+      testItems.filter((item) => item.isBuildItem).map((item) => item.id),
+    );
+    expect(context.itensIniciaisPermitidos).toContainEqual(
+      expect.objectContaining({ id: '1101', companheiroDaSelva: true, itemDeSuporte: false }),
     );
     expect(context.arvoresDeRunas[0]).toMatchObject({
       id: '8000',
@@ -82,6 +87,7 @@ describe('buildPrompt', () => {
           items: [{ itemId: '3031', matches: 30, wins: 18 }],
           keystones: [{ keystoneId: '8010', primaryTreeId: '8000', matches: 40, wins: 22 }],
           runePages: [{ page, matches: 10, wins: 6 }],
+          buildPath: null,
           versusEnemies: [
             { championId: '238', laneOpponent: true, matches: 5, wins: 2, items: [] },
           ],
@@ -109,7 +115,12 @@ describe('buildPrompt', () => {
 
 describe('buildResponseSchema', () => {
   it('restringe itens, ameaças e runas aos ids informados', () => {
-    const schema = buildResponseSchema(['3031', '3006'], ['238', '84'], testRuneTrees);
+    const schema = buildResponseSchema(['3031', '3006'], ['238', '84'], testRuneTrees, [
+      '1055',
+      '2003',
+    ]);
+
+    expect(schema.properties.starter.properties.itemIds.items.enum).toEqual(['1055', '2003']);
 
     expect(schema.properties.items.items.properties.itemId.enum).toEqual(['3031', '3006']);
     expect(schema.properties.threats.items.properties.championId.enum).toEqual(['238', '84']);
@@ -122,5 +133,17 @@ describe('buildResponseSchema', () => {
     expect(runes.primaryRuneIds.items.enum).not.toContain('8010');
     expect(runes.primaryRuneIds.minItems).toBe(3);
     expect(runes.secondaryRuneIds.maxItems).toBe(2);
+  });
+
+  it('só pede a prioridade de habilidades quando ela não vem das partidas', () => {
+    const withoutAi = buildResponseSchema(['3031'], ['238'], testRuneTrees, ['1055']);
+    const withAi = buildResponseSchema(['3031'], ['238'], testRuneTrees, ['1055'], {
+      skillPriority: true,
+    });
+
+    expect(withoutAi.properties).not.toHaveProperty('skillPriority');
+    expect(withoutAi.required).not.toContain('skillPriority');
+    expect(withAi.required).toContain('skillPriority');
+    expect(withAi.properties.skillPriority!.properties.order.items.enum).toEqual(['Q', 'W', 'E']);
   });
 });

@@ -1,6 +1,7 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import {
   isBuildItem,
+  isShopItem,
   parseItems,
   RiotItemProvider,
   type RawItem,
@@ -53,18 +54,51 @@ describe('isBuildItem', () => {
   });
 });
 
+describe('isShopItem', () => {
+  it('aceita itens iniciais, consumíveis e componentes', () => {
+    const potion = rawItem({
+      name: 'Poção de Vida',
+      tags: ['Consumable'],
+      consumed: true,
+      depth: undefined,
+    });
+    const component = rawItem({ name: 'Espada G. p. C.', depth: undefined, into: ['3031'] });
+
+    expect(isShopItem('2003', potion)).toBe(true);
+    expect(isShopItem('1038', component)).toBe(true);
+  });
+
+  it.each<[string, string, Partial<RawItem>]>([
+    ['trinket', '3340', { tags: ['Trinket'] }],
+    ['variante de outro modo', '663039', {}],
+    ['fora da loja', '1038', { inStore: false }],
+    ['exclusivo de um campeão', '3600', { requiredChampion: 'Kalista' }],
+  ])('rejeita %s', (_caso, id, overrides) => {
+    expect(isShopItem(id, rawItem(overrides))).toBe(false);
+  });
+});
+
 describe('parseItems', () => {
-  it('converte os itens válidos e descarta os inválidos', () => {
+  it('converte os itens válidos, marca os que não são de build e descarta os inválidos', () => {
     const items = parseItems(
       {
         '3031': rawItem(),
         '2008': { ...rawItem(), name: '' },
         '1055': rawItem({ depth: undefined }),
+        '2003': rawItem({
+          name: 'Poção de Vida',
+          tags: ['Consumable'],
+          depth: undefined,
+          gold: { total: 50, purchasable: true },
+        }),
       },
       '16.21.1',
     );
 
+    // Chaves numéricas são percorridas em ordem crescente.
     expect(items).toEqual([
+      expect.objectContaining({ id: '1055', isBuildItem: false }),
+      expect.objectContaining({ id: '2003', name: 'Poção de Vida', isBuildItem: false }),
       {
         id: '3031',
         name: 'Gume do Infinito',
@@ -73,6 +107,8 @@ describe('parseItems', () => {
         gold: 3500,
         tags: ['CriticalStrike', 'Damage'],
         isBoots: false,
+        isBuildItem: true,
+        from: ['1038', '1037'],
         icon: 'https://ddragon.leagueoflegends.com/cdn/16.21.1/img/item/3031.png',
       },
     ]);
@@ -89,6 +125,7 @@ describe('parseItems', () => {
     );
 
     expect(items.map((item) => [item.id, item.isBoots])).toEqual([
+      ['1001', true],
       ['3006', true],
       ['3172', true],
     ]);

@@ -1,6 +1,11 @@
 import { z } from 'zod';
 import type { VersionedData, VersionedSource } from '../../shared/catalog/in-memory-catalog.js';
-import { dataUrl, fetchJson, fetchLatestVersion } from '../../shared/ddragon/ddragon-client.js';
+import {
+  dataUrl,
+  fetchJson,
+  fetchLatestVersion,
+  imageUrl,
+} from '../../shared/ddragon/ddragon-client.js';
 import { stripHtml } from '../../shared/ddragon/strip-html.js';
 import type { ChampionDetails, ChampionSignals, ChampionSpell } from './champion-details.js';
 
@@ -11,6 +16,8 @@ const rawSpellSchema = z.object({
   name: z.string(),
   description: z.string(),
   tooltip: z.string().default(''),
+  image: z.object({ full: z.string().min(1) }),
+  maxrank: z.number().int().positive(),
 });
 
 const rawChampionSchema = z.object({
@@ -58,7 +65,7 @@ export function extractSignals(champion: RawChampion): ChampionSignals {
   };
 }
 
-export function toChampionDetails(champion: RawChampion): ChampionDetails {
+export function toChampionDetails(champion: RawChampion, version: string): ChampionDetails {
   return {
     id: champion.key,
     name: champion.name,
@@ -74,6 +81,8 @@ export function toChampionDetails(champion: RawChampion): ChampionDetails {
       key: SPELL_KEYS[index]!,
       name: spell.name,
       description: stripHtml(spell.description),
+      icon: imageUrl(version, 'spell', spell.image.full),
+      maxRank: spell.maxrank,
     })),
     allyTips: champion.allytips,
     enemyTips: champion.enemytips,
@@ -82,12 +91,15 @@ export function toChampionDetails(champion: RawChampion): ChampionDetails {
 }
 
 // Campeões malformados são descartados em vez de derrubar o catálogo inteiro.
-export function parseChampionDetails(data: Record<string, unknown>): ChampionDetails[] {
+export function parseChampionDetails(
+  data: Record<string, unknown>,
+  version: string,
+): ChampionDetails[] {
   const champions: ChampionDetails[] = [];
 
   for (const raw of Object.values(data)) {
     const parsed = rawChampionSchema.safeParse(raw);
-    if (parsed.success) champions.push(toChampionDetails(parsed.data));
+    if (parsed.success) champions.push(toChampionDetails(parsed.data, version));
   }
 
   return champions;
@@ -106,6 +118,6 @@ export class RiotChampionDetailsProvider implements VersionedSource<ChampionDeta
       await fetchJson(dataUrl(version, 'championFull.json'), { timeoutMs: FULL_DATA_TIMEOUT_MS }),
     );
 
-    return { version, entries: parseChampionDetails(response.data) };
+    return { version, entries: parseChampionDetails(response.data, version) };
   }
 }

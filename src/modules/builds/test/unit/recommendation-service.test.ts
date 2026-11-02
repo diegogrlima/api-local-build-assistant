@@ -27,10 +27,19 @@ const itemCatalog: ItemCatalog = {
   getVersion: async () => '9.9.9',
 };
 
+// Habilidades com os pontos padrão (5/5/5/3), que permitem completar a ordem até o nível 18.
+const spells = (['Q', 'W', 'E', 'R'] as const).map((key) => ({
+  key,
+  name: `Habilidade ${key}`,
+  description: '',
+  icon: `${key}.png`,
+  maxRank: key === 'R' ? 3 : 5,
+}));
+
 const allDetails = {
   getById: (id: string) => {
     const champion = testChampions.find((c) => c.id === id);
-    return champion && createChampionDetails({ id: champion.id, name: champion.name });
+    return champion && createChampionDetails({ id: champion.id, name: champion.name, spells });
   },
 };
 
@@ -91,9 +100,23 @@ describe('RecommendationService', () => {
       ],
       keystones: [],
       runePages: [],
+      buildPath: {
+        matches: 30,
+        starterItems: ['1055', '2003', '2003'],
+        starterMatches: 20,
+        itemSeconds: [540, 900, 1260, 1620, null, null],
+      },
       versusEnemies: [],
     };
-    const highElo = { summarize: vi.fn().mockReturnValue(summary) };
+    const highElo = {
+      summarize: vi.fn().mockReturnValue(summary),
+      skillOrder: vi.fn().mockReturnValue({
+        scope: 'lane',
+        matches: 30,
+        levels: ['Q', 'E', 'W', 'Q'],
+        priority: ['Q', 'E', 'W'],
+      }),
+    };
     const advisor = { generate: vi.fn().mockResolvedValue(createValidAdvisorResponse()) };
 
     const result = await createService(advisor, allDetails, runeCatalog, highElo).recommend(input);
@@ -101,7 +124,9 @@ describe('RecommendationService', () => {
     const query = highElo.summarize.mock.calls[0]![0];
     expect(query).toMatchObject({ championId: '1', lane: 'top' });
     expect(query.enemies).toContainEqual({ championId: '2', lane: 'top' });
-    expect([...query.allowedItemIds]).toEqual(testItems.map((item) => item.id));
+    expect([...query.allowedItemIds]).toEqual(
+      testItems.filter((item) => item.isBuildItem).map((item) => item.id),
+    );
     expect(advisor.generate.mock.calls[0]![0].prompt).toContain('"dadosAltoElo":{');
 
     expect(result.highElo).toEqual({
@@ -109,10 +134,95 @@ describe('RecommendationService', () => {
       patches: ['16.21'],
       matches: 50,
       winRate: 0.54,
+      timelineMatches: 30,
     });
     expect(result.build[0]!.highEloPickRate).toBe(0.5);
     expect(result.build[1]!.highEloPickRate).toBe(0.8);
     expect(result.build[2]!.highEloPickRate).toBe(0);
+    // O caminho da build usa o tempo de cada posição.
+    expect(result.build.map((item) => item.highEloSecond)).toEqual([
+      540,
+      900,
+      1260,
+      1620,
+      null,
+      null,
+    ]);
+    expect(advisor.generate.mock.calls[0]![0].prompt).toContain('"compraInicialMaisUsada":{');
+    expect(highElo.skillOrder).toHaveBeenCalledWith({ championId: '1', lane: 'top' });
+    // Com a ordem das partidas, a IA não é consultada sobre ela.
+    expect(advisor.generate.mock.calls[0]![0].responseSchema.required).not.toContain(
+      'skillPriority',
+    );
+    // Os 4 níveis das partidas vêm primeiro; os demais são sugeridos pela prioridade.
+    expect(result.skillOrder).toEqual({
+      source: 'lane',
+      levels: 'QEWQQRQEQEREEWWRWW'.split(''),
+      observedLevels: 4,
+      priority: ['Q', 'E', 'W'],
+      spells: spells.map(({ key, name, icon }) => ({ key, name, icon })),
+      matches: 30,
+      reason: null,
+    });
+  });
+
+  it('devolve a compra inicial escolhida pela IA, agrupando os itens repetidos', async () => {
+    const response = {
+      ...createValidAdvisorResponse(),
+      starter: { itemIds: ['1036', '2003', '2003'], reason: 'Troca de dano na rota.' },
+    };
+    const advisor = { generate: vi.fn().mockResolvedValue(response) };
+
+    const result = await createService(advisor).recommend(input);
+
+    expect(result.starterItems).toEqual([
+      { id: '1036', name: 'Espada Longa', icon: '1036.png', count: 1 },
+      { id: '2003', name: 'Poção de Vida', icon: '2003.png', count: 2 },
+    ]);
+    expect(result.starterReason).toBe('Troca de dano na rota.');
+    const schema = advisor.generate.mock.calls[0]![0].responseSchema;
+    expect(schema.properties.starter.properties.itemIds.items.enum).toEqual([
+      '1055',
+      '2003',
+      '1101',
+      '3865',
+      '1036',
+    ]);
+  });
+
+  it('pede nova resposta quando a compra inicial de quem joga na selva não tem companheiro', async () => {
+    const advisor = { generate: vi.fn().mockResolvedValue(createValidAdvisorResponse()) };
+    const jungleInput = {
+      ...input,
+      lane: 'jungle',
+      enemies: input.enemies.map((enemy) =>
+        enemy.lane === 'jungle'
+          ? { ...enemy, lane: 'top' }
+          : enemy.lane === 'top'
+            ? { ...enemy, lane: 'jungle' }
+            : enemy,
+      ),
+    };
+
+    expect((await errorFrom(createService(advisor).recommend(jungleInput))).statusCode).toBe(502);
+
+    expect(advisor.generate).toHaveBeenCalledTimes(2);
+    expect(advisor.generate.mock.calls[1]![0].prompt).toContain(
+      'exatamente 1 companheiro da selva',
+    );
+  });
+
+  it('não oferece itens iniciais nem componentes entre os itens da build', async () => {
+    const highElo = { summarize: vi.fn().mockReturnValue(null) };
+    const advisor = { generate: vi.fn().mockResolvedValue(createValidAdvisorResponse()) };
+
+    await createService(advisor, allDetails, runeCatalog, highElo).recommend(input);
+
+    const { allowedItemIds, starterItemIds } = highElo.summarize.mock.calls[0]![0];
+    expect([...starterItemIds]).toEqual(['1055', '2003', '1101', '3865', '1038', '1036']);
+    expect(allowedItemIds.has('1055')).toBe(false);
+    const schema = advisor.generate.mock.calls[0]![0].responseSchema;
+    expect(schema.properties.items.items.properties.itemId.enum).not.toContain('1055');
   });
 
   it('segue sem dados de alto elo quando o campeão não tem partidas coletadas', async () => {
@@ -124,6 +234,57 @@ describe('RecommendationService', () => {
     expect(advisor.generate.mock.calls[0]![0].prompt).toContain('"dadosAltoElo":null');
     expect(result.highElo).toBeNull();
     expect(result.build[0]!.highEloPickRate).toBeNull();
+    expect(result.build[0]!.highEloSecond).toBeNull();
+    // Sem partidas com a ordem de habilidades, a prioridade vem da IA.
+    expect(advisor.generate.mock.calls[0]![0].responseSchema.required).toContain('skillPriority');
+    expect(result.skillOrder).toMatchObject({
+      source: 'ai',
+      levels: 'QEWQQRQEQEREEWWRWW'.split(''),
+      observedLevels: 0,
+      priority: ['Q', 'E', 'W'],
+      reason: 'Q é a principal fonte de dano.',
+    });
+    // Sem alto elo, a compra inicial ainda vem da IA.
+    expect(result.starterItems.map((item) => item.id)).toEqual(['1055', '2003']);
+  });
+
+  it('não completa a ordem de campeões com pontos de habilidade próprios', async () => {
+    const udyr = {
+      getById: (id: string) => {
+        const champion = testChampions.find((c) => c.id === id)!;
+        return createChampionDetails({
+          id: champion.id,
+          name: champion.name,
+          spells: spells.map((spell) => ({ ...spell, maxRank: 6 })),
+        });
+      },
+    };
+    const highElo = {
+      summarize: vi.fn().mockReturnValue(null),
+      skillOrder: vi.fn().mockReturnValue({
+        scope: 'lane',
+        matches: 5,
+        levels: ['Q', 'W'],
+        priority: ['Q', 'W', 'E'],
+      }),
+    };
+    const advisor = { generate: vi.fn().mockResolvedValue(createValidAdvisorResponse()) };
+
+    const result = await createService(advisor, udyr, runeCatalog, highElo).recommend(input);
+
+    expect(result.skillOrder).toMatchObject({ levels: ['Q', 'W'], observedLevels: 2 });
+  });
+
+  it('lista os componentes de cada item, do mais barato ao mais caro', async () => {
+    const advisor = { generate: vi.fn().mockResolvedValue(createValidAdvisorResponse()) };
+
+    const result = await createService(advisor).recommend(input);
+
+    expect(result.build[1]!.components).toEqual([
+      { id: '1036', name: 'Espada Longa', icon: '1036.png', gold: 350, count: 2 },
+      { id: '1038', name: 'Espada G. p. C.', icon: '1038.png', gold: 1300, count: 1 },
+    ]);
+    expect(result.build[0]!.components).toEqual([]);
   });
 
   it('devolve as runas menores na ordem das linhas da árvore', async () => {
