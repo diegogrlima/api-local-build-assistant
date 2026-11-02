@@ -1,30 +1,19 @@
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import type { FastifyInstance } from 'fastify';
-import { buildApp } from '../../../../app.js';
-import { loadEnv } from '../../../../config/env.js';
-import type { ChampionProvider } from '../../champion-provider.js';
-import { createFakeItemProvider } from '../../../../test/fake-providers.js';
+import { buildTestApp } from '../../../../test/build-test-app.js';
+import { createFakeChampionProvider } from '../../../../test/fake-providers.js';
 
-const fakeProvider: ChampionProvider = {
-  fetchLatestVersion: async () => '9.9.9',
-  fetchCatalog: async () => ({
-    version: '9.9.9',
-    champions: [
-      { id: '157', name: 'Yasuo', icon: 'yasuo.png' },
-      { id: '266', name: 'Aatrox', icon: 'aatrox.png' },
-      { id: '103', name: 'Ahri', icon: 'ahri.png' },
-    ],
-  }),
-};
+const fakeProvider = createFakeChampionProvider([
+  { id: '157', name: 'Yasuo', icon: 'yasuo.png' },
+  { id: '266', name: 'Aatrox', icon: 'aatrox.png' },
+  { id: '103', name: 'Ahri', icon: 'ahri.png' },
+]);
 
 describe('GET /champions', () => {
   let app: FastifyInstance;
 
   beforeAll(async () => {
-    app = await buildApp(loadEnv({ NODE_ENV: 'test' }), {
-      championProvider: fakeProvider,
-      itemProvider: createFakeItemProvider(),
-    });
+    app = await buildTestApp({ championProvider: fakeProvider });
   });
 
   afterAll(() => app.close());

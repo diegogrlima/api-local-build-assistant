@@ -1,23 +1,12 @@
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import type { FastifyInstance } from 'fastify';
-import { buildApp } from '../../app.js';
-import type { ChampionProvider } from '../champions/champion-provider.js';
-import { loadEnv } from '../../config/env.js';
-import { createFakeItemProvider } from '../../test/fake-providers.js';
-
-const fakeProvider: ChampionProvider = {
-  fetchLatestVersion: async () => '1.0.0',
-  fetchCatalog: async () => ({ version: '1.0.0', champions: [] }),
-};
+import { buildTestApp } from '../../test/build-test-app.js';
 
 describe('GET /health', () => {
   let app: FastifyInstance;
 
   beforeAll(async () => {
-    app = await buildApp(loadEnv({ NODE_ENV: 'test' }), {
-      championProvider: fakeProvider,
-      itemProvider: createFakeItemProvider(),
-    });
+    app = await buildTestApp();
   });
 
   afterAll(() => app.close());

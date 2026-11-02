@@ -4,6 +4,7 @@ import { AppError } from '../shared/errors/app-error.js';
 export function registerErrorHandler(app: FastifyInstance): void {
   app.setErrorHandler((error, request, reply) => {
     if (error instanceof AppError) {
+      if (error.statusCode >= 500) request.log.error(error);
       return reply.status(error.statusCode).send({ code: error.code, message: error.message });
     }
 

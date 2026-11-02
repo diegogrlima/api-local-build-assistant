@@ -6,6 +6,12 @@ const envSchema = z.object({
   PORT: z.coerce.number().int().positive().default(3333),
   LOG_LEVEL: z.enum(['fatal', 'error', 'warn', 'info', 'debug', 'trace', 'silent']).default('info'),
   CATALOG_REFRESH_INTERVAL_MS: z.coerce.number().int().positive().default(3_600_000),
+  // Sem chave, a API sobe normalmente, mas a recomendação responde 503.
+  GEMINI_API_KEY: z
+    .string()
+    .optional()
+    .transform((value) => value || undefined),
+  GEMINI_MODEL: z.string().min(1).default('gemini-3.8-flash'),
 });
 
 export type Env = z.infer<typeof envSchema>;

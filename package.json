@@ -16,7 +16,8 @@
     "test:watch": "vitest",
     "snapshot:champions": "tsx scripts/generate-champions-snapshot.ts",
     "prepare": "husky",
-    "snapshot:items": "tsx scripts/generate-items-snapshot.ts"
+    "snapshot:items": "tsx scripts/generate-items-snapshot.ts",
+    "snapshot:champion-details": "tsx scripts/generate-champion-details-snapshot.ts"
   },
   "type": "module",
   "private": true,
@@ -25,6 +26,7 @@
   },
   "dependencies": {
     "@fastify/sensible": "^6.0.7",
+    "@google/genai": "^2.32.0",
     "fastify": "^5.12.7",
     "pino-pretty": "^13.2.0",
     "zod": "^4.6.7"

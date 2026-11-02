@@ -5,6 +5,7 @@ import {
   fetchLatestVersion,
   imageUrl,
 } from '../../shared/ddragon/ddragon-client.js';
+import { stripHtml } from '../../shared/ddragon/strip-html.js';
 import type { Item } from './item.js';
 import type { ItemCatalogData, ItemProvider } from './item-provider.js';
 
@@ -64,15 +65,6 @@ export function isBuildItem(id: string, item: RawItem, boots: boolean): boolean 
 
   const isFinal = !item.into || item.into.length === 0;
   return boots || isFinal;
-}
-
-export function stripHtml(html: string): string {
-  return html
-    .replace(/<br\s*\/?>/gi, '\n')
-    .replace(/<[^>]+>/g, '')
-    .replace(/[ \t]+/g, ' ')
-    .replace(/\n{2,}/g, '\n')
-    .trim();
 }
 
 export function toItem(id: string, item: RawItem, version: string, boots: boolean): Item {

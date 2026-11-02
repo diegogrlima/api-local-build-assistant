@@ -1,31 +1,23 @@
-import { afterAll, beforeAll, describe, expect, it } from 'vitest';
+import { afterAll, beforeAll, describe, expect, it, vi } from 'vitest';
 import type { FastifyInstance } from 'fastify';
-import { buildApp } from '../../../../app.js';
-import { loadEnv } from '../../../../config/env.js';
-import type { ChampionProvider } from '../../../champions/champion-provider.js';
-import { createFakeItemProvider } from '../../../../test/fake-providers.js';
-
-const fakeProvider: ChampionProvider = {
-  fetchLatestVersion: async () => '9.9.9',
-  fetchCatalog: async () => ({
-    version: '9.9.9',
-    champions: ['1', '2', '3', '4', '5', '6', '7'].map((id) => ({
-      id,
-      name: `Campeão ${id}`,
-      icon: `${id}.png`,
-    })),
-  }),
-};
+import { buildTestApp } from '../../../../test/build-test-app.js';
+import {
+  createFakeItemProvider,
+  createValidAdvisorResponse,
+  testItems,
+} from '../../../../test/fake-providers.js';
+import type { BuildAdvisor } from '../../build-advisor.js';
 
 const validBody = { championId: '1', enemyChampionIds: ['2', '3', '4', '5', '6'] };
 
 describe('POST /builds/recommendations', () => {
   let app: FastifyInstance;
+  const advisor = { generate: vi.fn() } satisfies BuildAdvisor;
 
   beforeAll(async () => {
-    app = await buildApp(loadEnv({ NODE_ENV: 'test' }), {
-      championProvider: fakeProvider,
-      itemProvider: createFakeItemProvider(),
+    app = await buildTestApp({
+      itemProvider: createFakeItemProvider(testItems),
+      buildAdvisor: advisor,
     });
   });
 
@@ -35,11 +27,59 @@ describe('POST /builds/recommendations', () => {
     return app.inject({ method: 'POST', url: '/builds/recommendations', payload });
   }
 
-  it('aceita a entrada válida e chega até a análise (ainda não implementada)', async () => {
+  it('responde 200 com a build recomendada para uma entrada válida', async () => {
+    advisor.generate.mockResolvedValueOnce(createValidAdvisorResponse());
+
     const res = await post(validBody);
 
-    expect(res.statusCode).toBe(501);
-    expect(res.json().code).toBe('RECOMMENDATION_NOT_IMPLEMENTED');
+    expect(res.statusCode).toBe(200);
+    const body = res.json();
+    expect(body.champion).toEqual({ id: '1', name: 'Campeão 1', icon: '1.png' });
+    expect(body.enemies.map((enemy: { id: string }) => enemy.id)).toEqual([
+      '2',
+      '3',
+      '4',
+      '5',
+      '6',
+    ]);
+    expect(body.build).toHaveLength(6);
+    expect(body.build[0]).toEqual({
+      order: 1,
+      id: '3006',
+      name: 'Grevas do Berserker',
+      icon: '3006.png',
+      gold: 1100,
+      reason: 'Motivo do item 3006.',
+    });
+    expect(body.purchaseOrder[1]).toBe('Gume do Infinito');
+    expect(body.totalGold).toBe(1100 + 3500 + 3000 + 3300 + 3400 + 3200);
+    expect(body.threats).toEqual([
+      {
+        champion: { id: '2', name: 'Campeão 2', icon: '2.png' },
+        reason: 'Muito dano físico explosivo.',
+      },
+    ]);
+    expect(body.dataVersion).toBe('9.9.9');
+  });
+
+  it('não consulta a IA quando a entrada é inválida', async () => {
+    advisor.generate.mockClear();
+
+    const res = await post({ ...validBody, championId: '999' });
+
+    expect(res.statusCode).toBe(400);
+    expect(res.json().code).toBe('CHAMPION_NOT_FOUND');
+    expect(advisor.generate).not.toHaveBeenCalled();
+  });
+
+  it('responde 502 quando a IA não gera uma recomendação válida', async () => {
+    advisor.generate.mockResolvedValue({ items: [] });
+
+    const res = await post(validBody);
+
+    expect(res.statusCode).toBe(502);
+    expect(res.json().code).toBe('RECOMMENDATION_INVALID');
+    advisor.generate.mockReset();
   });
 
   it('responde 400 INVALID_INPUT quando o corpo está ausente', async () => {
@@ -61,13 +101,6 @@ describe('POST /builds/recommendations', () => {
 
     expect(res.statusCode).toBe(400);
     expect(res.json().code).toBe('INVALID_ENEMY_COUNT');
-  });
-
-  it('responde 400 CHAMPION_NOT_FOUND quando um campeão não existe', async () => {
-    const res = await post({ ...validBody, championId: '999' });
-
-    expect(res.statusCode).toBe(400);
-    expect(res.json().code).toBe('CHAMPION_NOT_FOUND');
   });
 
   it('responde 400 ENEMIES_DUPLICATED quando há adversários repetidos', async () => {
@@ -93,5 +126,26 @@ describe('POST /builds/recommendations', () => {
     });
 
     expect(res.statusCode).toBe(400);
+  });
+});
+
+describe('POST /builds/recommendations sem IA configurada', () => {
+  let app: FastifyInstance;
+
+  beforeAll(async () => {
+    app = await buildTestApp({ itemProvider: createFakeItemProvider(testItems) });
+  });
+
+  afterAll(() => app.close());
+
+  it('responde 503 AI_NOT_CONFIGURED para uma entrada válida', async () => {
+    const res = await app.inject({
+      method: 'POST',
+      url: '/builds/recommendations',
+      payload: validBody,
+    });
+
+    expect(res.statusCode).toBe(503);
+    expect(res.json().code).toBe('AI_NOT_CONFIGURED');
   });
 });

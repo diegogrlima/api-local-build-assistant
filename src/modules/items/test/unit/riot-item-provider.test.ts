@@ -3,7 +3,6 @@ import {
   isBuildItem,
   parseItems,
   RiotItemProvider,
-  stripHtml,
   type RawItem,
 } from '../../riot-item-provider.js';
 
@@ -51,14 +50,6 @@ describe('isBuildItem', () => {
     const boots = rawItem({ name: 'Grevas do Berserker', tags: ['Boots'], into: ['3172'] });
 
     expect(isBuildItem('3006', boots, true)).toBe(true);
-  });
-});
-
-describe('stripHtml', () => {
-  it('remove tags e converte <br> em quebra de linha', () => {
-    const html = '<mainText><stats><attention>75</attention> de Dano<br>25% de Crítico</stats>';
-
-    expect(stripHtml(html)).toBe('75 de Dano\n25% de Crítico');
   });
 });
 

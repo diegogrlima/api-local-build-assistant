@@ -2,7 +2,7 @@
 
 API backend do **assistente de builds de League of Legends (LoL)**. O objetivo do produto é ajudar o jogador a escolher uma build adequada para a partida atual.
 
-> Estado atual: apenas a fundação do projeto existe (servidor, config, tratamento de erros e rota `/health`). Os módulos de domínio ainda serão criados em `src/modules/`.
+> Estado atual: MVP funcional. `GET /champions` lista os campeões e `POST /builds/recommendations` valida a entrada e gera a build com o Gemini, usando apenas dados do Data Dragon como contexto. Fora do MVP, por ora: estatísticas de alto elo via API da Riot (Match-V5) como contexto extra.
 
 ## Escopo do MVP (definição funcional do produto)
 
@@ -102,9 +102,20 @@ O MVP está funcional quando o jogador consegue: informar seu campeão, informar
 | `npm run typecheck`                     | `tsc --noEmit`                         |
 | `npm run lint` / `npm run format:check` | ESLint / Prettier                      |
 
-Copie `.env.example` para `.env` antes de rodar. Variáveis: `NODE_ENV`, `HOST`, `PORT` (padrão 3333), `LOG_LEVEL`, `CATALOG_REFRESH_INTERVAL_MS` (intervalo de atualização dos catálogos do Data Dragon).
+Copie `.env.example` para `.env` antes de rodar. Variáveis: `NODE_ENV`, `HOST`, `PORT` (padrão 3333), `LOG_LEVEL`, `CATALOG_REFRESH_INTERVAL_MS` (intervalo de atualização dos catálogos do Data Dragon), `GEMINI_API_KEY` (opcional; sem ela a recomendação responde 503) e `GEMINI_MODEL`. Segredos vão só no `.env`, nunca no `.env.example`.
 
-Snapshots de fallback dos catálogos: `npm run snapshot:champions` e `npm run snapshot:items` (rodar quando sair um patch novo).
+Snapshots de fallback dos catálogos: `npm run snapshot:champions`, `npm run snapshot:champion-details` e `npm run snapshot:items` (rodar quando sair um patch novo).
+
+## Recomendação com IA
+
+A IA só escolhe e explica; ela nunca é fonte de dados. Fluxo em `src/modules/builds/recommendation-service.ts`:
+
+1. `validateMatchupInput` valida a entrada (entrada inválida nunca chega à IA).
+2. Contexto fechado: detalhes dos campeões (`championFull.json`), análise determinística da composição inimiga (`matchup-analysis.ts`) e lista de itens permitidos.
+3. O schema de resposta usa `enum` com os ids de itens permitidos e dos adversários.
+4. `recommendation-validator.ts` confere a resposta (6 itens existentes, sem repetição, no máximo 1 par de botas, ameaças entre os adversários). Uma nova tentativa com o feedback; se falhar de novo, 502. Nada não validado chega ao jogador.
+
+A IA fica atrás da interface `BuildAdvisor`; testes nunca chamam o Gemini (use `buildTestApp` de `src/test/build-test-app.ts`).
 
 ## Arquitetura
 

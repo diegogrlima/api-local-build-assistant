@@ -26,12 +26,15 @@ export function imageUrl(version: string, group: string, file: string): string {
   return `${DDRAGON_BASE_URL}/cdn/${version}/img/${group}/${file}`;
 }
 
-export async function fetchJson(url: string): Promise<unknown> {
+export async function fetchJson(
+  url: string,
+  { timeoutMs = TIMEOUT_MS }: { timeoutMs?: number } = {},
+): Promise<unknown> {
   let response: Response;
 
   try {
     response = await fetch(url, {
-      signal: AbortSignal.timeout(TIMEOUT_MS),
+      signal: AbortSignal.timeout(timeoutMs),
     });
   } catch (error) {
     if (error instanceof Error && error.name === 'TimeoutError') {
