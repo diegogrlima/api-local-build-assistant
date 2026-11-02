@@ -58,18 +58,23 @@ export class RiotChampCatalog implements ChampionCatalog {
     return this.catalogPromise;
   }
 
-  private async fetchCatalog(): Promise<{
-    version: string;
-    champions: Champion[];
-  }> {
+  async fetchLatestVersion(): Promise<string> {
     const versions = await this.fetchJson(`${BASE_URL}/api/versions.json`);
 
-    const validatedVersions = versionSchema.parse(versions);
-    const version = validatedVersions[0];
+    const version = versionSchema.parse(versions)[0];
 
     if (!version) {
       throw new Error('No versions available from Riot.');
     }
+
+    return version;
+  }
+
+  async fetchCatalog(): Promise<{
+    version: string;
+    champions: Champion[];
+  }> {
+    const version = await this.fetchLatestVersion();
 
     const url = `${BASE_URL}/cdn/${version}/data/${LOCALE}/champion.json`;
 
