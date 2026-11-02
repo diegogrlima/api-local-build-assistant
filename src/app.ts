@@ -6,6 +6,7 @@ import { healthRoutes } from './modules/health/health.routes.js';
 import type { ChampionProvider } from './modules/champions/champion-provider.js';
 import { RiotChampCatalog } from './modules/champions/riot-champion-catalog.js';
 import { InMemoryChampionCatalog } from './modules/champions/in-memory-champion-catalog.js';
+import { buildsRoutes } from './modules/builds/builds.routes.js';
 import { championsRoutes } from './modules/champions/champions.routes.js';
 import { loadChampionsSnapshot } from './modules/champions/champions-snapshot.js';
 
@@ -44,6 +45,7 @@ export async function buildApp(
 
   await app.register(healthRoutes);
   await app.register(championsRoutes, { catalog: championCatalog });
+  await app.register(buildsRoutes, { catalog: championCatalog });
 
   return app;
 }
