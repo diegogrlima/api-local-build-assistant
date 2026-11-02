@@ -9,14 +9,22 @@ import { InMemoryChampionCatalog } from './modules/champions/in-memory-champion-
 import { buildsRoutes } from './modules/builds/builds.routes.js';
 import { championsRoutes } from './modules/champions/champions.routes.js';
 import { loadChampionsSnapshot } from './modules/champions/champions-snapshot.js';
+import type { ItemProvider } from './modules/items/item-provider.js';
+import { RiotItemProvider } from './modules/items/riot-item-provider.js';
+import { InMemoryItemCatalog } from './modules/items/in-memory-item-catalog.js';
+import { loadItemsSnapshot } from './modules/items/items-snapshot.js';
 
 type AppDependencies = {
   championProvider?: ChampionProvider;
+  itemProvider?: ItemProvider;
 };
 
 export async function buildApp(
   env: Env,
-  { championProvider = new RiotChampCatalog() }: AppDependencies = {},
+  {
+    championProvider = new RiotChampCatalog(),
+    itemProvider = new RiotItemProvider(),
+  }: AppDependencies = {},
 ): Promise<FastifyInstance> {
   const app = Fastify({
     logger:
@@ -36,12 +44,21 @@ export async function buildApp(
     snapshot: loadChampionsSnapshot(),
     logger: app.log,
   });
-  await championCatalog.init();
+  const itemCatalog = new InMemoryItemCatalog({
+    provider: itemProvider,
+    snapshot: loadItemsSnapshot(),
+    logger: app.log,
+  });
+  await Promise.all([championCatalog.init(), itemCatalog.init()]);
 
   if (env.NODE_ENV !== 'test') {
-    championCatalog.startRefresh(env.CHAMPIONS_REFRESH_INTERVAL_MS);
+    championCatalog.startRefresh(env.CATALOG_REFRESH_INTERVAL_MS);
+    itemCatalog.startRefresh(env.CATALOG_REFRESH_INTERVAL_MS);
   }
-  app.addHook('onClose', async () => championCatalog.stopRefresh());
+  app.addHook('onClose', async () => {
+    championCatalog.stopRefresh();
+    itemCatalog.stopRefresh();
+  });
 
   await app.register(healthRoutes);
   await app.register(championsRoutes, { catalog: championCatalog });

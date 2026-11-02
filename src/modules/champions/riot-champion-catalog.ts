@@ -1,14 +1,14 @@
 import { z } from 'zod';
 import type { ChampionCatalog } from './champion-catalog.js';
 import type { Champion } from './champion.js';
-
-const BASE_URL = 'https://ddragon.leagueoflegends.com';
-const LOCALE = 'pt_BR';
-const TIMEOUT_MS = 5000;
+import {
+  dataUrl,
+  fetchJson,
+  fetchLatestVersion,
+  imageUrl,
+} from '../../shared/ddragon/ddragon-client.js';
 
 // Schemas de validação
-const versionSchema = z.array(z.string().min(1));
-
 const championSchema = z.object({
   key: z.string().regex(/^\d+$/),
   name: z.string().min(1),
@@ -58,16 +58,8 @@ export class RiotChampCatalog implements ChampionCatalog {
     return this.catalogPromise;
   }
 
-  async fetchLatestVersion(): Promise<string> {
-    const versions = await this.fetchJson(`${BASE_URL}/api/versions.json`);
-
-    const version = versionSchema.parse(versions)[0];
-
-    if (!version) {
-      throw new Error('No versions available from Riot.');
-    }
-
-    return version;
+  fetchLatestVersion(): Promise<string> {
+    return fetchLatestVersion();
   }
 
   async fetchCatalog(): Promise<{
@@ -76,53 +68,19 @@ export class RiotChampCatalog implements ChampionCatalog {
   }> {
     const version = await this.fetchLatestVersion();
 
-    const url = `${BASE_URL}/cdn/${version}/data/${LOCALE}/champion.json`;
-
-    const response = await this.fetchJson(url);
+    const response = await fetchJson(dataUrl(version, 'champion.json'));
 
     const validatedResponse = championResponseSchema.parse(response);
 
     const champions: Champion[] = Object.values(validatedResponse.data).map((champion) => ({
       id: champion.key,
       name: champion.name,
-      icon: `${BASE_URL}/cdn/${version}/img/champion/${champion.image.full}`,
+      icon: imageUrl(version, 'champion', champion.image.full),
     }));
 
     return {
       version,
       champions,
     };
-  }
-
-  private async fetchJson(url: string): Promise<unknown> {
-    let response: Response;
-
-    try {
-      response = await fetch(url, {
-        signal: AbortSignal.timeout(TIMEOUT_MS),
-      });
-    } catch (error) {
-      if (error instanceof Error && error.name === 'TimeoutError') {
-        throw new Error(`Timeout accessing ${url}`, {
-          cause: error,
-        });
-      }
-
-      throw new Error(`Network failure when accessing ${url}`, {
-        cause: error,
-      });
-    }
-
-    if (!response.ok) {
-      throw new Error(`HTTP error ${response.status} when accessing ${url}`);
-    }
-
-    try {
-      return await response.json();
-    } catch (error) {
-      throw new Error(`Invalid JSON response from ${url}`, {
-        cause: error,
-      });
-    }
   }
 }

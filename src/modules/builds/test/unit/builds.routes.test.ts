@@ -3,6 +3,7 @@ import type { FastifyInstance } from 'fastify';
 import { buildApp } from '../../../../app.js';
 import { loadEnv } from '../../../../config/env.js';
 import type { ChampionProvider } from '../../../champions/champion-provider.js';
+import { createFakeItemProvider } from '../../../../test/fake-providers.js';
 
 const fakeProvider: ChampionProvider = {
   fetchLatestVersion: async () => '9.9.9',
@@ -22,7 +23,10 @@ describe('POST /builds/recommendations', () => {
   let app: FastifyInstance;
 
   beforeAll(async () => {
-    app = await buildApp(loadEnv({ NODE_ENV: 'test' }), { championProvider: fakeProvider });
+    app = await buildApp(loadEnv({ NODE_ENV: 'test' }), {
+      championProvider: fakeProvider,
+      itemProvider: createFakeItemProvider(),
+    });
   });
 
   afterAll(() => app.close());

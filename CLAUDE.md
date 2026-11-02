@@ -102,7 +102,9 @@ O MVP está funcional quando o jogador consegue: informar seu campeão, informar
 | `npm run typecheck`                     | `tsc --noEmit`                         |
 | `npm run lint` / `npm run format:check` | ESLint / Prettier                      |
 
-Copie `.env.example` para `.env` antes de rodar. Variáveis: `NODE_ENV`, `HOST`, `PORT` (padrão 3333), `LOG_LEVEL`.
+Copie `.env.example` para `.env` antes de rodar. Variáveis: `NODE_ENV`, `HOST`, `PORT` (padrão 3333), `LOG_LEVEL`, `CATALOG_REFRESH_INTERVAL_MS` (intervalo de atualização dos catálogos do Data Dragon).
+
+Snapshots de fallback dos catálogos: `npm run snapshot:champions` e `npm run snapshot:items` (rodar quando sair um patch novo).
 
 ## Arquitetura
 
@@ -112,7 +114,8 @@ Arquitetura modular sobre Fastify:
 - `src/app.ts` — `buildApp(env)`, factory do Fastify usada pelo servidor **e pelos testes**; registra plugins e rotas dos módulos
 - `src/config/env.ts` — `loadEnv()` valida variáveis de ambiente com Zod; falha cedo se inválidas
 - `src/plugins/` — plugins transversais (ex.: `error-handler.ts`)
-- `src/shared/` — código compartilhado entre módulos (ex.: `errors/app-error.ts`)
+- `src/shared/` — código compartilhado entre módulos (ex.: `errors/app-error.ts`, `ddragon/` para acesso ao Data Dragon, `catalog/in-memory-catalog.ts` com cache, snapshot e refresh)
+- `src/test/` — helpers de teste (fakes de providers); fora do build
 - `src/modules/<nome>/` — um diretório por módulo, com rotas (`*.routes.ts`), serviço, schemas e testes
 
 ## Convenções

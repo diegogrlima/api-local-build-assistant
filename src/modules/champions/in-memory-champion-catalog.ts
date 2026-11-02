@@ -1,11 +1,7 @@
+import { InMemoryCatalog, type Logger } from '../../shared/catalog/in-memory-catalog.js';
 import type { ChampionCatalog } from './champion-catalog.js';
 import type { Champion } from './champion.js';
 import type { CatalogData, ChampionProvider } from './champion-provider.js';
-
-type Logger = {
-  info(msg: string): void;
-  warn(obj: unknown, msg: string): void;
-};
 
 type Dependencies = {
   provider: ChampionProvider;
@@ -14,75 +10,48 @@ type Dependencies = {
 };
 
 export class InMemoryChampionCatalog implements ChampionCatalog {
-  private version = '';
-  private byId = new Map<string, Champion>();
-  private timer: NodeJS.Timeout | null = null;
-  private refreshing = false;
+  private readonly catalog: InMemoryCatalog<Champion>;
 
-  constructor(private readonly deps: Dependencies) {}
-
-  async init(): Promise<void> {
-    try {
-      this.apply(await this.deps.provider.fetchCatalog());
-      this.deps.logger.info(`Catálogo de campeões carregado da Riot (versão ${this.version}).`);
-    } catch (error) {
-      this.deps.logger.warn(
-        { err: error },
-        'Falha ao carregar campeões da Riot; usando o snapshot local.',
-      );
-      this.apply(this.deps.snapshot);
-    }
+  constructor({ provider, snapshot, logger }: Dependencies) {
+    this.catalog = new InMemoryCatalog({
+      source: {
+        fetchLatestVersion: () => provider.fetchLatestVersion(),
+        fetchData: async () => {
+          const { version, champions } = await provider.fetchCatalog();
+          return { version, entries: champions };
+        },
+      },
+      snapshot: { version: snapshot.version, entries: snapshot.champions },
+      logger,
+      label: 'campeões',
+    });
   }
 
-  async refresh(): Promise<void> {
-    if (this.refreshing) return;
-    this.refreshing = true;
+  init(): Promise<void> {
+    return this.catalog.init();
+  }
 
-    try {
-      const latest = await this.deps.provider.fetchLatestVersion();
-      if (latest === this.version) return;
-
-      this.apply(await this.deps.provider.fetchCatalog());
-      this.deps.logger.info(`Catálogo de campeões atualizado para a versão ${this.version}.`);
-    } catch (error) {
-      this.deps.logger.warn(
-        { err: error },
-        'Falha ao atualizar campeões; mantendo o catálogo atual.',
-      );
-    } finally {
-      this.refreshing = false;
-    }
+  refresh(): Promise<void> {
+    return this.catalog.refresh();
   }
 
   startRefresh(intervalMs: number): void {
-    if (this.timer) return;
-
-    this.timer = setInterval(() => void this.refresh(), intervalMs);
-    this.timer.unref();
+    this.catalog.startRefresh(intervalMs);
   }
 
   stopRefresh(): void {
-    if (!this.timer) return;
-
-    clearInterval(this.timer);
-    this.timer = null;
+    this.catalog.stopRefresh();
   }
 
   async getAll(): Promise<Champion[]> {
-    return [...this.byId.values()];
+    return this.catalog.getAll();
   }
 
   async getById(id: string): Promise<Champion | undefined> {
-    return this.byId.get(id);
+    return this.catalog.getById(id);
   }
 
   async getVersion(): Promise<string> {
-    return this.version;
-  }
-
-  // Monta o Map novo por inteiro e só então troca, para ninguém ler um estado pela metade.
-  private apply({ version, champions }: CatalogData): void {
-    this.byId = new Map(champions.map((champion) => [champion.id, champion]));
-    this.version = version;
+    return this.catalog.getVersion();
   }
 }
