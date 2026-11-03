@@ -1,5 +1,7 @@
 import Fastify, { type FastifyInstance } from 'fastify';
 import cors from '@fastify/cors';
+import helmet from '@fastify/helmet';
+import rateLimit from '@fastify/rate-limit';
 import sensible from '@fastify/sensible';
 import type { Env } from './config/env.js';
 import { registerErrorHandler } from './plugins/error-handler.js';
@@ -63,6 +65,8 @@ export async function buildApp(
   }: AppDependencies = {},
 ): Promise<FastifyInstance> {
   const app = Fastify({
+    trustProxy: env.TRUST_PROXY,
+    bodyLimit: 16 * 1024,
     logger:
       env.NODE_ENV === 'test'
         ? false
@@ -72,7 +76,9 @@ export async function buildApp(
           },
   });
 
+  await app.register(helmet);
   await app.register(cors, { origin: env.CORS_ORIGIN });
+  await app.register(rateLimit, { max: env.RATE_LIMIT_MAX, timeWindow: '1 minute' });
   await app.register(sensible);
   registerErrorHandler(app);
 
@@ -108,6 +114,8 @@ export async function buildApp(
     for (const catalog of catalogs) catalog.stopRefresh();
   });
 
+  // Partidas de alto elo (API da Riot). A chave de desenvolvimento dura só 24h e a de produção ainda
+  // não foi solicitada; sem RIOT_API_KEY nada aqui roda e a IA usa apenas o contexto do Data Dragon.
   // Partidas de alto elo: o arquivo só é usado fora dos testes, e a coleta roda em segundo plano.
   const matchStore = new MatchStore({
     filePath: env.NODE_ENV === 'test' ? undefined : env.HIGH_ELO_DATA_FILE,
@@ -139,7 +147,10 @@ export async function buildApp(
 
   await app.register(healthRoutes);
   await app.register(championsRoutes, { catalog: championCatalog });
-  await app.register(buildsRoutes, { recommendationService });
+  await app.register(buildsRoutes, {
+    recommendationService,
+    rateLimitMax: env.RECOMMENDATION_RATE_LIMIT_MAX,
+  });
 
   return app;
 }

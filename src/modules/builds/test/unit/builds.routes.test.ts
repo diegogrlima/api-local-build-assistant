@@ -193,3 +193,36 @@ describe('POST /builds/recommendations sem IA configurada', () => {
     expect(res.json().code).toBe('AI_NOT_CONFIGURED');
   });
 });
+
+describe('segurança de POST /builds/recommendations', () => {
+  it('responde 429 ao passar do limite de requisições por minuto', async () => {
+    const app = await buildTestApp({}, { RECOMMENDATION_RATE_LIMIT_MAX: '2' });
+    const post = () =>
+      app.inject({ method: 'POST', url: '/builds/recommendations', payload: validBody });
+
+    expect((await post()).statusCode).not.toBe(429);
+    expect((await post()).statusCode).not.toBe(429);
+    expect((await post()).statusCode).toBe(429);
+    await app.close();
+  });
+
+  it('rejeita corpo maior que o limite com 413', async () => {
+    const app = await buildTestApp();
+    const response = await app.inject({
+      method: 'POST',
+      url: '/builds/recommendations',
+      payload: { ...validBody, lixo: 'x'.repeat(20_000) },
+    });
+
+    expect(response.statusCode).toBe(413);
+    await app.close();
+  });
+
+  it('envia cabeçalhos de segurança do helmet', async () => {
+    const app = await buildTestApp();
+    const response = await app.inject({ method: 'GET', url: '/health' });
+
+    expect(response.headers['x-content-type-options']).toBe('nosniff');
+    await app.close();
+  });
+});

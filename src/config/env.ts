@@ -17,13 +17,24 @@ const envSchema = z.object({
         .map((origin) => origin.trim())
         .filter(Boolean),
     ),
+  // Confia nos cabeçalhos X-Forwarded-* (necessário atrás de proxy/PaaS para o limite por IP funcionar).
+  TRUST_PROXY: z
+    .enum(['true', 'false'])
+    .default('false')
+    .transform((value) => value === 'true'),
+  // Limite de requisições por IP por minuto: geral e para a recomendação (que consome a cota da Gemini).
+  RATE_LIMIT_MAX: z.coerce.number().int().positive().default(120),
+  RECOMMENDATION_RATE_LIMIT_MAX: z.coerce.number().int().positive().default(8),
   // Sem chave, a API sobe normalmente, mas a recomendação responde 503.
   GEMINI_API_KEY: z
     .string()
     .optional()
     .transform((value) => value || undefined),
   GEMINI_MODEL: z.string().min(1).default('gemini-3.8-flash'),
-  // Sem chave, a recomendação funciona só com o Data Dragon, sem os dados de alto elo.
+  // ATENÇÃO: a chave de desenvolvimento da Riot expira a cada 24h e a chave de produção ainda não
+  // foi solicitada (projeto de portfólio). Sem chave, a recomendação funciona só com o contexto do
+  // Data Dragon (campeões, itens e runas), sem os dados de alto elo. Solicite a chave de produção
+  // quando for publicar de forma definitiva.
   RIOT_API_KEY: z
     .string()
     .optional()

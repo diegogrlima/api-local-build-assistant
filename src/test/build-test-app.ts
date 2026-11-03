@@ -8,14 +8,20 @@ import {
 } from './fake-providers.js';
 
 // App de teste sem rede: todos os providers são fakes; a IA e o alto elo ficam desligados, salvo se injetados.
-export function buildTestApp(dependencies: AppDependencies = {}) {
-  return buildApp(loadEnv({ NODE_ENV: 'test' }), {
-    championProvider: createFakeChampionProvider(),
-    championDetailsProvider: createFakeChampionDetailsProvider(),
-    itemProvider: createFakeItemProvider(),
-    runeProvider: createFakeRuneProvider(),
-    buildAdvisor: null,
-    highEloApi: null,
-    ...dependencies,
-  });
+export function buildTestApp(
+  dependencies: AppDependencies = {},
+  envOverrides: Record<string, string> = {},
+) {
+  return buildApp(
+    loadEnv({ NODE_ENV: 'test', RECOMMENDATION_RATE_LIMIT_MAX: '1000', ...envOverrides }),
+    {
+      championProvider: createFakeChampionProvider(),
+      championDetailsProvider: createFakeChampionDetailsProvider(),
+      itemProvider: createFakeItemProvider(),
+      runeProvider: createFakeRuneProvider(),
+      buildAdvisor: null,
+      highEloApi: null,
+      ...dependencies,
+    },
+  );
 }
