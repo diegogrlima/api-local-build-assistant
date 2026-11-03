@@ -7,7 +7,7 @@ import {
   createFakeRuneProvider,
 } from './fake-providers.js';
 
-// App de teste sem rede: todos os providers são fakes; a IA e o alto elo ficam desligados, salvo se injetados.
+// App de teste sem rede: todos os providers são fakes; a IA fica desligada, salvo se injetados.
 export function buildTestApp(
   dependencies: AppDependencies = {},
   envOverrides: Record<string, string> = {},
@@ -20,7 +20,6 @@ export function buildTestApp(
       itemProvider: createFakeItemProvider(),
       runeProvider: createFakeRuneProvider(),
       buildAdvisor: null,
-      highEloApi: null,
       ...dependencies,
     },
   );

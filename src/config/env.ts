@@ -1,5 +1,4 @@
 import { z } from 'zod';
-import { RIOT_PLATFORMS } from '../shared/riot-api/riot-platform.js';
 
 const envSchema = z.object({
   NODE_ENV: z.enum(['development', 'test', 'production']).default('development'),
@@ -31,19 +30,6 @@ const envSchema = z.object({
     .optional()
     .transform((value) => value || undefined),
   GEMINI_MODEL: z.string().min(1).default('gemini-3.8-flash'),
-  // ATENÇÃO: a chave de desenvolvimento da Riot expira a cada 24h e a chave de produção ainda não
-  // foi solicitada (projeto de portfólio). Sem chave, a recomendação funciona só com o contexto do
-  // Data Dragon (campeões, itens e runas), sem os dados de alto elo. Solicite a chave de produção
-  // quando for publicar de forma definitiva.
-  RIOT_API_KEY: z
-    .string()
-    .optional()
-    .transform((value) => value || undefined),
-  RIOT_PLATFORM: z.enum(RIOT_PLATFORMS).default('br1'),
-  // Intervalo entre os ciclos de coleta das partidas de Challenger e Grão-Mestre.
-  HIGH_ELO_REFRESH_INTERVAL_MS: z.coerce.number().int().positive().default(1_800_000),
-  // Arquivo onde as partidas coletadas são guardadas entre reinícios.
-  HIGH_ELO_DATA_FILE: z.string().min(1).default('data/high-elo-matches.json'),
 });
 
 export type Env = z.infer<typeof envSchema>;

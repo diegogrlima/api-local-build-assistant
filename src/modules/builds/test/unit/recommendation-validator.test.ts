@@ -185,12 +185,12 @@ describe('validateRecommendation', () => {
   });
 
   describe('prioridade de habilidades', () => {
-    function problemsFor(order: string[] | undefined) {
+    function problemsFor(order: string[]) {
       const raw = {
         ...createValidAdvisorResponse(),
-        skillPriority: order && { order, reason: 'Motivo.' },
+        skillPriority: { order, reason: 'Motivo.' },
       };
-      const result = validateRecommendation(raw, { ...rules, requireSkillPriority: true });
+      const result = validateRecommendation(raw, rules);
       return result.ok ? [] : result.problems;
     }
 
@@ -198,8 +198,14 @@ describe('validateRecommendation', () => {
       expect(problemsFor(['E', 'Q', 'W'])).toEqual([]);
     });
 
+    it('rejeita a resposta sem a prioridade', () => {
+      const raw: Record<string, unknown> = { ...createValidAdvisorResponse() };
+      delete raw.skillPriority;
+
+      expect(validateRecommendation(raw, rules).ok).toBe(false);
+    });
+
     it.each([
-      ['ausente', undefined],
       ['com repetição', ['Q', 'Q', 'E']],
       ['com a ultimate', ['Q', 'E', 'R']],
     ])('rejeita prioridade %s', (_caso, order) => {

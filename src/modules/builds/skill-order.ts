@@ -1,5 +1,5 @@
 import type { ChampionSpell } from '../champions/champion-details.js';
-import type { SkillKey } from '../high-elo/match-sample.js';
+import type { SkillKey } from './skill-keys.js';
 
 export const MAX_LEVEL = 18;
 const BASIC_SKILLS: SkillKey[] = ['Q', 'W', 'E'];

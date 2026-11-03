@@ -6,13 +6,6 @@ import { validateMatchupInput, type LanedChampion } from '../champions/matchup-i
 import type { Item } from '../items/item.js';
 import type { ItemCatalog } from '../items/item-catalog.js';
 import type { Rune, RuneTree } from '../runes/rune.js';
-import { HIGH_ELO_TIERS } from '../high-elo/high-elo-api.js';
-import type {
-  HighEloQuery,
-  HighEloSummary,
-  SkillOrderSummary,
-} from '../high-elo/high-elo-stats.js';
-import type { Lane } from '../champions/lane.js';
 import type { BuildAdvisor } from './build-advisor.js';
 import { completeSkillOrder, hasStandardSkillRanks } from './skill-order.js';
 import { starterCandidates } from './starter-items.js';
@@ -35,11 +28,6 @@ export type RuneTreeSource = {
   getAll(): RuneTree[];
 };
 
-export type HighEloSource = {
-  summarize(query: HighEloQuery): HighEloSummary | null;
-  skillOrder?(query: { championId: string; lane: Lane }): SkillOrderSummary | null;
-};
-
 type Dependencies = {
   championCatalog: ChampionCatalog;
   championDetails: ChampionDetailsLookup;
@@ -47,8 +35,6 @@ type Dependencies = {
   runeCatalog: RuneTreeSource;
   // null quando a IA não está configurada (sem GEMINI_API_KEY).
   advisor: BuildAdvisor | null;
-  // null quando a API da Riot não está configurada (sem RIOT_API_KEY).
-  highElo?: HighEloSource | null;
 };
 
 function toRef({ id, name, icon }: Champion) {
@@ -90,8 +76,6 @@ type ResponseContext = {
   enemies: LanedChampion[];
   catalog: Item[];
   treesById: ReadonlyMap<string, RuneTree>;
-  highElo: HighEloSummary | null;
-  skillOrder: SkillOrderSummary | null;
 };
 
 export class RecommendationService {
@@ -127,7 +111,6 @@ export class RecommendationService {
     const catalog = await this.deps.itemCatalog.getAll();
     // Itens iniciais e componentes só entram no caminho da build; a IA escolhe entre os itens de build.
     const items = catalog.filter((item) => item.isBuildItem);
-    const shopItems = catalog.filter((item) => !item.isBuildItem);
     const starterItems = starterCandidates(catalog);
     if (items.length === 0) {
       throw new AppError(
@@ -149,33 +132,18 @@ export class RecommendationService {
     const treesById = new Map(runeTrees.map((tree) => [tree.id, tree]));
     const enemyIds = enemies.map((enemy) => enemy.id);
 
-    const highElo =
-      this.deps.highElo?.summarize({
-        championId: champion.id,
-        lane: champion.lane,
-        enemies: enemies.map((enemy) => ({ championId: enemy.id, lane: enemy.lane })),
-        allowedItemIds: new Set(itemsById.keys()),
-        starterItemIds: new Set(shopItems.map((item) => item.id)),
-      }) ?? null;
-    // Sem partidas de alto elo com a ordem de habilidades do campeão, a IA escolhe a prioridade.
-    const skillOrder =
-      this.deps.highElo?.skillOrder?.({ championId: champion.id, lane: champion.lane }) ?? null;
-
     const prompt = buildPrompt({
       champion: championDetails!,
       enemies: enemyDetails,
       items,
       starterItems,
       runeTrees,
-      highElo,
-      skillOrderFromAi: !skillOrder,
     });
     const responseSchema = buildResponseSchema(
       items.map((item) => item.id),
       enemyIds,
       runeTrees,
       starterItems.map((item) => item.id),
-      { skillPriority: !skillOrder },
     );
 
     let feedback = '';
@@ -192,7 +160,6 @@ export class RecommendationService {
         lane: champion.lane,
         enemyIds: new Set(enemyIds),
         runeTrees: treesById,
-        requireSkillPriority: !skillOrder,
       });
       if (result.ok) {
         return this.toResponse(result.value, {
@@ -201,8 +168,6 @@ export class RecommendationService {
           enemies,
           catalog,
           treesById,
-          highElo,
-          skillOrder,
         });
       }
 
@@ -216,35 +181,28 @@ export class RecommendationService {
     );
   }
 
-  // Os níveis das partidas vêm primeiro; os demais são completados pela prioridade (das
-  // partidas ou, sem elas, da IA, já validada), exceto para campeões com regras próprias.
+  // A prioridade já foi validada; a sequência é completada pelas regras do jogo, exceto para
+  // campeões com regras próprias de pontos.
   private skillOrderResponse(
-    skillOrder: SkillOrderSummary | null,
     recommendation: RawRecommendation,
     spells: ChampionSpell[],
   ): BuildRecommendation['skillOrder'] {
-    const observed = skillOrder?.levels ?? [];
-    const priority = skillOrder?.priority ?? recommendation.skillPriority!.order;
+    const { order, reason } = recommendation.skillPriority;
 
     return {
-      source: skillOrder?.scope ?? 'ai',
-      levels: hasStandardSkillRanks(spells) ? completeSkillOrder(observed, priority) : observed,
-      observedLevels: observed.length,
-      priority,
+      levels: hasStandardSkillRanks(spells) ? completeSkillOrder([], order) : [],
+      priority: order,
       spells: spells.map(({ key, name, icon }) => ({ key, name, icon })),
-      matches: skillOrder?.matches ?? 0,
-      reason: skillOrder ? null : recommendation.skillPriority!.reason,
+      reason,
     };
   }
 
   private async toResponse(
     recommendation: RawRecommendation,
-    { champion, spells, enemies, catalog, treesById, highElo, skillOrder }: ResponseContext,
+    { champion, spells, enemies, catalog, treesById }: ResponseContext,
   ): Promise<BuildRecommendation> {
     const itemsById = new Map(catalog.map((item) => [item.id, item]));
     const enemiesById = new Map(enemies.map((enemy) => [enemy.id, enemy]));
-    const buildPath = highElo?.buildPath ?? null;
-    const highEloUsage = new Map(highElo?.items.map((usage) => [usage.itemId, usage.matches]));
 
     const build = recommendation.items.map(({ itemId, reason }, index) => {
       const item = itemsById.get(itemId)!;
@@ -255,9 +213,6 @@ export class RecommendationService {
         icon: item.icon,
         gold: item.gold,
         reason,
-        // Fração das partidas de alto elo desse campeão nessa rota que terminaram com o item.
-        highEloPickRate: highElo ? (highEloUsage.get(itemId) ?? 0) / highElo.matches : null,
-        highEloSecond: buildPath?.itemSeconds[index] ?? null,
         components: groupItems(item.from, itemsById)
           .map((component) => ({ ...component, gold: itemsById.get(component.id)!.gold }))
           .sort((a, b) => a.gold - b.gold),
@@ -280,7 +235,7 @@ export class RecommendationService {
       starterItems: groupItems(recommendation.starter.itemIds, itemsById),
       starterReason: recommendation.starter.reason,
       purchaseOrder: build.map((item) => item.name),
-      skillOrder: this.skillOrderResponse(skillOrder, recommendation, spells),
+      skillOrder: this.skillOrderResponse(recommendation, spells),
       runes: {
         primary: {
           tree: toTreeRef(primary),
@@ -301,13 +256,6 @@ export class RecommendationService {
       justification: recommendation.justification,
       balance: recommendation.balance,
       warnings: recommendation.warnings,
-      highElo: highElo && {
-        tiers: [...HIGH_ELO_TIERS],
-        patches: highElo.patches,
-        matches: highElo.matches,
-        winRate: highElo.wins / highElo.matches,
-        timelineMatches: buildPath?.matches ?? 0,
-      },
       dataVersion: await this.deps.itemCatalog.getVersion(),
     };
   }

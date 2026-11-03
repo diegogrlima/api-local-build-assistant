@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import { LANES } from '../champions/lane.js';
-import { SKILL_KEYS } from '../high-elo/match-sample.js';
+import { SKILL_KEYS } from './skill-keys.js';
 
 const championRefSchema = z.object({
   id: z.string(),
@@ -28,11 +28,6 @@ export const buildRecommendationSchema = z.object({
       icon: z.string(),
       gold: z.number(),
       reason: z.string(),
-      // Entre 0 e 1; null quando não há dados de alto elo.
-      highEloPickRate: z.number().nullable(),
-      // Segundo mediano em que o alto elo completa o item desta posição da build (1º, 2º...);
-      // null quando não há linha do tempo das partidas.
-      highEloSecond: z.number().int().nullable(),
       // Componentes da receita (Data Dragon) a comprar antes de fechar o item, do mais barato
       // ao mais caro; vazio para itens sem receita.
       components: z.array(
@@ -44,21 +39,15 @@ export const buildRecommendationSchema = z.object({
   starterItems: z.array(itemRefSchema.extend({ count: z.number().int().positive() })),
   starterReason: z.string(),
   purchaseOrder: z.array(z.string()),
-  // Ordem de habilidades: das partidas de alto elo do campeão na rota ("lane") ou em qualquer
-  // rota ("champion"); sem partidas, só a prioridade escolhida pela IA ("ai").
+  // Ordem de habilidades montada a partir da prioridade escolhida pela IA.
   skillOrder: z.object({
-    source: z.enum(['lane', 'champion', 'ai']),
-    // Habilidade de cada nível, do 1 ao 18. Só termina antes em campeões com regras próprias
-    // de pontos (ex.: Udyr), em que apenas os níveis das partidas são mostrados.
+    // Habilidade de cada nível, do 1 ao 18. Fica vazia em campeões com regras próprias de
+    // pontos (ex.: Udyr), em que só a prioridade é mostrada.
     levels: z.array(z.enum(SKILL_KEYS)),
-    // Quantos níveis iniciais vêm das partidas; os seguintes são sugeridos pela prioridade.
-    observedLevels: z.number().int(),
     // Ordem para maximizar as habilidades básicas (ex.: Q > E > W).
     priority: z.array(z.enum(SKILL_KEYS)),
     spells: z.array(z.object({ key: z.enum(SKILL_KEYS), name: z.string(), icon: z.string() })),
-    matches: z.number().int(),
-    // Justificativa da IA; null quando a ordem vem das partidas.
-    reason: z.string().nullable(),
+    reason: z.string(),
   }),
   runes: z.object({
     primary: z.object({
@@ -75,17 +64,6 @@ export const buildRecommendationSchema = z.object({
   justification: z.string(),
   balance: z.string(),
   warnings: z.array(z.string()),
-  // Partidas de Challenger e Grão-Mestre usadas como base; null quando não há dados.
-  highElo: z
-    .object({
-      tiers: z.array(z.string()),
-      patches: z.array(z.string()),
-      matches: z.number().int(),
-      winRate: z.number(),
-      // Quantas dessas partidas têm a linha do tempo usada no caminho da build.
-      timelineMatches: z.number().int(),
-    })
-    .nullable(),
   dataVersion: z.string(),
 });
 

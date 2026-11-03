@@ -2,7 +2,7 @@
 
 API backend do **assistente de builds de League of Legends (LoL)**. O objetivo do produto é ajudar o jogador a escolher uma build adequada para a partida atual.
 
-> Estado atual: MVP funcional. `GET /champions` lista os campeões e `POST /builds/recommendations` valida a entrada (campeões e rotas) e gera a build e a página de runas com o Gemini, usando como contexto os dados do Data Dragon e as estatísticas de partidas ranqueadas de Challenger e Grão-Mestre (API da Riot: League-V4 e Match-V5).
+> Estado atual: MVP funcional. `GET /champions` lista os campeões e `POST /builds/recommendations` valida a entrada (campeões e rotas) e gera a build e a página de runas com o Gemini, usando como contexto apenas os dados do Data Dragon (campeões, itens e runas). O projeto não usa a API da Riot com chave: nada depende de `RIOT_API_KEY`.
 
 ## Escopo do MVP (definição funcional do produto)
 
@@ -105,7 +105,7 @@ O MVP está funcional quando o jogador consegue: informar seu campeão e sua rot
 | `npm run typecheck`                     | `tsc --noEmit`                         |
 | `npm run lint` / `npm run format:check` | ESLint / Prettier                      |
 
-Copie `.env.example` para `.env` antes de rodar. Variáveis: `NODE_ENV`, `HOST`, `PORT` (padrão 3333), `LOG_LEVEL`, `CORS_ORIGIN` (origens permitidas, separadas por vírgula; padrão `http://localhost:5173,http://127.0.0.1:5173`), `CATALOG_REFRESH_INTERVAL_MS` (intervalo de atualização dos catálogos do Data Dragon), `GEMINI_API_KEY` (opcional; sem ela a recomendação responde 503), `GEMINI_MODEL`, `RIOT_API_KEY` (opcional; chave de desenvolvimento expira em 24h e a de produção ainda não foi solicitada; sem ela a recomendação usa só o contexto do Data Dragon), `TRUST_PROXY` (padrão false; true atrás de proxy), `RATE_LIMIT_MAX` e `RECOMMENDATION_RATE_LIMIT_MAX` (requisições por IP por minuto; padrão 120 e 8), `RIOT_PLATFORM` (padrão `br1`), `HIGH_ELO_REFRESH_INTERVAL_MS` (intervalo entre ciclos de coleta) e `HIGH_ELO_DATA_FILE` (arquivo das partidas coletadas, padrão `data/high-elo-matches.json`, fora do git). Segredos vão só no `.env`, nunca no `.env.example`.
+Copie `.env.example` para `.env` antes de rodar. Variáveis: `NODE_ENV`, `HOST`, `PORT` (padrão 3333), `LOG_LEVEL`, `CORS_ORIGIN` (origens permitidas, separadas por vírgula; padrão `http://localhost:5173,http://127.0.0.1:5173`), `CATALOG_REFRESH_INTERVAL_MS` (intervalo de atualização dos catálogos do Data Dragon), `GEMINI_API_KEY` (opcional; sem ela a recomendação responde 503), `GEMINI_MODEL`, `TRUST_PROXY` (padrão false; true atrás de proxy), `RATE_LIMIT_MAX` e `RECOMMENDATION_RATE_LIMIT_MAX` (requisições por IP por minuto; padrão 120 e 8). Segredos vão só no `.env`, nunca no `.env.example`.
 
 Snapshots de fallback dos catálogos: `npm run snapshot:champions`, `npm run snapshot:champion-details`, `npm run snapshot:items` e `npm run snapshot:runes` (rodar quando sair um patch novo).
 
@@ -114,20 +114,15 @@ Snapshots de fallback dos catálogos: `npm run snapshot:champions`, `npm run sna
 A IA só escolhe e explica; ela nunca é fonte de dados. Fluxo em `src/modules/builds/recommendation-service.ts`:
 
 1. `validateMatchupInput` valida a entrada (entrada inválida nunca chega à IA).
-2. Contexto fechado: detalhes dos campeões (`championFull.json`) com as rotas e o oponente direto, análise determinística da composição inimiga (`matchup-analysis.ts`), lista de itens permitidos, árvores de runas (`runesReforged.json`) e as estatísticas de alto elo do campeão na rota (`dadosAltoElo`, de `high-elo-stats.ts`: uso e vitória de itens e runas, e o que foi usado contra cada adversário). A IA parte dessas escolhas e justifica os desvios pela composição inimiga.
+2. Contexto fechado: detalhes dos campeões (`championFull.json`) com as rotas e o oponente direto, análise determinística da composição inimiga (`matchup-analysis.ts`), lista de itens permitidos, árvores de runas (`runesReforged.json`) e as habilidades do campeão. A IA escolhe e justifica pela composição inimiga.
 3. O schema de resposta usa `enum` com os ids de itens permitidos, dos adversários, das árvores e das runas.
 4. `recommendation-validator.ts` confere a resposta (6 itens existentes, sem repetição, no máximo 1 par de botas, ameaças entre os adversários; runa principal da árvore primária, uma runa de cada linha na primária, secundária diferente com 2 runas de linhas diferentes; compra inicial de `starter-items.ts` com até 500 de ouro, exatamente 1 companheiro na selva e 1 item de suporte no suporte, e nenhum deles nas outras rotas). Uma nova tentativa com o feedback; se falhar de novo, 502. Nada não validado chega ao jogador.
 
 A IA fica atrás da interface `BuildAdvisor`; testes nunca chamam o Gemini (use `buildTestApp` de `src/test/build-test-app.ts`).
 
-## Dados de alto elo
+## Ordem de habilidades, compra inicial e componentes
 
-Módulo `src/modules/high-elo/`. A chave pessoal da Riot permite só 100 chamadas a cada 2 minutos, então a recomendação **nunca chama a Riot na hora**:
-
-- `HighEloCollector` roda em segundo plano (fora dos testes): busca os jogadores de Challenger e Grão-Mestre, avança 40 jogadores por ciclo e guarda as partidas solo/duo novas (`riot-match-parser.ts` descarta outras filas, remakes e partidas sem rota). Para cada partida nova também busca a timeline (`riot-timeline-parser.ts`: compra inicial, momento de compra de cada item final e ordem dos pontos de habilidade); se a timeline falhar, a partida é guardada sem os tempos. A cada ciclo, até 40 partidas já guardadas sem a timeline completa também a recebem (`MatchStore.withoutTimeline`).
-- `MatchStore` mantém as partidas dos 2 patches mais recentes em memória e no `HIGH_ELO_DATA_FILE`, para não perder a coleta ao reiniciar.
-- `summarizeHighElo` calcula as estatísticas na hora da recomendação; a resposta traz `highElo` (amostra usada), `highEloPickRate` por item e o caminho da build: `starterItems` (compra inicial mais comum) e `highEloSecond` (segundo mediano em que o alto elo completa o 1º, 2º... item). Cada item traz `components` (receita direta do Data Dragon, do mais barato ao mais caro), para mostrar o que comprar antes de fechar o item. A resposta também traz `skillOrder` (`summarizeSkillOrder`): a sequência de habilidades mais comum do campeão na rota (`source: 'lane'`) ou, sem dados na rota, em qualquer rota (`'champion'`), montada nível a nível até restarem menos de 3 partidas no mesmo caminho, com a prioridade derivada dela. Só quando nenhuma partida tem a ordem, o schema pede `skillPriority` à IA (Q, W e E, validados) e a resposta vem com `source: 'ai'`. Os níveis que faltam até o 18 são completados por `skill-order.ts` (ultimate nos níveis 6, 11 e 16, as três básicas abertas até o nível 3 e depois a prioridade, até metade do nível em pontos); `observedLevels` diz quantos vieram das partidas. Campeões com pontos fora do padrão 5/5/5/3 (`maxRank` do Data Dragon: Udyr, Jayce, Elise...) mostram só os níveis das partidas. O catálogo inclui itens iniciais e componentes com `isBuildItem: false`: eles nunca entram na build, mas a IA escolhe a compra inicial (`starterItems` e `starterReason`) entre os candidatos de `starterCandidates`, partindo da compra mais usada no alto elo.
-- `src/shared/riot-api/` tem o cliente com limitador por região e nova tentativa após 429. Testes usam `HighEloApi` fake; `buildTestApp` desliga o alto elo.
+Sem dados de partidas, a IA escolhe a compra inicial (`starterItems` e `starterReason`, entre `starterCandidates`) e a prioridade de habilidades (`skillPriority`: Q, W e E, validados). `skill-order.ts` completa a sequência até o nível 18 (ultimate nos níveis 6, 11 e 16, as três básicas abertas até o nível 3 e depois a prioridade). Campeões com pontos fora do padrão 5/5/5/3 (`maxRank` do Data Dragon: Udyr, Jayce, Elise...) mostram só a prioridade (`levels` vazio). Cada item da build traz `components` (receita direta do Data Dragon, do mais barato ao mais caro). O catálogo inclui itens iniciais e componentes com `isBuildItem: false`: eles nunca entram na build.
 
 ## Arquitetura
 

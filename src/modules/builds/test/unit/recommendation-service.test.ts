@@ -12,8 +12,7 @@ import {
 import type { ChampionCatalog } from '../../../champions/champion-catalog.js';
 import type { ItemCatalog } from '../../../items/item-catalog.js';
 import type { BuildAdvisor } from '../../build-advisor.js';
-import type { HighEloSummary } from '../../../high-elo/high-elo-stats.js';
-import { RecommendationService, type HighEloSource } from '../../recommendation-service.js';
+import { RecommendationService } from '../../recommendation-service.js';
 
 const championCatalog: ChampionCatalog = {
   getAll: async () => testChampions,
@@ -49,7 +48,6 @@ function createService(
   advisor: BuildAdvisor | null,
   championDetails = allDetails,
   runes = runeCatalog,
-  highElo: HighEloSource | null = null,
 ) {
   return new RecommendationService({
     championCatalog,
@@ -57,7 +55,6 @@ function createService(
     itemCatalog,
     runeCatalog: runes,
     advisor,
-    highElo,
   });
 }
 
@@ -89,81 +86,19 @@ describe('RecommendationService', () => {
     expect(advisor.generate).toHaveBeenCalledOnce();
   });
 
-  it('consulta os dados de alto elo do campeão na rota e os envia à IA', async () => {
-    const summary: HighEloSummary = {
-      matches: 50,
-      wins: 27,
-      patches: ['16.21'],
-      items: [
-        { itemId: '3031', matches: 40, wins: 22 },
-        { itemId: '3006', matches: 25, wins: 14 },
-      ],
-      keystones: [],
-      runePages: [],
-      buildPath: {
-        matches: 30,
-        starterItems: ['1055', '2003', '2003'],
-        starterMatches: 20,
-        itemSeconds: [540, 900, 1260, 1620, null, null],
-      },
-      versusEnemies: [],
-    };
-    const highElo = {
-      summarize: vi.fn().mockReturnValue(summary),
-      skillOrder: vi.fn().mockReturnValue({
-        scope: 'lane',
-        matches: 30,
-        levels: ['Q', 'E', 'W', 'Q'],
-        priority: ['Q', 'E', 'W'],
-      }),
-    };
+  it('monta a ordem de habilidades a partir da prioridade escolhida pela IA', async () => {
     const advisor = { generate: vi.fn().mockResolvedValue(createValidAdvisorResponse()) };
 
-    const result = await createService(advisor, allDetails, runeCatalog, highElo).recommend(input);
+    const result = await createService(advisor).recommend(input);
 
-    const query = highElo.summarize.mock.calls[0]![0];
-    expect(query).toMatchObject({ championId: '1', lane: 'top' });
-    expect(query.enemies).toContainEqual({ championId: '2', lane: 'top' });
-    expect([...query.allowedItemIds]).toEqual(
-      testItems.filter((item) => item.isBuildItem).map((item) => item.id),
-    );
-    expect(advisor.generate.mock.calls[0]![0].prompt).toContain('"dadosAltoElo":{');
-
-    expect(result.highElo).toEqual({
-      tiers: ['CHALLENGER', 'GRANDMASTER'],
-      patches: ['16.21'],
-      matches: 50,
-      winRate: 0.54,
-      timelineMatches: 30,
-    });
-    expect(result.build[0]!.highEloPickRate).toBe(0.5);
-    expect(result.build[1]!.highEloPickRate).toBe(0.8);
-    expect(result.build[2]!.highEloPickRate).toBe(0);
-    // O caminho da build usa o tempo de cada posição.
-    expect(result.build.map((item) => item.highEloSecond)).toEqual([
-      540,
-      900,
-      1260,
-      1620,
-      null,
-      null,
-    ]);
-    expect(advisor.generate.mock.calls[0]![0].prompt).toContain('"compraInicialMaisUsada":{');
-    expect(highElo.skillOrder).toHaveBeenCalledWith({ championId: '1', lane: 'top' });
-    // Com a ordem das partidas, a IA não é consultada sobre ela.
-    expect(advisor.generate.mock.calls[0]![0].responseSchema.required).not.toContain(
-      'skillPriority',
-    );
-    // Os 4 níveis das partidas vêm primeiro; os demais são sugeridos pela prioridade.
+    expect(advisor.generate.mock.calls[0]![0].responseSchema.required).toContain('skillPriority');
     expect(result.skillOrder).toEqual({
-      source: 'lane',
       levels: 'QEWQQRQEQEREEWWRWW'.split(''),
-      observedLevels: 4,
       priority: ['Q', 'E', 'W'],
       spells: spells.map(({ key, name, icon }) => ({ key, name, icon })),
-      matches: 30,
-      reason: null,
+      reason: 'Q é a principal fonte de dano.',
     });
+    expect(result.starterItems.map((item) => item.id)).toEqual(['1055', '2003']);
   });
 
   it('devolve a compra inicial escolhida pela IA, agrupando os itens repetidos', async () => {
@@ -213,39 +148,12 @@ describe('RecommendationService', () => {
   });
 
   it('não oferece itens iniciais nem componentes entre os itens da build', async () => {
-    const highElo = { summarize: vi.fn().mockReturnValue(null) };
     const advisor = { generate: vi.fn().mockResolvedValue(createValidAdvisorResponse()) };
 
-    await createService(advisor, allDetails, runeCatalog, highElo).recommend(input);
+    await createService(advisor).recommend(input);
 
-    const { allowedItemIds, starterItemIds } = highElo.summarize.mock.calls[0]![0];
-    expect([...starterItemIds]).toEqual(['1055', '2003', '1101', '3865', '1038', '1036']);
-    expect(allowedItemIds.has('1055')).toBe(false);
     const schema = advisor.generate.mock.calls[0]![0].responseSchema;
     expect(schema.properties.items.items.properties.itemId.enum).not.toContain('1055');
-  });
-
-  it('segue sem dados de alto elo quando o campeão não tem partidas coletadas', async () => {
-    const highElo = { summarize: vi.fn().mockReturnValue(null) };
-    const advisor = { generate: vi.fn().mockResolvedValue(createValidAdvisorResponse()) };
-
-    const result = await createService(advisor, allDetails, runeCatalog, highElo).recommend(input);
-
-    expect(advisor.generate.mock.calls[0]![0].prompt).toContain('"dadosAltoElo":null');
-    expect(result.highElo).toBeNull();
-    expect(result.build[0]!.highEloPickRate).toBeNull();
-    expect(result.build[0]!.highEloSecond).toBeNull();
-    // Sem partidas com a ordem de habilidades, a prioridade vem da IA.
-    expect(advisor.generate.mock.calls[0]![0].responseSchema.required).toContain('skillPriority');
-    expect(result.skillOrder).toMatchObject({
-      source: 'ai',
-      levels: 'QEWQQRQEQEREEWWRWW'.split(''),
-      observedLevels: 0,
-      priority: ['Q', 'E', 'W'],
-      reason: 'Q é a principal fonte de dano.',
-    });
-    // Sem alto elo, a compra inicial ainda vem da IA.
-    expect(result.starterItems.map((item) => item.id)).toEqual(['1055', '2003']);
   });
 
   it('não completa a ordem de campeões com pontos de habilidade próprios', async () => {
@@ -259,20 +167,11 @@ describe('RecommendationService', () => {
         });
       },
     };
-    const highElo = {
-      summarize: vi.fn().mockReturnValue(null),
-      skillOrder: vi.fn().mockReturnValue({
-        scope: 'lane',
-        matches: 5,
-        levels: ['Q', 'W'],
-        priority: ['Q', 'W', 'E'],
-      }),
-    };
     const advisor = { generate: vi.fn().mockResolvedValue(createValidAdvisorResponse()) };
 
-    const result = await createService(advisor, udyr, runeCatalog, highElo).recommend(input);
+    const result = await createService(advisor, udyr, runeCatalog).recommend(input);
 
-    expect(result.skillOrder).toMatchObject({ levels: ['Q', 'W'], observedLevels: 2 });
+    expect(result.skillOrder).toMatchObject({ levels: [], priority: ['Q', 'E', 'W'] });
   });
 
   it('lista os componentes de cada item, do mais barato ao mais caro', async () => {

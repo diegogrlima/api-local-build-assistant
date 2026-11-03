@@ -4,7 +4,6 @@ import {
   testItems,
   testRuneTrees,
 } from '../../../../test/fake-providers.js';
-import type { HighEloSummary } from '../../../high-elo/high-elo-stats.js';
 import {
   buildPrompt,
   buildResponseSchema,
@@ -12,7 +11,7 @@ import {
 } from '../../recommendation-prompt.js';
 import { starterCandidates } from '../../starter-items.js';
 
-function createContext(highElo: HighEloSummary | null = null): RecommendationContext {
+function createContext(): RecommendationContext {
   return {
     champion: {
       ...createChampionDetails({ id: '157', name: 'Yasuo', allyTips: ['Dica aliada'] }),
@@ -28,7 +27,6 @@ function createContext(highElo: HighEloSummary | null = null): RecommendationCon
     items: testItems.filter((item) => item.isBuildItem),
     starterItems: starterCandidates(testItems),
     runeTrees: testRuneTrees,
-    highElo,
   };
 }
 
@@ -67,49 +65,7 @@ describe('buildPrompt', () => {
       runasPrincipais: [{ id: '8005' }, { id: '8010' }],
     });
     expect(context.arvoresDeRunas[0].linhas).toHaveLength(3);
-    expect(context.dadosAltoElo).toBeNull();
-  });
-
-  it('inclui os dados de alto elo com nomes, taxas e o tamanho da amostra', () => {
-    const page = {
-      primaryTreeId: '8000',
-      keystoneId: '8010',
-      primaryRuneIds: ['9111', '9104', '8014'],
-      secondaryTreeId: '8100',
-      secondaryRuneIds: ['8139', '8135'],
-    };
-    const context = parseContext(
-      buildPrompt(
-        createContext({
-          matches: 40,
-          wins: 22,
-          patches: ['16.21'],
-          items: [{ itemId: '3031', matches: 30, wins: 18 }],
-          keystones: [{ keystoneId: '8010', primaryTreeId: '8000', matches: 40, wins: 22 }],
-          runePages: [{ page, matches: 10, wins: 6 }],
-          buildPath: null,
-          versusEnemies: [
-            { championId: '238', laneOpponent: true, matches: 5, wins: 2, items: [] },
-          ],
-        }),
-      ),
-    );
-
-    expect(context.dadosAltoElo).toMatchObject({
-      partidas: 40,
-      taxaDeVitoriaPct: 55,
-      amostraConfiavel: true,
-      itensMaisUsados: [
-        { id: '3031', nome: 'Gume do Infinito', taxaDeUsoPct: 75, taxaDeVitoriaPct: 60 },
-      ],
-      runasPrincipaisMaisUsadas: [{ nome: 'Conquistador', arvore: 'Precisão', taxaDeUsoPct: 100 }],
-      paginasDeRunasMaisUsadas: [
-        { runaPrincipal: { nome: 'Conquistador' }, arvoreSecundaria: { nome: 'Dominação' } },
-      ],
-      contraAdversarios: [
-        { adversario: 'Zed', oponenteDireto: true, partidas: 5, amostraConfiavel: false },
-      ],
-    });
+    expect(context).not.toHaveProperty('dadosAltoElo');
   });
 });
 
@@ -135,15 +91,10 @@ describe('buildResponseSchema', () => {
     expect(runes.secondaryRuneIds.maxItems).toBe(2);
   });
 
-  it('só pede a prioridade de habilidades quando ela não vem das partidas', () => {
-    const withoutAi = buildResponseSchema(['3031'], ['238'], testRuneTrees, ['1055']);
-    const withAi = buildResponseSchema(['3031'], ['238'], testRuneTrees, ['1055'], {
-      skillPriority: true,
-    });
+  it('sempre pede a prioridade de habilidades à IA', () => {
+    const schema = buildResponseSchema(['3031'], ['238'], testRuneTrees, ['1055']);
 
-    expect(withoutAi.properties).not.toHaveProperty('skillPriority');
-    expect(withoutAi.required).not.toContain('skillPriority');
-    expect(withAi.required).toContain('skillPriority');
-    expect(withAi.properties.skillPriority!.properties.order.items.enum).toEqual(['Q', 'W', 'E']);
+    expect(schema.required).toContain('skillPriority');
+    expect(schema.properties.skillPriority.properties.order.items.enum).toEqual(['Q', 'W', 'E']);
   });
 });
